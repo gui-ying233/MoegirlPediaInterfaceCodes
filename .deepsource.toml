@@ -8,6 +8,3 @@ name = "javascript"
     "jquery",
     "browser"
   ]
-
-[[transformers]]
-name = "prettier"
