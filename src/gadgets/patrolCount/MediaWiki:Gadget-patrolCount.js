@@ -80,7 +80,9 @@ $(() => {
                 if (shortTitle.length > 8) {
                     shortTitle = `${shortTitle.slice(0, 7)}...`;
                 }
-                const item = $("<li></li>").html(`<a href="${mw.config.get("wgServer")}${mw.config.get("wgScriptPath")}/index.php?title=${link}" title="${page.title}">${shortTitle}</a>`).appendTo($list);
+                const item = $("<li></li>")
+                    .html(`<a href="${mw.config.get("wgServer")}${mw.config.get("wgScriptPath")}/index.php?title=${link}" title="${page.title}">${shortTitle}</a>`)
+                    .appendTo($list);
                 if (!page.confidence) {
                     item.addClass("patrollListNotConfident");
                 }
@@ -93,15 +95,19 @@ $(() => {
             if ($showAll.length === 0) {
                 $showAll = $("<div></div>", {
                     id: "patrollListShowAll",
-                }).css({
-                    "text-align": "right",
-                    "font-weight": "bold",
-                    "margin-bottom": "10px",
-                }).append($("<a></a>", {
-                    text: "more...",
-                    href: "#patrollListShowAll",
-                    title: "Show all unpatrolled articles",
-                }));
+                })
+                    .css({
+                        "text-align": "right",
+                        "font-weight": "bold",
+                        "margin-bottom": "10px",
+                    })
+                    .append(
+                        $("<a></a>", {
+                            text: "more...",
+                            href: "#patrollListShowAll",
+                            title: "Show all unpatrolled articles",
+                        }),
+                    );
                 $list.after($showAll);
             } else {
                 $showAll.show();
@@ -120,15 +126,21 @@ $(() => {
         }
     };
     const loadCvtooltip = function () {
-        $("body").append($("<div></div>", {
-            id: "patrollTooltip",
-            style: "display: none;",
-        }).css({
-            "font-size": "0.75em",
-            "margin-right": "30px",
-        }).append($("<ul></ul>", {
-            id: "patrollTooltipList",
-        })));
+        $("body").append(
+            $("<div></div>", {
+                id: "patrollTooltip",
+                style: "display: none;",
+            })
+                .css({
+                    "font-size": "0.75em",
+                    "margin-right": "30px",
+                })
+                .append(
+                    $("<ul></ul>", {
+                        id: "patrollTooltipList",
+                    }),
+                ),
+        );
         /*
          * JQuery.cvtooltip.js
          * http://www.chinavalue.net
@@ -157,8 +169,10 @@ $(() => {
                 const param = $.extend({}, defaults, options || {});
                 const controlID = self.attr("ID");
                 // 气泡样式
-                const cvToolTipCssBtm = "position: absolute; border-color: transparent transparent #A7D7F9 transparent; border-style: dashed dashed solid dashed; border-width: 7px 7px 7px 7px; width: 0; overflow: hidden; right:40px; top:-17px;";
-                const cvToolTipCssTop = "position: absolute; border-color: transparent transparent #A7D7F9 transparent; border-style: dashed dashed solid dashed; border-width: 7px 7px 7px 7px; width: 0; overflow: hidden; right:40px; top:-17px;";
+                const cvToolTipCssBtm =
+                    "position: absolute; border-color: transparent transparent #A7D7F9 transparent; border-style: dashed dashed solid dashed; border-width: 7px 7px 7px 7px; width: 0; overflow: hidden; right:40px; top:-17px;";
+                const cvToolTipCssTop =
+                    "position: absolute; border-color: transparent transparent #A7D7F9 transparent; border-style: dashed dashed solid dashed; border-width: 7px 7px 7px 7px; width: 0; overflow: hidden; right:40px; top:-17px;";
                 let cvToolTipCss = `z-index:713; display:none; position: absolute; border: 3px solid #A7D7F9; background-color: #F3F3F3; line-height:14px; border-radius: 10px; right:${param.left}px; top:${param.top}px;`;
                 if (param.width !== 0) {
                     cvToolTipCss += `width: ${param.width}px;`;
@@ -168,7 +182,7 @@ $(() => {
                     const cvTipsElement = $("<div>");
                     cvTipsElement.attr({
                         id: `${controlID}Body`,
-                        "class": "cvToolTip",
+                        class: "cvToolTip",
                         style: cvToolTipCss,
                     });
                     const cvTipsElementBtm = $("<span>");
@@ -220,17 +234,21 @@ $(() => {
                     timer: null,
                     show: () => {
                         if (cttContent.html() === "") {
-                            cttContent.append(ctt.content()).css("height", `${cttContent[0].scrollHeight}px`).hide().slideDown(param.speed, () => {
-                                cttContent.css("height", "");
-                                cttBody.on({
-                                    mouseover: () => {
-                                        cttClose.show();
-                                    },
-                                    mouseout: () => {
-                                        cttClose.hide();
-                                    },
+                            cttContent
+                                .append(ctt.content())
+                                .css("height", `${cttContent[0].scrollHeight}px`)
+                                .hide()
+                                .slideDown(param.speed, () => {
+                                    cttContent.css("height", "");
+                                    cttBody.on({
+                                        mouseover: () => {
+                                            cttClose.show();
+                                        },
+                                        mouseout: () => {
+                                            cttClose.hide();
+                                        },
+                                    });
                                 });
-                            });
                         }
                         if (param.selector !== "") {
                             ctt.position();
@@ -324,31 +342,37 @@ $(() => {
         if (missingQuery.length !== 0) {
             const pagesStr = missingQuery.join("|");
             const checkMissingURI = `${apiPrefix}?action=query&format=xml&prop=info`;
-            $.post(checkMissingURI, {
-                titles: pagesStr,
-            }, (result) => {
-                let regenerate = false;
-                $(result).find("pages page").each(function () {
-                    const $this = $(this);
-                    const isMissing = typeof $this.attr("missing") !== "undefined";
-                    const title = $this.attr("title");
-                    missingPage[title] = isMissing;
-                    if (isMissing) {
-                        for (let idx = 0; idx < pages.length; ++idx) {
-                            if (pages[idx].title === title) {
-                                pages.splice(idx, 1);
-                                break;
+            $.post(
+                checkMissingURI,
+                {
+                    titles: pagesStr,
+                },
+                (result) => {
+                    let regenerate = false;
+                    $(result)
+                        .find("pages page")
+                        .each(function () {
+                            const $this = $(this);
+                            const isMissing = typeof $this.attr("missing") !== "undefined";
+                            const title = $this.attr("title");
+                            missingPage[title] = isMissing;
+                            if (isMissing) {
+                                for (let idx = 0; idx < pages.length; ++idx) {
+                                    if (pages[idx].title === title) {
+                                        pages.splice(idx, 1);
+                                        break;
+                                    }
+                                }
+                                if (title === $("#unpatrollArticle").attr("title")) {
+                                    regenerate = true;
+                                }
                             }
-                        }
-                        if (title === $("#unpatrollArticle").attr("title")) {
-                            regenerate = true;
-                        }
+                        });
+                    if (regenerate) {
+                        writeCountNum(pages, plus);
                     }
-                });
-                if (regenerate) {
-                    writeCountNum(pages, plus);
-                }
-            });
+                },
+            );
         }
     };
     // 加入标记巡查按钮
@@ -360,8 +384,11 @@ $(() => {
                 text: "标记此页面为已巡查",
             });
             const $divPatrolllink = $("<div></div>", {
-                "class": "patrollink",
-            }).append("[").append($patrollinks).append("]");
+                class: "patrollink",
+            })
+                .append("[")
+                .append($patrollinks)
+                .append("]");
             $("div.printfooter").before($divPatrolllink);
             const markAsPatrol = (e) => {
                 e.preventDefault();
@@ -418,30 +445,34 @@ $(() => {
         lastRequest = d;
         const requestid = d.getTime();
         const newPages = `${apiPrefix}?action=query&format=xml&list=recentchanges&rctype=new&rcnamespace=${namespaceWatchList.join("|")}&rcshow=!redirect|!patrolled&meta=tokens&type=patrol&rcprop=title|ids|user|tags`;
-        $.get(newPages, {
-            rclimit: newPageMax,
-            requestid: requestid,
-        }, (result) => {
-            const pages = [];
-            const jqResult = $(result);
-            jqResult.find("rc").each(function () {
-                const $self = $(this);
-                const confidence = typeof $self.attr("anon") === "undefined" && $self.find("tag").length === 0;
-                const t = {
-                    title: $self.attr("title"),
-                    rcid: $self.attr("rcid"),
-                    rctoken: jqResult.find("tokens"),
-                    confidence: confidence,
-                };
-                pages.push(t);
-            });
-            addPatrollLink(pages);
-            const plus = jqResult.find("query-continue").length !== 0;
-            if (pages.length !== 0) {
-                checkMissing(pages, plus);
-            }
-            writeCountNum(pages, plus);
-        });
+        $.get(
+            newPages,
+            {
+                rclimit: newPageMax,
+                requestid: requestid,
+            },
+            (result) => {
+                const pages = [];
+                const jqResult = $(result);
+                jqResult.find("rc").each(function () {
+                    const $self = $(this);
+                    const confidence = typeof $self.attr("anon") === "undefined" && $self.find("tag").length === 0;
+                    const t = {
+                        title: $self.attr("title"),
+                        rcid: $self.attr("rcid"),
+                        rctoken: jqResult.find("tokens"),
+                        confidence: confidence,
+                    };
+                    pages.push(t);
+                });
+                addPatrollLink(pages);
+                const plus = jqResult.find("query-continue").length !== 0;
+                if (pages.length !== 0) {
+                    checkMissing(pages, plus);
+                }
+                writeCountNum(pages, plus);
+            },
+        );
     };
     // setInterval(updateUnpatrolled, 60000);
     updateUnpatrolled();
@@ -451,11 +482,17 @@ $(() => {
         title: wgULS("最新页面", "最新頁面"),
         text: wgULS("最新页面", "最新頁面"),
     });
-    $("body #p-personal ul li#pt-watchlist").after($("<li></li>", {
-        id: "pt-patroll",
-    }).append(ptPatrollLink).append($("<span></span>", {
-        id: "not-patrolled-count",
-    })));
+    $("body #p-personal ul li#pt-watchlist").after(
+        $("<li></li>", {
+            id: "pt-patroll",
+        })
+            .append(ptPatrollLink)
+            .append(
+                $("<span></span>", {
+                    id: "not-patrolled-count",
+                }),
+            ),
+    );
     $("#pt-patroll").on("mouseover", updateUnpatrolled);
 });
 // </pre>

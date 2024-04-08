@@ -5,11 +5,11 @@
  */
 "use strict";
 /**
-  * 全部内容引自 https://commons.wikimedia.org/wiki/MediaWiki:Gadget-HotCat.js
-  * 合并了 User:Func 对繁体分类的修正，本页面 diff：https://zh.moegirl.org.cn/_?diff=5710070&oldid=5611586 ，User:Func 的修正参见 https://zh.moegirl.org.cn/_?diff=4533156&oldid=5710033
-  * 修改了alert为OOUI版本
-  * 修改了 jsonp 为原生请求 - https://github.com/MoegirlPediaInterfaceAdmins/MoegirlPediaInterfaceCodes/commit/134859937c596c818e4a33f9d174022dc79d7bb8
-  **/
+ * 全部内容引自 https://commons.wikimedia.org/wiki/MediaWiki:Gadget-HotCat.js
+ * 合并了 User:Func 对繁体分类的修正，本页面 diff：https://zh.moegirl.org.cn/_?diff=5710070&oldid=5611586 ，User:Func 的修正参见 https://zh.moegirl.org.cn/_?diff=4533156&oldid=5710033
+ * 修改了alert为OOUI版本
+ * 修改了 jsonp 为原生请求 - https://github.com/MoegirlPediaInterfaceAdmins/MoegirlPediaInterfaceCodes/commit/134859937c596c818e4a33f9d174022dc79d7bb8
+ **/
 // <nowiki>
 /**
 HotCat V2.43
@@ -25,22 +25,25 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
     /**
      * @type {{ wgServer: string, [keys: string]: any }}
      */
-    const conf = new Proxy({}, {
-        get: (_, name) => {
-            if (name === "wgServer") {
-                return `https://${location.hostname}`;
-            }
-            return mw.config.get(name);
+    const conf = new Proxy(
+        {},
+        {
+            get: (_, name) => {
+                if (name === "wgServer") {
+                    return `https://${location.hostname}`;
+                }
+                return mw.config.get(name);
+            },
         },
-    });
-    if (window.HotCat && !window.HotCat.nodeName || conf.wgAction === "edit") {
+    );
+    if ((window.HotCat && !window.HotCat.nodeName) || conf.wgAction === "edit") {
         return;
     }
     const userRights = await mw.user.getRights();
     const autopatrol = userRights.includes("autopatrol");
     window.hotcat_no_autocommit = !autopatrol;
     window.hotcat_del_needs_diff = !autopatrol;
-    const HC = window.HotCat = {
+    const HC = (window.HotCat = {
         messages: {
             cat_removed: "removed [[Category:$1]]",
             template_removed: "removed {{[[Category:$1]]}}",
@@ -88,7 +91,17 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
         disable: () => {
             const ns = mw.config.get("wgNamespaceNumber");
             const nsIds = mw.config.get("wgNamespaceIds");
-            return ns < 0 || ns === nsIds.template || ns === nsIds.module || ns === nsIds.mediawiki || ns === nsIds.file && !mw.config.get("wgArticleId") || ns === nsIds.creator || ns === nsIds.timedtext || ns === nsIds.institution || mw.config.get("wgPageContentModel") !== "wikitext";
+            return (
+                ns < 0 ||
+                ns === nsIds.template ||
+                ns === nsIds.module ||
+                ns === nsIds.mediawiki ||
+                (ns === nsIds.file && !mw.config.get("wgArticleId")) ||
+                ns === nsIds.creator ||
+                ns === nsIds.timedtext ||
+                ns === nsIds.institution ||
+                mw.config.get("wgPageContentModel") !== "wikitext"
+            );
         },
         uncat_regexp: /\{\{\s*[Uu]ncategorized\s*[^}]*\}\}\s*(<!--.*?-->\s*)?/g,
         existsYes: "https://img.moegirl.org.cn/common/thumb/b/be/P_yes.svg/20px-P_yes.svg.png",
@@ -137,7 +150,7 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
                 window.HotCat.shortcuts[k] = v;
             }
         },
-    };
+    });
     const ua = navigator.userAgent.toLowerCase();
     const is_webkit = /applewebkit\/\d+/.test(ua) && ua.indexOf("spoofer") < 0;
     let cat_prefix = null;
@@ -166,7 +179,8 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
     }
     const loadTrigger = new LoadTrigger(2);
     loadTrigger.loaded(); // 原本要加载 MediaWiki:Gadget-HotCat.js/local_defaults 后才执行的，被删除了就直接执行了
-    if (conf.wgUserLanguage !== "en") { // 原本要异步加载翻译的，直接内嵌了
+    if (conf.wgUserLanguage !== "en") {
+        // 原本要异步加载翻译的，直接内嵌了
         const local = {
             messages: {
                 cat_removed: "移除[[分类:$1]]",
@@ -207,7 +221,8 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
                 parentcat: "父分类",
             },
             disambig_category: "消歧义页",
-            blacklist: /(?:不可|已)索引页面|(?:调用重复模板参数|有(?:过多高开销解析器函数调用|忽略显示标题|模板循环|脚本错误|投票|参考文献错误)|含有(?:略过模板参数|受损文件链接)|展开模板后长度超过上限|扩展深度超出限制|使用无效自封闭HTML标签|受到保护无法编辑|即将删除)的页面|有错误的Scribunto模块|隐藏分类|页面的节点数超出限制|需要帮助/i,
+            blacklist:
+                /(?:不可|已)索引页面|(?:调用重复模板参数|有(?:过多高开销解析器函数调用|忽略显示标题|模板循环|脚本错误|投票|参考文献错误)|含有(?:略过模板参数|受损文件链接)|展开模板后长度超过上限|扩展深度超出限制|使用无效自封闭HTML标签|受到保护无法编辑|即将删除)的页面|有错误的Scribunto模块|隐藏分类|页面的节点数超出限制|需要帮助/i,
         };
         $.extend(HC, local, true);
     }
@@ -276,7 +291,11 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
             return null;
         }
         const script = `${conf.wgScript}?`;
-        if (href.indexOf(script) === 0 || href.indexOf(`${conf.wgServer}${script}`) === 0 || conf.wgServer.substring(0, 2) === "//" && href.indexOf(`${document.location.protocol}${conf.wgServer}${script}`) === 0) {
+        if (
+            href.indexOf(script) === 0 ||
+            href.indexOf(`${conf.wgServer}${script}`) === 0 ||
+            (conf.wgServer.substring(0, 2) === "//" && href.indexOf(`${document.location.protocol}${conf.wgServer}${script}`) === 0)
+        ) {
             return param("title", href);
         }
         let prefix = conf.wgArticlePath.replace("$1", "");
@@ -313,7 +332,10 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
         const indicator = escapeRE(lead);
         const lbrace = escapeRE(options.lbrace || "{");
         const rbrace = escapeRE(options.rbrace || "}");
-        const re = new RegExp(`(?:${indicator}(${indicator}))|(?:${indicator}(\\d+))|(?:${indicator}(?:${lbrace}([^${lbrace}${rbrace}]+)${rbrace}))|(?:${indicator}(?!(?:[${indicator}${lbrace}]|\\d))(\\S+?)\\b)`, "g");
+        const re = new RegExp(
+            `(?:${indicator}(${indicator}))|(?:${indicator}(\\d+))|(?:${indicator}(?:${lbrace}([^${lbrace}${rbrace}]+)${rbrace}))|(?:${indicator}(?!(?:[${indicator}${lbrace}]|\\d))(\\S+?)\\b)`,
+            "g",
+        );
         return function (str, map) {
             if (!map) {
                 return str;
@@ -347,11 +369,17 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
     function find_category(wikitext, category, once) {
         let cat_regex = null;
         if (HC.template_categories[category]) {
-            cat_regex = new RegExp(`\\{\\{${wikiTextBlankOrBidi}(${HC.template_regexp}(?=${wikiTextBlankOrBidi}:))?${wikiTextBlankOrBidi}(?:${HC.template_categories[category]})${wikiTextBlankOrBidi}(\\|.*?)?\\}\\}`, "g");
+            cat_regex = new RegExp(
+                `\\{\\{${wikiTextBlankOrBidi}(${HC.template_regexp}(?=${wikiTextBlankOrBidi}:))?${wikiTextBlankOrBidi}(?:${HC.template_categories[category]})${wikiTextBlankOrBidi}(\\|.*?)?\\}\\}`,
+                "g",
+            );
         } else {
             const cat_name = escapeRE(category);
             const initial = cat_name.substr(0, 1);
-            cat_regex = new RegExp(`\\[\\[${wikiTextBlankOrBidi}(${HC.category_regexp})${wikiTextBlankOrBidi}:${wikiTextBlankOrBidi}${initial === "\\" || !HC.capitalizePageNames ? initial : `[${initial.toUpperCase()}${initial.toLowerCase()}]`}${cat_name.substring(1).replace(wikiTextBlankRE, wikiTextBlank)}${wikiTextBlankOrBidi}(\\|.*?)?\\]\\]`, "g");
+            cat_regex = new RegExp(
+                `\\[\\[${wikiTextBlankOrBidi}(${HC.category_regexp})${wikiTextBlankOrBidi}:${wikiTextBlankOrBidi}${initial === "\\" || !HC.capitalizePageNames ? initial : `[${initial.toUpperCase()}${initial.toLowerCase()}]`}${cat_name.substring(1).replace(wikiTextBlankRE, wikiTextBlank)}${wikiTextBlankOrBidi}(\\|.*?)?\\]\\]`,
+                "g",
+            );
         }
         if (once) {
             return cat_regex.exec(wikitext);
@@ -434,7 +462,7 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
             while (j < after.length && after.charAt(j) !== "\n" && after.substr(j, 1).search(/\s/) >= 0) {
                 j++;
             }
-            if (i >= 0 && before.charAt(i) === "\n" && (!after.length || j < after.length && after.charAt(j) === "\n")) {
+            if (i >= 0 && before.charAt(i) === "\n" && (!after.length || (j < after.length && after.charAt(j) === "\n"))) {
                 i--;
             }
             if (i >= 0) {
@@ -748,7 +776,7 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
                     self.keyCount = 0;
                     if (!self.ime && key === IME && !self.usesComposition) {
                         self.ime = true;
-                    } else if (self.ime && key !== IME && !(key >= 16 && key <= 20 || key >= 91 && key <= 93 || key === 144)) {
+                    } else if (self.ime && key !== IME && !((key >= 16 && key <= 20) || (key >= 91 && key <= 93) || key === 144)) {
                         self.ime = false;
                     }
                     if (self.ime) {
@@ -782,7 +810,7 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
                         self.ime = false;
                         self.invokeSuggestions(false);
                     });
-                } catch { }
+                } catch {}
                 $(text).on("blur", () => {
                     self.usesComposition = false;
                     self.ime = false;
@@ -988,7 +1016,7 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
                 if (!onUpload) {
                     try {
                         this.catLink.style.backgroundColor = HC.bg_changed;
-                    } catch { }
+                    } catch {}
                 }
             }
             checkMultiInput();
@@ -1066,7 +1094,7 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
                 this.cancel();
                 return false;
             }
-            if (!dontCheck && (conf.wgNamespaceNumber === 14 && v === conf.wgTitle || HC.blacklist && HC.blacklist.test(v))) {
+            if (!dontCheck && ((conf.wgNamespaceNumber === 14 && v === conf.wgTitle) || (HC.blacklist && HC.blacklist.test(v)))) {
                 this.cancel();
                 return false;
             }
@@ -1135,7 +1163,7 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
                 if (!onUpload) {
                     try {
                         this.catLink.style.backgroundColor = HC.bg_changed;
-                    } catch { }
+                    } catch {}
                 }
             }
             if (this.upDownLinks) {
@@ -1147,20 +1175,27 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
             forceRedraw();
         }
         commit() {
-            if (this.currentCategory === this.originalCategory && (this.currentKey === this.originalKey || this.currentKey === null && !this.originalKey.length) || conf.wgNamespaceNumber === 14 && this.currentCategory === conf.wgTitle || HC.blacklist && HC.blacklist.test(this.currentCategory)) {
+            if (
+                (this.currentCategory === this.originalCategory && (this.currentKey === this.originalKey || (this.currentKey === null && !this.originalKey.length))) ||
+                (conf.wgNamespaceNumber === 14 && this.currentCategory === conf.wgTitle) ||
+                (HC.blacklist && HC.blacklist.test(this.currentCategory))
+            ) {
                 this.cancel();
                 return;
             }
             this.close();
             if (!commitButton && !onUpload) {
                 const self = this;
-                initiateEdit((failure) => {
-                    performChanges(failure, self);
-                }, (msg) => {
-                    oouiDialog.alert(oouiDialog.sanitize(msg), {
-                        title: "HotCat 小工具",
-                    });
-                });
+                initiateEdit(
+                    (failure) => {
+                        performChanges(failure, self);
+                    },
+                    (msg) => {
+                        oouiDialog.alert(oouiDialog.sanitize(msg), {
+                            title: "HotCat 小工具",
+                        });
+                    },
+                );
             }
         }
         remove(evt) {
@@ -1185,7 +1220,7 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
                 this.catLink.style.cssText += "; text-decoration : line-through !important;";
                 try {
                     this.catLink.style.backgroundColor = HC.bg_changed;
-                } catch { }
+                } catch {}
                 this.originalState = this.state;
                 this.state = CategoryEditor.DELETED;
                 this.normalLinks.style.display = "none";
@@ -1199,14 +1234,17 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
                     this.state = CategoryEditor.DELETED;
                     this.noCommit = noCommit || HC.del_needs_diff;
                     const self = this;
-                    initiateEdit((failure) => {
-                        performChanges(failure, self);
-                    }, (msg) => {
-                        self.state = self.originalState;
-                        oouiDialog.alert(oouiDialog.sanitize(msg), {
-                            title: "HotCat 小工具",
-                        });
-                    });
+                    initiateEdit(
+                        (failure) => {
+                            performChanges(failure, self);
+                        },
+                        (msg) => {
+                            self.state = self.originalState;
+                            oouiDialog.alert(oouiDialog.sanitize(msg), {
+                                title: "HotCat 小工具",
+                            });
+                        },
+                    );
                 }
             }
         }
@@ -1219,7 +1257,7 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
             } else {
                 try {
                     this.catLink.style.backgroundColor = HC.bg_changed;
-                } catch { }
+                } catch {}
             }
             this.normalLinks.style.display = "";
             this.undelLink.style.display = "none";
@@ -1464,7 +1502,7 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
                     return 0;
                 });
                 for (i = 0; i < titles.length; i++) {
-                    if (i + 1 < titles.length && titles[i] === titles[i + 1] || conf.wgNamespaceNumber === 14 && titles[i] === conf.wgTitle) {
+                    if ((i + 1 < titles.length && titles[i] === titles[i + 1]) || (conf.wgNamespaceNumber === 14 && titles[i] === conf.wgTitle)) {
                         titles.splice(i, 1);
                         i--;
                     }
@@ -1543,7 +1581,7 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
             }
             let maxListHeight = listh;
             if (nofItems < HC.listSize) {
-                maxListHeight = listh / nofItems * HC.listSize;
+                maxListHeight = (listh / nofItems) * HC.listSize;
             }
             function viewport(what) {
                 if (is_webkit && !document.evaluate) {
@@ -1686,7 +1724,7 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
             return true;
         }
         canSelect() {
-            return this.text.setSelectionRange || this.text.createTextRange || this.text.selectionStart !== undefined && this.text.selectionEnd !== undefined;
+            return this.text.setSelectionRange || this.text.createTextRange || (this.text.selectionStart !== undefined && this.text.selectionEnd !== undefined);
         }
         setSelection(from, to) {
             if (!this.text.value) {
@@ -1911,7 +1949,9 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
             failure(...args);
         }
         try {
-            const json = await $.getJSON(`${conf.wgServer}${conf.wgScriptPath}/api.php?format=json&action=query&rawcontinue=&titles=${encodeURIComponent(conf.wgPageName)}&prop=info%7Crevisions%7Clanglinks&inprop=watched&rvprop=content%7Ctimestamp%7Cids%7Cuser&lllimit=500&rvlimit=2&rvdir=newer&rvstartid=${conf.wgCurRevisionId}&meta=siteinfo%7Cuserinfo%7Ctokens&type=csrf&uiprop=options`);
+            const json = await $.getJSON(
+                `${conf.wgServer}${conf.wgScriptPath}/api.php?format=json&action=query&rawcontinue=&titles=${encodeURIComponent(conf.wgPageName)}&prop=info%7Crevisions%7Clanglinks&inprop=watched&rvprop=content%7Ctimestamp%7Cids%7Cuser&lllimit=500&rvlimit=2&rvdir=newer&rvstartid=${conf.wgCurRevisionId}&meta=siteinfo%7Cuserinfo%7Ctokens&type=csrf&uiprop=options`,
+            );
             setPage(json);
             doEdit(fail);
         } catch (req) {
@@ -1950,7 +1990,10 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
             HC.messages.short_catchange = `[[${HC.category_canonical}:$1]]`;
         }
         let action;
-        const selfEditConflict = (lastRevId !== null && lastRevId !== conf.wgCurRevisionId || pageTextRevId !== null && pageTextRevId !== conf.wgCurRevisionId) && conflictingUser && conflictingUser === conf.wgUserName;
+        const selfEditConflict =
+            ((lastRevId !== null && lastRevId !== conf.wgCurRevisionId) || (pageTextRevId !== null && pageTextRevId !== conf.wgCurRevisionId)) &&
+            conflictingUser &&
+            conflictingUser === conf.wgUserName;
         if (singleEditor && !singleEditor.noCommit && !HC.no_autocommit && editToken && !selfEditConflict) {
             commitForm.wpEditToken.value = editToken;
             action = commitForm.wpDiff;
@@ -1973,7 +2016,8 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
             toEdit = singleEditor ? [singleEditor] : editors;
         let changes = 0,
             error = null,
-            edit, i;
+            edit,
+            i;
         for (i = 0; i < toEdit.length; i++) {
             edit = toEdit[i];
             if (edit.state === CategoryEditor.CHANGED) {
@@ -2008,7 +2052,7 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
             }
         }
         commitForm.wpMinoredit.checked = minorEdits;
-        commitForm.wpWatchthis.checked = !conf.wgArticleId && watchCreate || watchEdit || pageWatched;
+        commitForm.wpWatchthis.checked = (!conf.wgArticleId && watchCreate) || watchEdit || pageWatched;
         if (conf.wgArticleId || !!singleEditor) {
             if (action && action.value === "wpSave") {
                 if (HC.changeTag) {
@@ -2197,7 +2241,7 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
         } else {
             const expectedInput = which.lastRealInput || which.lastInput || "";
             const actualValue = which.text.value || "";
-            if (!expectedInput.length && actualValue.length || expectedInput.length && actualValue.indexOf(expectedInput)) {
+            if ((!expectedInput.length && actualValue.length) || (expectedInput.length && actualValue.indexOf(expectedInput))) {
                 which.showsList = false;
                 const v = actualValue.split("|");
                 which.lastRealInput = which.lastInput = v[0];
@@ -2241,13 +2285,16 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
             }
         }
         if (!toResolve.length) {
-            initiateEdit((failure) => {
-                performChanges(failure);
-            }, (msg) => {
-                oouiDialog.alert(oouiDialog.sanitize(msg), {
-                    title: "HotCat 小工具",
-                });
-            });
+            initiateEdit(
+                (failure) => {
+                    performChanges(failure);
+                },
+                (msg) => {
+                    oouiDialog.alert(oouiDialog.sanitize(msg), {
+                        title: "HotCat 小工具",
+                    });
+                },
+            );
             return;
         }
         resolveMulti(toResolve, (resolved) => {
@@ -2271,13 +2318,16 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
             if (firstDab) {
                 showDab(firstDab);
             } else if (!dontChange) {
-                initiateEdit((failure) => {
-                    performChanges(failure);
-                }, (msg) => {
-                    oouiDialog.alert(oouiDialog.sanitize(msg), {
-                        title: "HotCat 小工具",
-                    });
-                });
+                initiateEdit(
+                    (failure) => {
+                        performChanges(failure);
+                    },
+                    (msg) => {
+                        oouiDialog.alert(oouiDialog.sanitize(msg), {
+                            title: "HotCat 小工具",
+                        });
+                    },
+                );
             }
         });
     }
@@ -2466,8 +2516,20 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
         IME = 229;
     function initialize() {
         const config = window.JSconfig !== undefined && window.JSconfig.keys ? window.JSconfig.keys : {};
-        HC.dont_add_to_watchlist = window.hotcat_dont_add_to_watchlist !== undefined ? !!window.hotcat_dont_add_to_watchlist : config.HotCatDontAddToWatchlist !== undefined ? config.HotCatDontAddToWatchlist : HC.dont_add_to_watchlist;
-        HC.no_autocommit = window.hotcat_no_autocommit !== undefined ? !!window.hotcat_no_autocommit : config.HotCatNoAutoCommit !== undefined ? config.HotCatNoAutoCommit : conf.wgNamespaceNumber % 2 ? true : HC.no_autocommit;
+        HC.dont_add_to_watchlist =
+            window.hotcat_dont_add_to_watchlist !== undefined
+                ? !!window.hotcat_dont_add_to_watchlist
+                : config.HotCatDontAddToWatchlist !== undefined
+                  ? config.HotCatDontAddToWatchlist
+                  : HC.dont_add_to_watchlist;
+        HC.no_autocommit =
+            window.hotcat_no_autocommit !== undefined
+                ? !!window.hotcat_no_autocommit
+                : config.HotCatNoAutoCommit !== undefined
+                  ? config.HotCatNoAutoCommit
+                  : conf.wgNamespaceNumber % 2
+                    ? true
+                    : HC.no_autocommit;
         HC.del_needs_diff = window.hotcat_del_needs_diff !== undefined ? !!window.hotcat_del_needs_diff : config.HotCatDelNeedsDiff !== undefined ? config.HotCatDelNeedsDiff : HC.del_needs_diff;
         HC.suggest_delay = window.hotcat_suggestion_delay || config.HotCatSuggestionDelay || HC.suggest_delay;
         HC.editbox_width = window.hotcat_editbox_width || config.HotCatEditBoxWidth || HC.editbox_width;
@@ -2475,10 +2537,17 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
         if (typeof HC.suggestions !== "string" || !suggestionConfigs[HC.suggestions]) {
             HC.suggestions = "combined";
         }
-        HC.fixed_search = window.hotcat_suggestions_fixed !== undefined ? !!window.hotcat_suggestions_fixed : config.HotCatFixedSuggestions !== undefined ? config.HotCatFixedSuggestions : HC.fixed_search;
-        HC.single_minor = window.hotcat_single_changes_are_minor !== undefined ? !!window.hotcat_single_changes_are_minor : config.HotCatMinorSingleChanges !== undefined ? config.HotCatMinorSingleChanges : HC.single_minor;
+        HC.fixed_search =
+            window.hotcat_suggestions_fixed !== undefined ? !!window.hotcat_suggestions_fixed : config.HotCatFixedSuggestions !== undefined ? config.HotCatFixedSuggestions : HC.fixed_search;
+        HC.single_minor =
+            window.hotcat_single_changes_are_minor !== undefined
+                ? !!window.hotcat_single_changes_are_minor
+                : config.HotCatMinorSingleChanges !== undefined
+                  ? config.HotCatMinorSingleChanges
+                  : HC.single_minor;
         HC.bg_changed = window.hotcat_changed_background || config.HotCatChangedBackground || HC.bg_changed;
-        HC.use_up_down = window.hotcat_use_category_links !== undefined ? !!window.hotcat_use_category_links : config.HotCatUseCategoryLinks !== undefined ? config.HotCatUseCategoryLinks : HC.use_up_down;
+        HC.use_up_down =
+            window.hotcat_use_category_links !== undefined ? !!window.hotcat_use_category_links : config.HotCatUseCategoryLinks !== undefined ? config.HotCatUseCategoryLinks : HC.use_up_down;
         HC.listSize = window.hotcat_list_size || config.HotCatListSize || HC.listSize;
         if (conf.wgDBname !== "commonswiki") {
             HC.changeTag = config.HotCatChangeTag || "";
@@ -2543,15 +2612,17 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
                         }
                     });
                     const removeChangeTag = () => {
-                        $(eForm.wpTextbox1).add(sum).one("input", () => {
-                            window.setTimeout(() => {
-                                if (!isMinorChange()) {
-                                    $ct.val("");
-                                } else {
-                                    removeChangeTag();
-                                }
-                            }, 500);
-                        });
+                        $(eForm.wpTextbox1)
+                            .add(sum)
+                            .one("input", () => {
+                                window.setTimeout(() => {
+                                    if (!isMinorChange()) {
+                                        $ct.val("");
+                                    } else {
+                                        removeChangeTag();
+                                    }
+                                }, 500);
+                            });
                     };
                     removeChangeTag();
                 }
@@ -2643,7 +2714,7 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
         }
         const reupload = document.getElementById("wpForReUpload");
         const destFile = document.getElementById("wpDestFile");
-        if (reupload && !!reupload.value || destFile && (destFile.disabled || destFile.readOnly)) {
+        if ((reupload && !!reupload.value) || (destFile && (destFile.disabled || destFile.readOnly))) {
             return;
         }
         const labelCell = make("td");
@@ -2815,7 +2886,8 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
         if (is_rtl) {
             catLine.dir = "rtl";
         }
-        const chkCats = [], inpIndex = {};
+        const chkCats = [],
+            inpIndex = {};
         function createEditors(_line, is_hidden, has_hidden) {
             let line = _line;
             let i;
@@ -2855,7 +2927,7 @@ window.hotcat_translations_from_commons = false; // 禁止从维基共享获取�
                     inpIndex[normalized] = i;
                 }
             }
-            if (chkCats.length && (!is_hidden && !has_hidden || is_hidden)) {
+            if (chkCats.length && ((!is_hidden && !has_hidden) || is_hidden)) {
                 const arg_titles = chkCats.join("|");
                 $.getJSON(`${conf.wgServer}${conf.wgScriptPath}/api.php?action=query&format=json&titles=${encodeURIComponent(arg_titles)}&redirects=1&converttitles=1`, (json) => {
                     let converted = json.query.converted;

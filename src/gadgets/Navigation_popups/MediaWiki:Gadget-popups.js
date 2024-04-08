@@ -72,7 +72,7 @@ $(() => {
         "Toggle image size": wgULS("点击切换图片大小", "點擊切換圖片大小"),
         del: wgULS("删除", "删除"),
         // delete, protect, move
-        "delete": wgULS("删除", "删除"),
+        delete: wgULS("删除", "删除"),
         deleteHint: wgULS("删除 %s", "删除 %s"),
         undeleteShort: wgULS("恢复", "恢復"),
         UndeleteHint: wgULS("恢复 %s", "恢復 %s"),
@@ -88,7 +88,7 @@ $(() => {
         "edit article": wgULS("编辑条目", "編輯條目"),
         editHint: wgULS("修改 %s 的内容", "修改 %s 的內容"),
         "edit talk": wgULS("编辑讨论页", "編輯對話頁", null, null, "編輯討論頁"),
-        "new": wgULS("新", "新"),
+        new: wgULS("新", "新"),
         "new topic": wgULS("新话题", "新話題"),
         newSectionHint: wgULS("在 %s 增加新的讨论话题", "在 %s 增加新的討論話題"),
         "null edit": wgULS("空编辑", "空編輯"),
@@ -141,7 +141,10 @@ $(() => {
         defaultpopupExtendedRevertSummary: wgULS("回退到$2在$1时编辑的修订版本$3 ——[[Help:Popups小工具|Popups]]", "還原到$2在$1時製作的修訂版本$3 ——[[Help:Popups小工具|Popups]]"),
         defaultpopupRevertToPreviousSummary: wgULS("回退到修订版本%s的上一个版本 ——[[Help:Popups小工具|Popups]]", "還原到修訂版本%s的上一個版本 ——[[Help:Popups小工具|Popups]]"),
         defaultpopupRevertSummary: wgULS("回退到修订版本%s ——[[Help:Popups小工具|Popups]]", "還原到修訂版本%s ——[[Help:Popups小工具|Popups]]"),
-        defaultpopupQueriedRevertToPreviousSummary: wgULS("回退到修订版本$1的上一个版本，由$3在$2时编辑 ——[[Help:Popups小工具|Popups]]", "還原到修訂版本$1的上一個版本，由$3在$2時製作 ——[[Help:Popups小工具|Popups]]"),
+        defaultpopupQueriedRevertToPreviousSummary: wgULS(
+            "回退到修订版本$1的上一个版本，由$3在$2时编辑 ——[[Help:Popups小工具|Popups]]",
+            "還原到修訂版本$1的上一個版本，由$3在$2時製作 ——[[Help:Popups小工具|Popups]]",
+        ),
         defaultpopupQueriedRevertSummary: wgULS("回退到$3在$2时编辑的修订版本$1 ——[[Help:Popups小工具|Popups]]", "還原到$3在$2時製作的修訂版本$1 ——[[Help:Popups小工具|Popups]]"),
         defaultpopupRmDabLinkSummary: wgULS("移除到消歧义页[[%s]]的链接 ——[[Help:Popups小工具|Popups]]", "移除到消歧義頁[[%s]]的連結 ——[[Help:Popups小工具|Popups]]"),
         Redirects: wgULS("重定向", "重定向"),
@@ -342,9 +345,14 @@ $(() => {
     }
     function defaultPopupsContainer() {
         if (getValueOf("popupOnlyArticleLinks")) {
-            return document.querySelector(".skin-vector-2022 .vector-body") || document.getElementById("mw_content") || document.getElementById("content") || document.getElementById("article")
-                || document.getElementsByTagName("article")?.[0] // moeskin
-                || document;
+            return (
+                document.querySelector(".skin-vector-2022 .vector-body") ||
+                document.getElementById("mw_content") ||
+                document.getElementById("content") ||
+                document.getElementById("article") ||
+                document.getElementsByTagName("article")?.[0] || // moeskin
+                document
+            );
         }
         return document;
     }
@@ -495,7 +503,7 @@ $(() => {
             return true;
         }
         const action = getValueOf("popupModifierAction");
-        return action === "enable" && modifierPressed(evt) || action === "disable" && !modifierPressed(evt);
+        return (action === "enable" && modifierPressed(evt)) || (action === "disable" && !modifierPressed(evt));
     }
     function mouseOverWikiLink2(a, evt) {
         if (!isCorrectModifier(a, evt)) {
@@ -679,10 +687,15 @@ $(() => {
             insertPreviewNow(download);
         } else {
             const id = download.owner.redir ? "PREVIEW_REDIR_HOOK" : "PREVIEW_HOOK";
-            download.owner.addHook(() => {
-                insertPreviewNow(download);
-                return true;
-            }, "unhide", "after", id);
+            download.owner.addHook(
+                () => {
+                    insertPreviewNow(download);
+                    return true;
+                },
+                "unhide",
+                "after",
+                id,
+            );
         }
     }
     function insertPreviewNow(download) {
@@ -731,14 +744,19 @@ $(() => {
         if (!anch) {
             return d;
         }
-        const anchRe = RegExp(`(?:=+\\s*${literalizeRegex(anch).replace(/[_ ]/g, "[_ ]")}\\s*=+|\\{\\{\\s*${getValueOf("popupAnchorRegexp")}\\s*(?:\\|[^|}]*)*?\\s*${literalizeRegex(anch)}\\s*(?:\\|[^}]*)?}})`);
+        const anchRe = RegExp(
+            `(?:=+\\s*${literalizeRegex(anch).replace(/[_ ]/g, "[_ ]")}\\s*=+|\\{\\{\\s*${getValueOf("popupAnchorRegexp")}\\s*(?:\\|[^|}]*)*?\\s*${literalizeRegex(anch)}\\s*(?:\\|[^}]*)?}})`,
+        );
         const match = d.match(anchRe);
         if (match && match.length > 0 && match[0]) {
             return d.substring(d.indexOf(match[0]));
         }
         const lines = d.split("\n");
         for (let i = 0; i < lines.length; ++i) {
-            lines[i] = lines[i].replace(RegExp("[[]{2}([^|\\]]*?[|])?(.*?)[\\]]{2}", "g"), "$2").replace(/'''([^'])/g, "$1").replace(RegExp("''([^'])", "g"), "$1");
+            lines[i] = lines[i]
+                .replace(RegExp("[[]{2}([^|\\]]*?[|])?(.*?)[\\]]{2}", "g"), "$2")
+                .replace(/'''([^'])/g, "$1")
+                .replace(RegExp("''([^'])", "g"), "$1");
             if (lines[i].match(anchRe)) {
                 return d.split("\n").slice(i).join("\n").replace(RegExp("^[^=]*"), "");
             }
@@ -797,9 +815,9 @@ $(() => {
             if (isNaN(parseInt(o.root.style.top, 10))) {
                 o.root.style.top = "0px";
             }
-            o.root.onthisStart = function () { };
-            o.root.onthisEnd = function () { };
-            o.root.onthis = function () { };
+            o.root.onthisStart = function () {};
+            o.root.onthisEnd = function () {};
+            o.root.onthis = function () {};
         }
         start(_e) {
             let e = _e;
@@ -852,7 +870,25 @@ $(() => {
     }
     pg.structures.original = {};
     pg.structures.original.popupLayout = function () {
-        return ["popupError", "popupImage", "popupTopLinks", "popupTitle", "popupUserData", "popupData", "popupOtherLinks", "popupRedir", ["popupWarnRedir", "popupRedirTopLinks", "popupRedirTitle", "popupRedirData", "popupRedirOtherLinks"], "popupMiscTools", ["popupRedlink"], "popupPrePreviewSep", "popupPreview", "popupSecondPreview", "popupPreviewMore", "popupPostPreview", "popupFixDab"];
+        return [
+            "popupError",
+            "popupImage",
+            "popupTopLinks",
+            "popupTitle",
+            "popupUserData",
+            "popupData",
+            "popupOtherLinks",
+            "popupRedir",
+            ["popupWarnRedir", "popupRedirTopLinks", "popupRedirTitle", "popupRedirData", "popupRedirOtherLinks"],
+            "popupMiscTools",
+            ["popupRedlink"],
+            "popupPrePreviewSep",
+            "popupPreview",
+            "popupSecondPreview",
+            "popupPreviewMore",
+            "popupPostPreview",
+            "popupFixDab",
+        ];
     };
     pg.structures.original.popupRedirSpans = function () {
         return ["popupRedir", "popupWarnRedir", "popupRedirTopLinks", "popupRedirTitle", "popupRedirData", "popupRedirOtherLinks"];
@@ -909,7 +945,11 @@ $(() => {
         const hist = "<<history|shortcut=h|hist>>|<<lastEdit|shortcut=/|last>>|<<editors|shortcut=E|eds>>";
         const watch = "<<unwatch|unwatchShort>>|<<watch|shortcut=w|watchThingy>>";
         const move = "<<move|shortcut=m|move>>";
-        return navlinkStringToHTML(`if(talk){<<edit|shortcut=e>>|<<new|shortcut=+|+>>*${hist}*<<article|shortcut=a>>|<<editArticle|edit>>*${watch}*${move}}else{<<edit|shortcut=e>>*${hist}*<<talk|shortcut=t|>>|<<editTalk|edit>>|<<newTalk|shortcut=+|new>>*${watch}*${move}}<br>`, x.article, x.params);
+        return navlinkStringToHTML(
+            `if(talk){<<edit|shortcut=e>>|<<new|shortcut=+|+>>*${hist}*<<article|shortcut=a>>|<<editArticle|edit>>*${watch}*${move}}else{<<edit|shortcut=e>>*${hist}*<<talk|shortcut=t|>>|<<editTalk|edit>>|<<newTalk|shortcut=+|new>>*${watch}*${move}}<br>`,
+            x.article,
+            x.params,
+        );
     };
     pg.structures.fancy.popupOtherLinks = function (x) {
         const admin = "<<unprotect|unprotectShort>>|<<protect|shortcut=p>>*<<undelete|undeleteShort>>|<<delete|shortcut=d|del>>";
@@ -926,11 +966,47 @@ $(() => {
         return `<br>${pg.structures.fancy.popupTopLinks(x).replace(RegExp("<br>$", "i"), "")}`;
     };
     pg.structures.fancy2.popupLayout = function () {
-        return ["popupError", "popupImage", "popupTitle", "popupUserData", "popupData", "popupTopLinks", "popupOtherLinks", "popupRedir", ["popupWarnRedir", "popupRedirTopLinks", "popupRedirTitle", "popupRedirData", "popupRedirOtherLinks"], "popupMiscTools", ["popupRedlink"], "popupPrePreviewSep", "popupPreview", "popupSecondPreview", "popupPreviewMore", "popupPostPreview", "popupFixDab"];
+        return [
+            "popupError",
+            "popupImage",
+            "popupTitle",
+            "popupUserData",
+            "popupData",
+            "popupTopLinks",
+            "popupOtherLinks",
+            "popupRedir",
+            ["popupWarnRedir", "popupRedirTopLinks", "popupRedirTitle", "popupRedirData", "popupRedirOtherLinks"],
+            "popupMiscTools",
+            ["popupRedlink"],
+            "popupPrePreviewSep",
+            "popupPreview",
+            "popupSecondPreview",
+            "popupPreviewMore",
+            "popupPostPreview",
+            "popupFixDab",
+        ];
     };
     copyStructure("original", "menus");
     pg.structures.menus.popupLayout = function () {
-        return ["popupError", "popupImage", "popupTopLinks", "popupTitle", "popupOtherLinks", "popupRedir", ["popupWarnRedir", "popupRedirTopLinks", "popupRedirTitle", "popupRedirData", "popupRedirOtherLinks"], "popupUserData", "popupData", "popupMiscTools", ["popupRedlink"], "popupPrePreviewSep", "popupPreview", "popupSecondPreview", "popupPreviewMore", "popupPostPreview", "popupFixDab"];
+        return [
+            "popupError",
+            "popupImage",
+            "popupTopLinks",
+            "popupTitle",
+            "popupOtherLinks",
+            "popupRedir",
+            ["popupWarnRedir", "popupRedirTopLinks", "popupRedirTitle", "popupRedirData", "popupRedirOtherLinks"],
+            "popupUserData",
+            "popupData",
+            "popupMiscTools",
+            ["popupRedlink"],
+            "popupPrePreviewSep",
+            "popupPreview",
+            "popupSecondPreview",
+            "popupPreviewMore",
+            "popupPostPreview",
+            "popupFixDab",
+        ];
     };
     pg.structures.menus.popupTopLinks = function (x, shorter) {
         const s = [];
@@ -974,7 +1050,9 @@ $(() => {
             s.push(viewOptions);
         }
         s.push(`<hr />${watch}${protectDelete}`);
-        s.push(`<hr />if(talk){<<article|shortcut=a|view article>><<editArticle|edit article>>}else{<<talk|shortcut=t|talk page>><<editTalk|edit talk>><<newTalk|shortcut=+|new topic>>}</menu>${enddiv}`);
+        s.push(
+            `<hr />if(talk){<<article|shortcut=a|view article>><<editArticle|edit article>>}else{<<talk|shortcut=t|talk page>><<editTalk|edit talk>><<newTalk|shortcut=+|new topic>>}</menu>${enddiv}`,
+        );
         const email = "<<email|shortcut=E|email user>>";
         const contribs = "if(wikimedia){<menurow>}<<contribs|shortcut=c|contributions>>if(wikimedia){</menurow>}if(admin){<menurow><<deletedContribs>></menurow>}";
         s.push(`if(user){*${dropdiv}${menuTitle("user")}`);
@@ -1253,7 +1331,10 @@ $(() => {
         try {
             const o = getJsObj(json);
             const edit = anyChild(o.query.pages).revisions[0];
-            const timestamp = edit.timestamp.split(/[A-Z]/g).join(" ").replace(/^ *| *$/g, "");
+            const timestamp = edit.timestamp
+                .split(/[A-Z]/g)
+                .join(" ")
+                .replace(/^ *| *$/g, "");
             return simplePrintf(template, [edit.revid, timestamp, edit.userhidden ? "(hidden)" : edit.user]);
         } catch (badness) {
             return false;
@@ -1319,7 +1400,7 @@ $(() => {
             let lastmod = null;
             try {
                 lastmod = this.http.getResponseHeader("Last-Modified");
-            } catch { }
+            } catch {}
             if (lastmod) {
                 return new Date(lastmod);
             }
@@ -1365,7 +1446,7 @@ $(() => {
                     } else if (typeof onfailure === "function") {
                         onfailure(d, url, id, callback);
                     }
-                } catch { }
+                } catch {}
             }
         };
         d.setCallback(f);
@@ -1393,7 +1474,7 @@ $(() => {
                 pg.misc.downloadsInProgress[x].aborted = true;
                 pg.misc.downloadsInProgress[x].abort();
                 Reflect.deleteProperty(pg.misc.downloadsInProgress, x);
-            } catch { }
+            } catch {}
         }
     }
     const Insta = {};
@@ -1424,7 +1505,8 @@ $(() => {
         Insta.BLOCK_IMAGE = new RegExp(`^\\[\\[(?:File|Image|${Insta.conf.locale.image}):.*?\\|.*?(?:frame|thumbnail|thumb|none|right|left|center)`, "i");
     }
     Insta.dump = function (_from, _to) {
-        let from = _from, to = _to;
+        let from = _from,
+            to = _to;
         if (typeof from === "string") {
             from = document.getElementById(from);
         }
@@ -1451,7 +1533,8 @@ $(() => {
             let i = 1,
                 f = a[0],
                 o = "",
-                c, p;
+                c,
+                p;
             for (; i < a.length; i++) {
                 if ((p = f.indexOf("?")) + 1) {
                     i -= c = f.charAt(p + 1) === "?" ? 1 : 0;
@@ -1483,7 +1566,7 @@ $(() => {
             return i;
         }
         function compareLineStringOrReg(c) {
-            return typeof c === "string" ? ll[0] && ll[0].substr(0, c.length) === c : r = ll[0] && ll[0].match(c);
+            return typeof c === "string" ? ll[0] && ll[0].substr(0, c.length) === c : (r = ll[0] && ll[0].match(c));
         }
         function compareLineString(c) {
             return ll[0] === c;
@@ -1650,10 +1733,13 @@ $(() => {
             return "";
         }
         function parse_inline_nowiki(str) {
-            let start, lastend = 0;
+            let start,
+                lastend = 0;
             let substart = 0,
                 nestlev = 0,
-                open, close, subloop;
+                open,
+                close,
+                subloop;
             let html = "";
             while (-1 !== (start = str.indexOf("<nowiki>", substart))) {
                 html += parse_inline_wiki(str.substring(lastend, start));
@@ -1685,7 +1771,8 @@ $(() => {
         }
         function parse_inline_images(_str) {
             let str = _str;
-            let start, substart = 0,
+            let start,
+                substart = 0,
                 nestlev = 0;
             let loop, close, open, wiki, html;
             while (-1 !== (start = str.indexOf("[[", substart))) {
@@ -1722,7 +1809,11 @@ $(() => {
             return str;
         }
         function parse_inline_formatting(str) {
-            let em, st, i, li, o = "";
+            let em,
+                st,
+                i,
+                li,
+                o = "";
             while ((i = str.indexOf("''", li)) + 1) {
                 o += str.substring(li, i);
                 li = i + 2;
@@ -1748,20 +1839,44 @@ $(() => {
             }
             date = f("?:?, ? ? ? (UTC)", date.getUTCHours(), minutes, date.getUTCDate(), Insta.conf.locale.months[date.getUTCMonth()], date.getUTCFullYear());
             str = str
-                .replace(/~{5}(?!~)/g, date).replace(/~{4}(?!~)/g, `${Insta.conf.user.name} ${date}`).replace(/~{3}(?!~)/g, Insta.conf.user.name)
-                .replace(RegExp(`\\[\\[:((?:${Insta.conf.locale.category}|Image|File|${Insta.conf.locale.image}|${Insta.conf.wiki.interwiki}):[^|]*?)\\]\\](\\w*)`, "gi"), ($0, $1, $2) => f("<a href='?'>?</a>", Insta.conf.paths.articles + htmlescape_attr($1), htmlescape_text($1) + htmlescape_text($2)))
+                .replace(/~{5}(?!~)/g, date)
+                .replace(/~{4}(?!~)/g, `${Insta.conf.user.name} ${date}`)
+                .replace(/~{3}(?!~)/g, Insta.conf.user.name)
+                .replace(RegExp(`\\[\\[:((?:${Insta.conf.locale.category}|Image|File|${Insta.conf.locale.image}|${Insta.conf.wiki.interwiki}):[^|]*?)\\]\\](\\w*)`, "gi"), ($0, $1, $2) =>
+                    f("<a href='?'>?</a>", Insta.conf.paths.articles + htmlescape_attr($1), htmlescape_text($1) + htmlescape_text($2)),
+                )
                 .replace(RegExp(`\\[\\[(?:${Insta.conf.locale.category}|${Insta.conf.wiki.interwiki}):.*?\\]\\]`, "gi"), "")
-                .replace(RegExp(`\\[\\[:((?:${Insta.conf.locale.category}|Image|File|${Insta.conf.locale.image}|${Insta.conf.wiki.interwiki}):.*?)\\|([^\\]]+?)\\]\\](\\w*)`, "gi"), ($0, $1, $2, $3) => f("<a href='?'>?</a>", Insta.conf.paths.articles + htmlescape_attr($1), htmlescape_text($2) + htmlescape_text($3)))
+                .replace(RegExp(`\\[\\[:((?:${Insta.conf.locale.category}|Image|File|${Insta.conf.locale.image}|${Insta.conf.wiki.interwiki}):.*?)\\|([^\\]]+?)\\]\\](\\w*)`, "gi"), ($0, $1, $2, $3) =>
+                    f("<a href='?'>?</a>", Insta.conf.paths.articles + htmlescape_attr($1), htmlescape_text($2) + htmlescape_text($3)),
+                )
                 .replace(/\[\[(\/[^|]*?)\]\]/g, ($0, $1) => f("<a href='?'>?</a>", Insta.conf.baseUrl + htmlescape_attr($1), htmlescape_text($1)))
                 .replace(/\[\[(\/.*?)\|(.+?)\]\]/g, ($0, $1, $2) => f("<a href='?'>?</a>", Insta.conf.baseUrl + htmlescape_attr($1), htmlescape_text($2)))
                 .replace(/\[\[([^[|]*?)\]\](\w*)/g, ($0, $1, $2) => f("<a href='?'>?</a>", Insta.conf.paths.articles + htmlescape_attr($1), htmlescape_text($1) + htmlescape_text($2)))
                 .replace(/\[\[([^[]*?)\|([^\]]+?)\]\](\w*)/g, ($0, $1, $2, $3) => f("<a href='?'>?</a>", Insta.conf.paths.articles + htmlescape_attr($1), htmlescape_text($2) + htmlescape_text($3)))
-                .replace(/\[\[([^\]]*?:)?(.*?)( *\(.*?\))?\|\]\]/g, ($0, $1, $2, $3) => f("<a href='?'>?</a>", Insta.conf.paths.articles + htmlescape_attr($1) + htmlescape_attr($2) + htmlescape_attr($3), htmlescape_text($2)))
-                .replace(/\[(https?|news|ftp|mailto|gopher|irc):(\/*)([^\]]*?) (.*?)\]/g, ($0, $1, $2, $3, $4) => f("<a class='external' href='?:?'>?</a>", htmlescape_attr($1), htmlescape_attr($2) + htmlescape_attr($3), htmlescape_text($4)))
+                .replace(/\[\[([^\]]*?:)?(.*?)( *\(.*?\))?\|\]\]/g, ($0, $1, $2, $3) =>
+                    f("<a href='?'>?</a>", Insta.conf.paths.articles + htmlescape_attr($1) + htmlescape_attr($2) + htmlescape_attr($3), htmlescape_text($2)),
+                )
+                .replace(/\[(https?|news|ftp|mailto|gopher|irc):(\/*)([^\]]*?) (.*?)\]/g, ($0, $1, $2, $3, $4) =>
+                    f("<a class='external' href='?:?'>?</a>", htmlescape_attr($1), htmlescape_attr($2) + htmlescape_attr($3), htmlescape_text($4)),
+                )
                 .replace(/\[http:\/\/(.*?)\]/g, ($0, $1) => f("<a class='external' href='http://?'>[#]</a>", htmlescape_attr($1)))
-                .replace(/\[(news|ftp|mailto|gopher|irc):(\/*)(.*?)\]/g, ($0, $1, $2, $3) => f("<a class='external' href='?:?'>?:?</a>", htmlescape_attr($1), htmlescape_attr($2) + htmlescape_attr($3), htmlescape_text($1), htmlescape_text($2) + htmlescape_text($3)))
-                .replace(/(^| )(https?|news|ftp|mailto|gopher|irc):(\/*)([^ $]*[^.,!?;: $])/g, ($0, $1, $2, $3, $4) => f("?<a class='external' href='?:?'>?:?</a>", htmlescape_text($1), htmlescape_attr($2), htmlescape_attr($3) + htmlescape_attr($4), htmlescape_text($2), htmlescape_text($3) + htmlescape_text($4)))
-                .replace("__NOTOC__", "").replace("__NOINDEX__", "").replace("__INDEX__", "").replace("__NOEDITSECTION__", "");
+                .replace(/\[(news|ftp|mailto|gopher|irc):(\/*)(.*?)\]/g, ($0, $1, $2, $3) =>
+                    f("<a class='external' href='?:?'>?:?</a>", htmlescape_attr($1), htmlescape_attr($2) + htmlescape_attr($3), htmlescape_text($1), htmlescape_text($2) + htmlescape_text($3)),
+                )
+                .replace(/(^| )(https?|news|ftp|mailto|gopher|irc):(\/*)([^ $]*[^.,!?;: $])/g, ($0, $1, $2, $3, $4) =>
+                    f(
+                        "?<a class='external' href='?:?'>?:?</a>",
+                        htmlescape_text($1),
+                        htmlescape_attr($2),
+                        htmlescape_attr($3) + htmlescape_attr($4),
+                        htmlescape_text($2),
+                        htmlescape_text($3) + htmlescape_text($4),
+                    ),
+                )
+                .replace("__NOTOC__", "")
+                .replace("__NOINDEX__", "")
+                .replace("__INDEX__", "")
+                .replace("__NOEDITSECTION__", "");
             return parse_inline_formatting(str);
         }
         while (remain()) {
@@ -2008,7 +2123,7 @@ $(() => {
                 value = split[j].split(".").join("%");
                 try {
                     value = decodeURIComponent(value);
-                } catch { }
+                } catch {}
                 split[j] = value.split("_").join(" ");
             }
             return split.join("");
@@ -2646,16 +2761,18 @@ $(() => {
             }
             ret[meth](retargetDab(wikTarget, oldTarget, friendlyCurrentArticleName, titleToEdit));
         }
-        ret.push(changeLinkTargetLink({
-            newTarget: null,
-            text: popupString("remove this link").split(" ").join("&nbsp;"),
-            hint: popupString("remove all links to this disambig page from this article"),
-            clickButton: getValueOf("popupDabsAutoClick"),
-            oldTarget: oldTarget,
-            summary: simplePrintf(getValueOf("popupRmDabLinkSummary"), [friendlyCurrentArticleName]),
-            watch: getValueOf("popupWatchDisambiggedPages"),
-            title: titleToEdit,
-        }));
+        ret.push(
+            changeLinkTargetLink({
+                newTarget: null,
+                text: popupString("remove this link").split(" ").join("&nbsp;"),
+                hint: popupString("remove all links to this disambig page from this article"),
+                clickButton: getValueOf("popupDabsAutoClick"),
+                oldTarget: oldTarget,
+                summary: simplePrintf(getValueOf("popupRmDabLinkSummary"), [friendlyCurrentArticleName]),
+                watch: getValueOf("popupWatchDisambiggedPages"),
+                title: titleToEdit,
+            }),
+        );
         return ret;
     }
     function rmDupesFromSortedList(list) {
@@ -2729,7 +2846,8 @@ $(() => {
             redir = false;
         }
         const a = args.navpopup.parentAnchor;
-        let article, hint = null,
+        let article,
+            hint = null,
             oldid = null,
             params = {};
         if (redir && typeof args.redirTarget === typeof {}) {
@@ -2759,7 +2877,7 @@ $(() => {
         const redirs = pg.misc.redirSpans;
         for (let i = 0; i < numspans; ++i) {
             const found = redirs && redirs.indexOf(spans[i]) !== -1;
-            if (found && !redir || !found && redir) {
+            if ((found && !redir) || (!found && redir)) {
                 continue;
             }
             const structurefn = structure[spans[i]];
@@ -2939,9 +3057,13 @@ $(() => {
     function runStopPopupTimer(navpop) {
         if (!navpop.stopPopupTimer) {
             navpop.stopPopupTimer = setInterval(posCheckerHook(navpop), 500);
-            navpop.addHook(() => {
-                clearInterval(navpop.stopPopupTimer);
-            }, "hide", "before");
+            navpop.addHook(
+                () => {
+                    clearInterval(navpop.stopPopupTimer);
+                },
+                "hide",
+                "before",
+            );
         }
     }
     class Previewmaker {
@@ -3325,14 +3447,16 @@ $(() => {
         }
     }
     function linkList(list) {
-        list.sort((x, y) => x === y ? 0 : x < y ? -1 : 1);
+        list.sort((x, y) => (x === y ? 0 : x < y ? -1 : 1));
         const buf = [];
         for (let i = 0; i < list.length; ++i) {
-            buf.push(wikiLink({
-                article: new Title(list[i]),
-                text: list[i].split(" ").join("&nbsp;"),
-                action: "view",
-            }));
+            buf.push(
+                wikiLink({
+                    article: new Title(list[i]),
+                    text: list[i].split(" ").join("&nbsp;"),
+                    action: "view",
+                }),
+            );
         }
         return buf.join(popupString("separator"));
     }
@@ -3474,9 +3598,11 @@ $(() => {
         return new Date(+d + o);
     }
     function convertTimeZone(date, timeZone) {
-        return new Date(date.toLocaleString("en-US", {
-            timeZone: timeZone,
-        }));
+        return new Date(
+            date.toLocaleString("en-US", {
+                timeZone: timeZone,
+            }),
+        );
     }
     function formattedDateTime(date) {
         if (useTimeOffset()) {
@@ -3609,7 +3735,7 @@ $(() => {
             let alt = "";
             try {
                 alt = navpop.parentAnchor.childNodes[0].alt;
-            } catch { }
+            } catch {}
             if (alt) {
                 ret = `${ret}<hr /><b>${popupString("Alt text:")}</b> ${pg.escapeQuotesHTML(alt)}`;
             }
@@ -4011,10 +4137,10 @@ $(() => {
         const open = sel.indexOf("[[");
         const pipe = sel.indexOf("|");
         const close = sel.indexOf("]]");
-        if (open === -1 || pipe === -1 && close === -1) {
+        if (open === -1 || (pipe === -1 && close === -1)) {
             return;
         }
-        if (pipe !== -1 && open > pipe || close !== -1 && open > close) {
+        if ((pipe !== -1 && open > pipe) || (close !== -1 && open > close)) {
             return;
         }
         const article = new Title(sel.substring(open + 2, pipe < 0 ? close : pipe));
@@ -4028,9 +4154,13 @@ $(() => {
         a.href = pg.wiki.titlebase + article.urlString();
         mouseOverWikiLink2(a);
         if (a.navpopup) {
-            a.navpopup.addHook(() => {
-                runStopPopupTimer(a.navpopup);
-            }, "unhide", "after");
+            a.navpopup.addHook(
+                () => {
+                    runStopPopupTimer(a.navpopup);
+                },
+                "unhide",
+                "after",
+            );
         }
     }
     function doSeparateSelectionPopup(str) {
@@ -4064,7 +4194,9 @@ $(() => {
             }
             let remove = false;
             const removeObj = {};
-            const x = this.x, y = this.y, len = this.hooks.length;
+            const x = this.x,
+                y = this.y,
+                len = this.hooks.length;
             for (let i = 0; i < len; ++i) {
                 if (this.hooks[i](x, y) === true) {
                     remove = true;
@@ -4216,7 +4348,7 @@ $(() => {
             const x = this.left;
             const w = this.width;
             const cWidth = document.body.clientWidth;
-            if (x + w >= cWidth || x > 0 && this.maxWidth && this.width < this.maxWidth && this.height > this.width && x > cWidth - this.maxWidth) {
+            if (x + w >= cWidth || (x > 0 && this.maxWidth && this.width < this.maxWidth && this.height > this.width && x > cWidth - this.maxWidth)) {
                 this.mainDiv.style.left = "-10000px";
                 this.mainDiv.style.width = `${this.maxWidth}px`;
                 const naturalWidth = parseInt(this.mainDiv.offsetWidth, 10);
@@ -4251,8 +4383,10 @@ $(() => {
             this.stable_y = -1e4;
             const stableShow = () => {
                 log("stableShow called");
-                const new_x = Navpopup.tracker.x, new_y = Navpopup.tracker.y;
-                const dx = this.stable_x - new_x, dy = this.stable_y - new_y;
+                const new_x = Navpopup.tracker.x,
+                    new_y = Navpopup.tracker.y;
+                const dx = this.stable_x - new_x,
+                    dy = this.stable_y - new_y;
                 const fuzz2 = 0;
                 if (dx * dx <= fuzz2 && dy * dy <= fuzz2) {
                     log("mouse is stable");
@@ -4687,11 +4821,16 @@ $(() => {
             }
         });
         const im = nsReImage();
-        pg.re.image = RegExp(`(^|\\[\\[)${im}: *([^|\\]]*[^|\\] ])([^0-9\\]]*([0-9]+) *px)?|(?:\\n *[|]?|[|]) *(${getValueOf("popupImageVarsRegexp")}) *= *(?:\\[\\[ *)?(?:${im}:)?([^|]*?)(?:\\]\\])? *[|]? *\\n`, "img");
+        pg.re.image = RegExp(
+            `(^|\\[\\[)${im}: *([^|\\]]*[^|\\] ])([^0-9\\]]*([0-9]+) *px)?|(?:\\n *[|]?|[|]) *(${getValueOf("popupImageVarsRegexp")}) *= *(?:\\[\\[ *)?(?:${im}:)?([^|]*?)(?:\\]\\])? *[|]? *\\n`,
+            "img",
+        );
         pg.re.imageBracketCount = 6;
         pg.re.category = RegExp(`\\[\\[${nsRe(pg.nsCategoryId)}: *([^|\\]]*[^|\\] ]) *`, "i");
         pg.re.categoryBracketCount = 1;
-        pg.re.ipUser = RegExp("^(?::(?::|(?::[0-9A-Fa-f]{1,4}){1,7})|[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4}){0,6}::|[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4}){7})|(((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9]))$");
+        pg.re.ipUser = RegExp(
+            "^(?::(?::|(?::[0-9A-Fa-f]{1,4}){1,7})|[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4}){0,6}::|[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4}){7})|(((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9]))$",
+        );
         pg.re.stub = RegExp(getValueOf("popupStubRegexp"), "im");
         pg.re.disambig = RegExp(getValueOf("popupDabRegexp"), "im");
         pg.re.oldid = RegExp("[?&]oldid=([^&]*)");
@@ -4708,19 +4847,24 @@ $(() => {
         pg.timer.checkPopupPosition = null;
         pg.counter.loop = 0;
         pg.idNumber = 0;
-        pg.misc.decodeExtras = [{
-            from: "%2C",
-            to: ",",
-        }, {
-            from: "_",
-            to: " ",
-        }, {
-            from: "%24",
-            to: "$",
-        }, {
-            from: "%26",
-            to: "&",
-        }];
+        pg.misc.decodeExtras = [
+            {
+                from: "%2C",
+                to: ",",
+            },
+            {
+                from: "_",
+                to: " ",
+            },
+            {
+                from: "%24",
+                to: "$",
+            },
+            {
+                from: "%26",
+                to: "&",
+            },
+        ];
     }
     function getMwApi() {
         if (!pg.api.client) {
@@ -4904,7 +5048,17 @@ $(() => {
         return ret;
     }
     function navlinkSubstituteHTML(s) {
-        return s.split("*").join(getValueOf("popupNavLinkSeparator")).split("<menurow>").join('<li class="popup_menu_row">').split("</menurow>").join("</li>").split("<menu>").join('<ul class="popup_menu">').split("</menu>").join("</ul>");
+        return s
+            .split("*")
+            .join(getValueOf("popupNavLinkSeparator"))
+            .split("<menurow>")
+            .join('<li class="popup_menu_row">')
+            .split("</menurow>")
+            .join("</li>")
+            .split("<menu>")
+            .join('<ul class="popup_menu">')
+            .split("</menu>")
+            .join("</ul>");
     }
     function navlinkDepth(magic, s) {
         return s.split(`<${magic}>`).length - s.split(`</${magic}>`).length;
@@ -5305,7 +5459,7 @@ $(() => {
                 return;
             }
             document.onkeypress = document.oldPopupOnkeypress;
-        } catch { }
+        } catch {}
     }
     function addLinkProperty(html, property) {
         const i = html.indexOf(">");
@@ -5403,7 +5557,7 @@ $(() => {
         };
         const data = await getMwApi().get(params);
 
-        const stable_revid = data.query.pages[0].flagged && data.query.pages[0].flagged.stable_revid || 0;
+        const stable_revid = (data.query.pages[0].flagged && data.query.pages[0].flagged.stable_revid) || 0;
         if (stable_revid === navpop.diffData.oldRev.revid) {
             const a = document.createElement("a");
             a.innerHTML = popupString("mark patrolled");
@@ -5430,7 +5584,8 @@ $(() => {
         }
         const navpop = download.owner;
         completedNavpopTask(navpop);
-        let pages, revisions = [];
+        let pages,
+            revisions = [];
         try {
             pages = getJsObj(download.data).query.pages;
             for (let i = 0; i < pages.length; i++) {
@@ -5534,8 +5689,10 @@ $(() => {
         };
     }
     function insertDiff(navpop) {
-        let oldlines = navpop.diffData.oldRev.revision/* @TODO 萌百尚未更新1.32， rvslots 参数尚未支持 *//* .slots.main */.content.split("\n");
-        let newlines = navpop.diffData.newRev.revision/* @TODO 萌百尚未更新1.32， rvslots 参数尚未支持 *//* .slots.main */.content.split("\n");
+        let oldlines = navpop.diffData.oldRev.revision /* @TODO 萌百尚未更新1.32， rvslots 参数尚未支持 */ /* .slots.main */.content
+            .split("\n");
+        let newlines = navpop.diffData.newRev.revision /* @TODO 萌百尚未更新1.32， rvslots 参数尚未支持 */ /* .slots.main */.content
+            .split("\n");
         let inner = stripOuterCommonLines(oldlines, newlines, getValueOf("popupDiffContextLines"));
         oldlines = inner.a;
         newlines = inner.b;
@@ -6004,28 +6161,34 @@ $(() => {
             if (getValueOf("popupFixRedirs") && typeof autoEdit !== "undefined" && autoEdit) {
                 ret += popupString("Redirects to: (Fix ");
                 log(`redirLink: newTarget=${redirMatch}`);
-                ret += addPopupShortcut(changeLinkTargetLink({
-                    newTarget: redirMatch,
-                    text: popupString("target"),
-                    hint: popupString("Fix this redirect, changing just the link target"),
-                    summary: simplePrintf(getValueOf("popupFixRedirsSummary"), [article.toString(), redirMatch]),
-                    oldTarget: article.toString(),
-                    clickButton: getValueOf("popupRedirAutoClick"),
-                    minor: true,
-                    watch: getValueOf("popupWatchRedirredPages"),
-                }), "R");
+                ret += addPopupShortcut(
+                    changeLinkTargetLink({
+                        newTarget: redirMatch,
+                        text: popupString("target"),
+                        hint: popupString("Fix this redirect, changing just the link target"),
+                        summary: simplePrintf(getValueOf("popupFixRedirsSummary"), [article.toString(), redirMatch]),
+                        oldTarget: article.toString(),
+                        clickButton: getValueOf("popupRedirAutoClick"),
+                        minor: true,
+                        watch: getValueOf("popupWatchRedirredPages"),
+                    }),
+                    "R",
+                );
                 ret += popupString(" or ");
-                ret += addPopupShortcut(changeLinkTargetLink({
-                    newTarget: redirMatch,
-                    text: popupString("target & label"),
-                    hint: popupString("Fix this redirect, changing the link target and label"),
-                    summary: simplePrintf(getValueOf("popupFixRedirsSummary"), [article.toString(), redirMatch]),
-                    oldTarget: article.toString(),
-                    clickButton: getValueOf("popupRedirAutoClick"),
-                    minor: true,
-                    watch: getValueOf("popupWatchRedirredPages"),
-                    alsoChangeLabel: true,
-                }), "R");
+                ret += addPopupShortcut(
+                    changeLinkTargetLink({
+                        newTarget: redirMatch,
+                        text: popupString("target & label"),
+                        hint: popupString("Fix this redirect, changing the link target and label"),
+                        summary: simplePrintf(getValueOf("popupFixRedirsSummary"), [article.toString(), redirMatch]),
+                        oldTarget: article.toString(),
+                        clickButton: getValueOf("popupRedirAutoClick"),
+                        minor: true,
+                        watch: getValueOf("popupWatchRedirredPages"),
+                        alsoChangeLabel: true,
+                    }),
+                    "R",
+                );
                 ret += popupString(")");
             } else {
                 ret += popupString("Redirects") + popupString(" to ");
@@ -6152,11 +6315,14 @@ $(() => {
     }
     function getHistoryInfo(wikipage, whatNext) {
         log("getHistoryInfo");
-        getHistory(wikipage, whatNext
-            ? (d) => {
-                whatNext(processHistory(d));
-            }
-            : processHistory);
+        getHistory(
+            wikipage,
+            whatNext
+                ? (d) => {
+                      whatNext(processHistory(d));
+                  }
+                : processHistory,
+        );
     }
     function getHistory(wikipage, onComplete) {
         log("getHistory");
@@ -6329,7 +6495,15 @@ $(() => {
         newOption("popupRedlinkSummary", popupString("defaultpopupRedlinkSummary"));
         newOption("popupRmDabLinkSummary", popupString("defaultpopupRmDabLinkSummary"));
         newOption("popupHistoryLimit", 50);
-        newOption("popupFilters", [popupFilterStubDetect, popupFilterDisambigDetect, popupFilterPageSize, popupFilterCountLinks, popupFilterCountImages, popupFilterCountCategories, popupFilterLastModified]);
+        newOption("popupFilters", [
+            popupFilterStubDetect,
+            popupFilterDisambigDetect,
+            popupFilterPageSize,
+            popupFilterCountLinks,
+            popupFilterCountImages,
+            popupFilterCountCategories,
+            popupFilterLastModified,
+        ]);
         newOption("extraPopupFilters", []);
         newOption("popupOnEditSelection", "cursor");
         newOption("popupPreviewHistory", true);
@@ -6403,7 +6577,7 @@ $(() => {
         "the revision prior to revision %s of %s": "the revision prior to revision %s of %s",
         "Toggle image size": "Click to toggle image size",
         del: "del",
-        "delete": "delete",
+        delete: "delete",
         deleteHint: "Delete %s",
         undeleteShort: "un",
         UndeleteHint: "Show the deletion history for %s",
@@ -6420,7 +6594,7 @@ $(() => {
         "edit article": "edit article",
         editHint: "Change the content of %s",
         "edit talk": "edit talk",
-        "new": "new",
+        new: "new",
         "new topic": "new topic",
         newSectionHint: "Start a new section on %s",
         "null edit": "null edit",
@@ -6465,7 +6639,8 @@ $(() => {
         rv: "rv",
         revert: "revert",
         revertHint: "Revert to %s",
-        defaultpopupReviewedSummary: "Accepted by reviewing the [[Special:diff/%s/%s|difference]] between this version and previously accepted version using [[:en:Wikipedia:Tools/Navigation_popups|popups]]",
+        defaultpopupReviewedSummary:
+            "Accepted by reviewing the [[Special:diff/%s/%s|difference]] between this version and previously accepted version using [[:en:Wikipedia:Tools/Navigation_popups|popups]]",
         defaultpopupRedlinkSummary: "Removing link to empty page [[%s]] using [[:en:Wikipedia:Tools/Navigation_popups|popups]]",
         defaultpopupFixDabsSummary: "Disambiguate [[%s]] to [[%s]] using [[:en:Wikipedia:Tools/Navigation_popups|popups]]",
         defaultpopupFixRedirsSummary: "Redirect bypass from [[%s]] to [[%s]] using [[:en:Wikipedia:Tools/Navigation_popups|popups]]",
@@ -6574,7 +6749,7 @@ $(() => {
         if (typeof popupStrings !== "undefined" && popupStrings && popupStrings[str]) {
             return popupStrings[str];
         }
-        if (!popupNoTranslation.has(str) && (typeof str !== "string" || !str.includes("&autoimpl=np20140416&actoken=") && !str.endsWith("Hint"))) {
+        if (!popupNoTranslation.has(str) && (typeof str !== "string" || (!str.includes("&autoimpl=np20140416&actoken=") && !str.endsWith("Hint")))) {
             popupNoTranslation.add(str);
             console.info("popupNoTranslation", popupNoTranslation);
         }
