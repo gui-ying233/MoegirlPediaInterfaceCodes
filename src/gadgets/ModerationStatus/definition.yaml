@@ -8,8 +8,7 @@ supportsUrlLoad: false
 
 targets: []
 
-skins:
-  - vector
+skins: []
 
 actions: []
 
@@ -18,19 +17,17 @@ type: general
 package: false
 
 rights:
-  - techedit
+  - edit
 
 peers: []
 
 dependencies:
-  - ext.gadget.prism-core
+  - mediawiki.api
 
 _sites:
   - zh
-  - commons
 
 _section: browsing
 
 _files:
-  - MediaWiki:Gadget-prism.js
-  - MediaWiki:Gadget-prism.css
+  - MediaWiki:Gadget-ModerationStatus.js

@@ -1,6 +1,6 @@
 "use strict";
 $(() => {
-    window.Prism = { manual: true };
+    Prism.manual = true;
     const acceptsLangs = {
         // css
         css: "css",
@@ -87,8 +87,9 @@ $(() => {
                 if (Reflect.has(appendPluginsList, lang)) {
                     pluginsSet.add(appendPluginsList[lang]);
                 }
-                $content.find(".mw-code").addClass("linkable-line-numbers").wrapInner("<code>").children("code").addClass(`prism-prettyprint language-${lang}`).attr({
+                $content.find(".mw-code").addClass("linkable-line-numbers").attr({
                     id: "code",
+                }).wrapInner("<code>").children("code").addClass(`prism-prettyprint language-${lang}`).attr({
                     "data-lang": lang,
                 });
                 const hashWatcher = () => {
@@ -263,7 +264,7 @@ $(() => {
                     await (await fetch("/MediaWiki:Gadget-prism-language-wiki.json?action=raw&ctype=application/json")).json(),
                 );
                 const filename = URL.createObjectURL(
-                    new Blob([`(${String(workerJS)})('${config}')`], { type: "text/javascript" }),
+                    new Blob([`(${String(workerJS)})(\`${config}\`)`], { type: "text/javascript" }),
                 );
                 Object.assign(Prism, { filename });
                 Prism.languages.wiki = {};
@@ -275,7 +276,7 @@ $(() => {
                 }
                 const parent = ele.parentElement;
                 if (parent.tagName === "PRE") {
-                    parent.classList.add("line-numbers");
+                    parent.classList.add("line-numbers", "prism-prettyprint-container");
                 }
                 ele.classList.add("match-braces", "rainbow-braces");
                 Prism.highlightElement(ele, lang === "wiki");
