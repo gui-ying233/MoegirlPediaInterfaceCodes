@@ -11,13 +11,13 @@ div.vectorMenu li.interface-admin-show {
     content: " ";
     display: block;
     height: 1px;
-    color: #A2A9B1;
-    background-color: #A2A9B1;
+    color: #a2a9b1;
+    background-color: #a2a9b1;
     border: 0;
     margin: 7px;
 }
 
-.vectorMenu .interface-admin-show~.interface-admin-show::before {
+.vectorMenu .interface-admin-show ~ .interface-admin-show::before {
     display: none;
 }
 
@@ -25,7 +25,7 @@ div.vectorMenu li.interface-admin-show {
     cursor: default;
 }
 
-.vectorMenu .interface-admin-show~.interface-admin-show,
+.vectorMenu .interface-admin-show ~ .interface-admin-show,
 .vectorMenu .interface-admin-show a {
     cursor: pointer;
 }

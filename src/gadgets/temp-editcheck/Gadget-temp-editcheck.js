@@ -65,7 +65,7 @@ $(() => {
     mw.hook("InPageEdit.quickEdit").add((IPE) => {
         lastIPE = IPE;
     });
-    document.body.addEventListener("click", ({ path, target }) => {
+    (document.body.addEventListener("click", ({ path, target }) => {
         const $path = $((Array.isArray(path) ? path : []).concat([target]));
         if ($path.is("#ssi-leftButtons > .save-btn")) {
             IPESubmitting = 1;
@@ -76,9 +76,10 @@ $(() => {
             return;
         }
         IPESubmitting = 0;
-    }), {
-        capture: true,
-    };
+    }),
+        {
+            capture: true,
+        });
     const run = async () => {
         if (running || unloading) {
             return;
@@ -118,7 +119,10 @@ $(() => {
                 continue;
             }
             if (error !== UNDEFINED) {
-                notify.update(`<div>第$count次检测：${error instanceof Error ? "网络出错" : "服务器返回数据有误"}……<pre>${error instanceof Error ? error : JSON.stringify(_apiResult || error, null, 4)}</pre></div>`, true);
+                notify.update(
+                    `<div>第$count次检测：${error instanceof Error ? "网络出错" : "服务器返回数据有误"}……<pre>${error instanceof Error ? error : JSON.stringify(_apiResult || error, null, 4)}</pre></div>`,
+                    true,
+                );
                 await sleep(1000);
                 continue;
             }
@@ -128,19 +132,21 @@ $(() => {
                 if ((wgArticleId !== 0 ? apiResult.revisions[0].parentid === wgCurRevisionId : true) && apiResult.revisions[0].userid === wgUserId) {
                     unloading = true;
                     await notify.update("<span>第$count次检测：<b>编辑生效，已令编辑工具跳过等待！</b></span>", true, true);
-                    Array.from(successFunction.values()).filter((fn) => typeof fn === "function").forEach((fn) => {
-                        fn({
-                            edit: {
-                                result: "Success",
-                                pageid: apiResult.pageid,
-                                title: apiResult.title,
-                                contentmodel: apiResult.revisions[0].contentmodel,
-                                oldrevid: apiResult.revisions[0].parentid,
-                                newrevid: apiResult.revisions[0].revid,
-                                newtimestamp: apiResult.revisions[0].timestamp,
-                            },
+                    Array.from(successFunction.values())
+                        .filter((fn) => typeof fn === "function")
+                        .forEach((fn) => {
+                            fn({
+                                edit: {
+                                    result: "Success",
+                                    pageid: apiResult.pageid,
+                                    title: apiResult.title,
+                                    contentmodel: apiResult.revisions[0].contentmodel,
+                                    oldrevid: apiResult.revisions[0].parentid,
+                                    newrevid: apiResult.revisions[0].revid,
+                                    newtimestamp: apiResult.revisions[0].timestamp,
+                                },
+                            });
                         });
-                    });
                 } else {
                     notify.update("<span>第$count次检测：<b>疑似出现编辑冲突，停止检测，请等待编辑工具处理</b>……</span>", true);
                     running = false;
@@ -158,7 +164,7 @@ $(() => {
             if (typeof data === "string") {
                 return new URLSearchParams(data).get(property);
             }
-        } catch { }
+        } catch {}
         if (data instanceof FormData) {
             return data.get(property);
         }
@@ -171,11 +177,11 @@ $(() => {
         let needFailWatcher = false;
         try {
             if (
-                (IPESubmitting > 0
-                    ? IPESubmitting === 2 && lastIPE?.$optionsLabel?.find?.(".reloadPage")?.is?.(":visible:checked")
-                    : true
-                ) && getAjaxParameter(option.data, "action") === "edit" && wgPageName === getAjaxParameter(option.data, "title")) {
-                const success = option.success || (() => { });
+                (IPESubmitting > 0 ? IPESubmitting === 2 && lastIPE?.$optionsLabel?.find?.(".reloadPage")?.is?.(":visible:checked") : true) &&
+                getAjaxParameter(option.data, "action") === "edit" &&
+                wgPageName === getAjaxParameter(option.data, "title")
+            ) {
+                const success = option.success || (() => {});
                 option.success = runOnceGenerator(success.bind(this));
                 successFunction.set(success, option.success);
                 run();

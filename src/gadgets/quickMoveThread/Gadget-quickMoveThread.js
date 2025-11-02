@@ -14,9 +14,7 @@ $(() => {
             return;
         }
         const USERNAME = mw.config.get("wgUserName");
-        const PUBLICDB = ["技术实现", "权限变更", "操作申请", "方针政策", "页面相关", "提问求助", "群组信息"].filter(
-            (v) => PAGENAME.substring(PAGENAME.lastIndexOf("/") + 1, PAGENAME.length) !== v,
-        );
+        const PUBLICDB = ["技术实现", "权限变更", "操作申请", "方针政策", "页面相关", "提问求助", "群组信息"].filter((v) => PAGENAME.substring(PAGENAME.lastIndexOf("/") + 1, PAGENAME.length) !== v);
 
         const $body = $("body");
         $("#mw-notification-area").appendTo($body);
@@ -91,11 +89,7 @@ $(() => {
 
                 this.needToggle = $([targetTextField.$element[0], enterField.$element[0]]);
 
-                this.panelLayout.$element.append([
-                    targetDropdownField.$element,
-                    targetTextField.$element,
-                    enterField.$element,
-                ]);
+                this.panelLayout.$element.append([targetDropdownField.$element, targetTextField.$element, enterField.$element]);
 
                 this.targetDropdownMenu.connect(this, { toggle: "dropdownToggle" });
                 this.targetDropdown.connect(this, { change: "showTextInput" });
@@ -111,9 +105,12 @@ $(() => {
                     this.withoutSizeTransitions(() => {
                         this.$frame.css("height", newHeight);
                         this.targetDropdownMenu.clip();
-                        $(this.$frame).animate({
-                            height: newHeight,
-                        }, 700);
+                        $(this.$frame).animate(
+                            {
+                                height: newHeight,
+                            },
+                            700,
+                        );
                     });
                 } else {
                     this.updateSize();
@@ -154,31 +151,36 @@ $(() => {
                         this.close({ action });
                     }, this);
                 } else if (action === "submit") {
-                    return new OO.ui.Process($.when((async () => {
-                        this.target = this.targetDropdown.getValue() || this.targetText.getValue();
-                        if (!this.target) {
-                            throw new OO.ui.Error(wgULS("请填写目标页面", "請填寫目標頁面"));
-                        }
-                        if (this.target === PAGENAME) {
-                            throw new OO.ui.Error(wgULS("目标页面不得与当前页面相同", "目標頁面不得與當前頁面相同"));
-                        }
-                        if (!/talk|[讨討][论論]|[对對][话話]/i.test(this.target)) {
-                            throw new OO.ui.Error(wgULS("目标页面必须为讨论页面", "目標頁面必須為討論頁面"));
-                        }
-                        try {
-                            await this.doMove();
-                            this.close({ action });
-                            mw.notify(wgULS("即将刷新……", "即將刷新……"), {
-                                title: wgULS("移动成功", "移動成功"),
-                                type: "success",
-                                tag: "lr-qmt",
-                            });
-                            setTimeout(() => location.reload(), 730);
-                        } catch (e) {
-                            console.error("[QuickMoveThread] Error:", e);
-                            throw new OO.ui.Error(e);
-                        }
-                    })()).promise(), this);
+                    return new OO.ui.Process(
+                        $.when(
+                            (async () => {
+                                this.target = this.targetDropdown.getValue() || this.targetText.getValue();
+                                if (!this.target) {
+                                    throw new OO.ui.Error(wgULS("请填写目标页面", "請填寫目標頁面"));
+                                }
+                                if (this.target === PAGENAME) {
+                                    throw new OO.ui.Error(wgULS("目标页面不得与当前页面相同", "目標頁面不得與當前頁面相同"));
+                                }
+                                if (!/talk|[讨討][论論]|[对對][话話]/i.test(this.target)) {
+                                    throw new OO.ui.Error(wgULS("目标页面必须为讨论页面", "目標頁面必須為討論頁面"));
+                                }
+                                try {
+                                    await this.doMove();
+                                    this.close({ action });
+                                    mw.notify(wgULS("即将刷新……", "即將刷新……"), {
+                                        title: wgULS("移动成功", "移動成功"),
+                                        type: "success",
+                                        tag: "lr-qmt",
+                                    });
+                                    setTimeout(() => location.reload(), 730);
+                                } catch (e) {
+                                    console.error("[QuickMoveThread] Error:", e);
+                                    throw new OO.ui.Error(e);
+                                }
+                            })(),
+                        ).promise(),
+                        this,
+                    );
                 }
                 // Fallback to parent handler
                 return super.getActionProcess(action);
@@ -188,13 +190,15 @@ $(() => {
                 const fromAnchor = `${PAGENAME}#${this.anchor}`;
                 const toAnchor = `${this.target}#${this.anchor}`;
 
-                let original = (await api.get({
-                    action: "parse",
-                    assertuser: USERNAME,
-                    page: PAGENAME,
-                    prop: "wikitext",
-                    section: this.section,
-                })).parse.wikitext["*"];
+                let original = (
+                    await api.get({
+                        action: "parse",
+                        assertuser: USERNAME,
+                        page: PAGENAME,
+                        prop: "wikitext",
+                        section: this.section,
+                    })
+                ).parse.wikitext["*"];
                 const rawTitle = original.match(/^== *([^=\n]+) *==/m)?.[1] || this.anchor;
                 original = original.replace(/^==.*?==/, "").trim();
                 original = `{{movedfrom|${fromAnchor}}}\n\n${original}`;
@@ -243,10 +247,15 @@ $(() => {
             }
             const section = +new mw.Uri($ele.find('.mw-editsection a[href*="action=edit"][href*="section="]').attr("href")).query.section;
             const anchor = $(ele).attr("id");
-            const button = $("<a>").attr("href", "#").prop("draggable", false).addClass("lr-qmt-link").text(wgULS("移动", "移動")).on("click", (e) => {
-                e.preventDefault();
-                windowManager.openWindow(qmtDialog, { section, anchor });
-            });
+            const button = $("<a>")
+                .attr("href", "#")
+                .prop("draggable", false)
+                .addClass("lr-qmt-link")
+                .text(wgULS("移动", "移動"))
+                .on("click", (e) => {
+                    e.preventDefault();
+                    windowManager.openWindow(qmtDialog, { section, anchor });
+                });
             const $splButton = $ele.find(".section-permanent-link");
             if ($splButton[0]) {
                 $splButton.next(".mw-editsection-divider").after('<span class="mw-editsection-divider"> | </span>').after(button);
@@ -256,34 +265,53 @@ $(() => {
         });
     } catch (e) {
         /* eslint-disable no-var, prefer-arrow-functions/prefer-arrow-functions, prefer-arrow-callback, prefer-template */
-        var parseError = function (errLike, _space/* ? */) {
+        var parseError = function (errLike, _space /* ? */) {
             let space = _space;
             if (_space === void 0) {
                 space = 4;
             }
-            return JSON.stringify(errLike, function (_, v) {
-                if (v instanceof Error) {
-                    var stack = [];
-                    if (v.stack) {
-                        Reflect.apply(stack.push, stack, v.stack.split("\n").map(function (n) {
-                            return n.trim();
-                        }).filter(function (n) {
-                            var _a;
-                            return ((_a = n === null || n === void 0 ? void 0 : n.length) !== null && _a !== void 0 ? _a : -1) > 0;
-                        }));
+            return JSON.stringify(
+                errLike,
+                function (_, v) {
+                    if (v instanceof Error) {
+                        var stack = [];
+                        if (v.stack) {
+                            Reflect.apply(
+                                stack.push,
+                                stack,
+                                v.stack
+                                    .split("\n")
+                                    .map(function (n) {
+                                        return n.trim();
+                                    })
+                                    .filter(function (n) {
+                                        var _a;
+                                        return ((_a = n === null || n === void 0 ? void 0 : n.length) !== null && _a !== void 0 ? _a : -1) > 0;
+                                    }),
+                            );
+                        }
+                        var keys = Object.keys(v).filter(function (key) {
+                            return !Reflect.has(Error.prototype, key);
+                        });
+                        if (keys.length) {
+                            stack.push(
+                                JSON.stringify(
+                                    Object.fromEntries(
+                                        keys.map(function (key) {
+                                            return [key, v[key]];
+                                        }),
+                                    ),
+                                    null,
+                                    space,
+                                ),
+                            );
+                        }
+                        return stack.join("\n").trim() || "";
                     }
-                    var keys = Object.keys(v).filter(function (key) {
-                        return !Reflect.has(Error.prototype, key);
-                    });
-                    if (keys.length) {
-                        stack.push(JSON.stringify(Object.fromEntries(keys.map(function (key) {
-                            return [key, v[key]];
-                        })), null, space));
-                    }
-                    return stack.join("\n").trim() || "";
-                }
-                return v;
-            }, space).replace(/^"(.*)"$/, "$1");
+                    return v;
+                },
+                space,
+            ).replace(/^"(.*)"$/, "$1");
         };
         oouiDialog.alert("错误信息：<br>" + oouiDialog.sanitize(parseError(e)), {
             title: "快速移动工具发生错误",

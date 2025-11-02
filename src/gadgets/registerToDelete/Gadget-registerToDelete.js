@@ -3,10 +3,10 @@
 $(() => {
     try {
         if (
-            $(".will2Be2Deleted")[0]
-            || mw.config.get("wgRevisionId") === 0 && mw.config.get("wgArticleId") === 0
-            || !mw.config.get("wgUserGroups").includes("patroller") && !(new URL(location.href).searchParams.get("AnnTools-debug") || "").split("|").includes("registerToDelete")
-            || !mw.config.get("wgIsProbablyEditable")
+            $(".will2Be2Deleted")[0] ||
+            (mw.config.get("wgRevisionId") === 0 && mw.config.get("wgArticleId") === 0) ||
+            (!mw.config.get("wgUserGroups").includes("patroller") && !(new URL(location.href).searchParams.get("AnnTools-debug") || "").split("|").includes("registerToDelete")) ||
+            !mw.config.get("wgIsProbablyEditable")
         ) {
             return;
         }
@@ -50,14 +50,17 @@ $(() => {
                     padded: true,
                 });
                 this.reasonsDropdown = new OO.ui.DropdownInputWidget({
-                    options: [{
-                        data: "",
-                        label: "其他（请自行说明理由）",
-                    }, {
-                        data: "",
-                        disabled: true,
-                        label: "加载中……",
-                    }],
+                    options: [
+                        {
+                            data: "",
+                            label: "其他（请自行说明理由）",
+                        },
+                        {
+                            data: "",
+                            disabled: true,
+                            label: "加载中……",
+                        },
+                    ],
                 });
                 this.detailsText = new OO.ui.TextInputWidget();
                 this.dbCheckbox = new OO.ui.CheckboxInputWidget();
@@ -84,12 +87,7 @@ $(() => {
                     align: "inline",
                 });
 
-                this.panelLayout.$element.append(
-                    reasonsField.$element,
-                    detailsField.$element,
-                    dbField.$element,
-                    enterField.$element,
-                );
+                this.panelLayout.$element.append(reasonsField.$element, detailsField.$element, dbField.$element, enterField.$element);
 
                 this.reasonsDropdownMenu.connect(this, { toggle: "dropdownToggle" });
                 this.detailsText.connect(this, { enter: "onEnter" });
@@ -98,10 +96,13 @@ $(() => {
                 this.$body.append(this.panelLayout.$element);
             }
             updateReasons(reasons) {
-                this.reasonsDropdown.setOptions([{
-                    data: "",
-                    label: "其他（请自行说明理由）",
-                }, ...reasons]);
+                this.reasonsDropdown.setOptions([
+                    {
+                        data: "",
+                        label: "其他（请自行说明理由）",
+                    },
+                    ...reasons,
+                ]);
             }
             setStorage(selected) {
                 this.storage.setItem("enterToSubmit", selected);
@@ -118,9 +119,12 @@ $(() => {
                     this.withoutSizeTransitions(() => {
                         this.$frame.css("height", newHeight);
                         this.reasonsDropdownMenu.clip();
-                        $(this.$frame).animate({
-                            height: newHeight,
-                        }, 700);
+                        $(this.$frame).animate(
+                            {
+                                height: newHeight,
+                            },
+                            700,
+                        );
                     });
                 } else {
                     this.updateSize();
@@ -140,35 +144,40 @@ $(() => {
                         this.close({ action });
                     }, this);
                 } else if (action === "submit") {
-                    return new OO.ui.Process($.when((async () => {
-                        this.reason = this.reasonsDropdown.getValue();
-                        this.detail = this.detailsText.getValue();
-                        if (!this.reason && !this.detail) {
-                            throw new OO.ui.Error("请填写理由或详情");
-                        }
-                        // if (reason) {
-                        //     reason += detail ? (reason ? "：" : "") + detail : "";
-                        // } else {
-                        //     reason = detail;
-                        // }
-                        // if (isDB.isSelected()) {
-                        //     reason = `讨论版申请：${reason}`;
-                        // }
-                        this.reason = `${this.dbCheckbox.isSelected() ? "讨论版申请：" : ""}${this.reason ? `${this.reason}${this.detail ? `：${this.detail}` : ""}` : this.detail}`; // 压行
-                        try {
-                            await this.flagTemplate();
-                            this.close({ action });
-                            mw.notify(wgULS("即将刷新……", "即將刷新……"), {
-                                title: wgULS("挂删成功", "掛删成功"),
-                                type: "success",
-                                tag: "lr-ffd",
-                            });
-                            setTimeout(() => location.reload(), 730);
-                        } catch (e) {
-                            console.error("[FlagForDeletion] Error:", e);
-                            throw new OO.ui.Error(e);
-                        }
-                    })()).promise(), this);
+                    return new OO.ui.Process(
+                        $.when(
+                            (async () => {
+                                this.reason = this.reasonsDropdown.getValue();
+                                this.detail = this.detailsText.getValue();
+                                if (!this.reason && !this.detail) {
+                                    throw new OO.ui.Error("请填写理由或详情");
+                                }
+                                // if (reason) {
+                                //     reason += detail ? (reason ? "：" : "") + detail : "";
+                                // } else {
+                                //     reason = detail;
+                                // }
+                                // if (isDB.isSelected()) {
+                                //     reason = `讨论版申请：${reason}`;
+                                // }
+                                this.reason = `${this.dbCheckbox.isSelected() ? "讨论版申请：" : ""}${this.reason ? `${this.reason}${this.detail ? `：${this.detail}` : ""}` : this.detail}`; // 压行
+                                try {
+                                    await this.flagTemplate();
+                                    this.close({ action });
+                                    mw.notify(wgULS("即将刷新……", "即將刷新……"), {
+                                        title: wgULS("挂删成功", "掛删成功"),
+                                        type: "success",
+                                        tag: "lr-ffd",
+                                    });
+                                    setTimeout(() => location.reload(), 730);
+                                } catch (e) {
+                                    console.error("[FlagForDeletion] Error:", e);
+                                    throw new OO.ui.Error(e);
+                                }
+                            })(),
+                        ).promise(),
+                        this,
+                    );
                 }
                 // Fallback to parent handler
                 return super.getActionProcess(action);
@@ -210,7 +219,11 @@ $(() => {
             $body.css("overflow", "auto");
             if (loadReason === false) {
                 loadReason = true;
-                const { parse: { text: { "*": html } } } = await new mw.Api().post({
+                const {
+                    parse: {
+                        text: { "*": html },
+                    },
+                } = await new mw.Api().post({
                     action: "parse",
                     assertuser: mw.config.get("wgUserName"),
                     page: mw.config.get("wgNamespaceNumber") === mw.config.get("wgNamespaceIds").file ? "MediaWiki:Filedelete-reason-dropdown" : "MediaWiki:Deletereason-dropdown",
@@ -225,50 +238,75 @@ $(() => {
                         label: ele.innerText.trim(),
                     });
                 };
-                container.children(".mw-parser-output").children("ul").children("li").each((_, ele) => {
-                    const $ele = $(ele);
-                    if ($ele.children("ul").length > 0) {
-                        result.push({
-                            optgroup: $ele.clone().find("*").remove().end().text().trim(),
-                        });
-                        $ele.children("ul").children("li").each((_, e) => getReason(e));
-                    } else {
-                        getReason(ele);
-                    }
-                });
+                container
+                    .children(".mw-parser-output")
+                    .children("ul")
+                    .children("li")
+                    .each((_, ele) => {
+                        const $ele = $(ele);
+                        if ($ele.children("ul").length > 0) {
+                            result.push({
+                                optgroup: $ele.clone().find("*").remove().end().text().trim(),
+                            });
+                            $ele.children("ul")
+                                .children("li")
+                                .each((_, e) => getReason(e));
+                        } else {
+                            getReason(ele);
+                        }
+                    });
                 ffdDialog.updateReasons(result);
             }
         });
     } catch (e) {
         /* eslint-disable no-var, prefer-arrow-functions/prefer-arrow-functions, prefer-arrow-callback, prefer-template */
-        var parseError = function (errLike, _space/* ? */) {
+        var parseError = function (errLike, _space /* ? */) {
             let space = _space;
             if (_space === void 0) {
                 space = 4;
             }
-            return JSON.stringify(errLike, function (_, v) {
-                if (v instanceof Error) {
-                    var stack = [];
-                    if (v.stack) {
-                        Reflect.apply(stack.push, stack, v.stack.split("\n").map(function (n) {
-                            return n.trim();
-                        }).filter(function (n) {
-                            var _a;
-                            return ((_a = n === null || n === void 0 ? void 0 : n.length) !== null && _a !== void 0 ? _a : -1) > 0;
-                        }));
+            return JSON.stringify(
+                errLike,
+                function (_, v) {
+                    if (v instanceof Error) {
+                        var stack = [];
+                        if (v.stack) {
+                            Reflect.apply(
+                                stack.push,
+                                stack,
+                                v.stack
+                                    .split("\n")
+                                    .map(function (n) {
+                                        return n.trim();
+                                    })
+                                    .filter(function (n) {
+                                        var _a;
+                                        return ((_a = n === null || n === void 0 ? void 0 : n.length) !== null && _a !== void 0 ? _a : -1) > 0;
+                                    }),
+                            );
+                        }
+                        var keys = Object.keys(v).filter(function (key) {
+                            return !Reflect.has(Error.prototype, key);
+                        });
+                        if (keys.length) {
+                            stack.push(
+                                JSON.stringify(
+                                    Object.fromEntries(
+                                        keys.map(function (key) {
+                                            return [key, v[key]];
+                                        }),
+                                    ),
+                                    null,
+                                    space,
+                                ),
+                            );
+                        }
+                        return stack.join("\n").trim() || "";
                     }
-                    var keys = Object.keys(v).filter(function (key) {
-                        return !Reflect.has(Error.prototype, key);
-                    });
-                    if (keys.length) {
-                        stack.push(JSON.stringify(Object.fromEntries(keys.map(function (key) {
-                            return [key, v[key]];
-                        })), null, space));
-                    }
-                    return stack.join("\n").trim() || "";
-                }
-                return v;
-            }, space).replace(/^"(.*)"$/, "$1");
+                    return v;
+                },
+                space,
+            ).replace(/^"(.*)"$/, "$1");
         };
         oouiDialog.alert("错误信息：<br>" + oouiDialog.sanitize(parseError(e)), {
             title: "挂删工具发生错误",

@@ -31,7 +31,8 @@ $(async () => {
                 if (!/^\d+-\d+/.test(i) || !Array.isArray(cache[i])) {
                     Reflect.deleteProperty(cache, i);
                 }
-                if (Array.isArray(cache[i])) { // 处理旧版本缓存
+                if (Array.isArray(cache[i])) {
+                    // 处理旧版本缓存
                     cache[i] = {
                         sections: cache[i],
                         timestamp: -1,
@@ -40,7 +41,8 @@ $(async () => {
                 const articleIdAndCurRevisionId = i.match(/\d+/g);
                 (sameArticleId[articleIdAndCurRevisionId[0]] ||= []).push(articleIdAndCurRevisionId[1]);
             });
-            Object.keys(sameArticleId).forEach((aid) => { // 移除同一页面的历史版本缓存
+            Object.keys(sameArticleId).forEach((aid) => {
+                // 移除同一页面的历史版本缓存
                 const c = sameArticleId[aid];
                 if (c.length < 2) {
                     return;
@@ -55,7 +57,8 @@ $(async () => {
             cache = Object.fromEntries(
                 Object.entries(cache)
                     .filter(({ timestamp }) => timestamp < expired) // 移除过期缓存
-                    .sort(({ timestamp: a }, { timestamp: b }) => b - a).slice(0, 50), // 只保留最新 50 个页面
+                    .sort(({ timestamp: a }, { timestamp: b }) => b - a)
+                    .slice(0, 50), // 只保留最新 50 个页面
             );
         } catch (e) {
             console.info("AnnTools-float-toc", e);
@@ -69,20 +72,27 @@ $(async () => {
     localObjectStorage.setItem("cache", cache);
     let hasTurstTOC, apiResult;
     if (
-        document.querySelector("#toc > ul > li")
-        && !(
-            document.body.classList.contains("widgetTalkTocEnable")
-            || document.getElementsByClassName("heading").length > 0 && document.getElementById("heading")
-            || document.getElementById("tocBox")
-            || document.getElementById("toc2TableSetting")
-            || document.querySelector(".toclimit-2, .toclimit-3, .toclimit-4, .toclimit-5, .toclimit-6, .toclimit-7")
+        document.querySelector("#toc > ul > li") &&
+        !(
+            document.body.classList.contains("widgetTalkTocEnable") ||
+            (document.getElementsByClassName("heading").length > 0 && document.getElementById("heading")) ||
+            document.getElementById("tocBox") ||
+            document.getElementById("toc2TableSetting") ||
+            document.querySelector(".toclimit-2, .toclimit-3, .toclimit-4, .toclimit-5, .toclimit-6, .toclimit-7")
         )
-    ) { // 当有可信的目录时，不再请求 API
+    ) {
+        // 当有可信的目录时，不再请求 API
         hasTurstTOC = true;
-    } else if (mw.config.get("wgArticleId") <= 0 || mw.config.get("wgCurRevisionId") <= 0 || /action=(?!view)|(?:direction|diffonly)=/i.test(location.search) || mw.config.get("wgCurRevisionId") !== mw.config.get("wgRevisionId")) {
+    } else if (
+        mw.config.get("wgArticleId") <= 0 ||
+        mw.config.get("wgCurRevisionId") <= 0 ||
+        /action=(?!view)|(?:direction|diffonly)=/i.test(location.search) ||
+        mw.config.get("wgCurRevisionId") !== mw.config.get("wgRevisionId")
+    ) {
         // 当页面不存在、版本不存在、非阅读模式、不显示正文的差异页面、非当前版本时，不再请求 API
         return;
-    } else if (Reflect.has(cache, key)) { // 有缓存时，不再请求 API
+    } else if (Reflect.has(cache, key)) {
+        // 有缓存时，不再请求 API
         apiResult = {
             parse: {
                 sections: cache[key],
@@ -107,7 +117,8 @@ $(async () => {
     $("body").append(root);
     root.append(container);
     container.prepend('<div class="toctitle" lang="zh-CN" dir="ltr"><h2>目录</h2></div>');
-    if (hasTurstTOC) { // 当有可信目录时，直接克隆
+    if (hasTurstTOC) {
+        // 当有可信目录时，直接克隆
         container.append($("#toc > ul").clone().removeAttr("class style"));
         return;
     }
@@ -144,8 +155,15 @@ $(async () => {
     const sanity = $(document.createElement("span"));
     const sanityClean = (h) => {
         sanity.html(h);
-        sanity.find("script, style, link, iframe, frame, object, param, audio, video, base, head, meta, title, body, h1, h2, h3, h4, h5, h6, blockquote, dd, dl, dir, dt, hr, li, ul, ol, pre, abbr, br, cite, data, tt, var, wbr, area, map, track, applet, embed, noembed, picture, source, canvas, noscript, caption, col, colgroup, table, tbody, thead, tfoot, td, th, tr, button, datalist, fieldset, form, input, label, legend, meter, optgroup, option, output, progress, select, textarea, details, dialog, menu, menuitem, summary, shadow, element, content, slot, template, bgsound, blink, center, command, frameset").remove();
-        return sanity.html().replace(/-{([^|:;]*?)}-/g, "$1").replace(/-{(?:A\|)?([^|]+?:[^|]+?)}-/g, transcode);
+        sanity
+            .find(
+                "script, style, link, iframe, frame, object, param, audio, video, base, head, meta, title, body, h1, h2, h3, h4, h5, h6, blockquote, dd, dl, dir, dt, hr, li, ul, ol, pre, abbr, br, cite, data, tt, var, wbr, area, map, track, applet, embed, noembed, picture, source, canvas, noscript, caption, col, colgroup, table, tbody, thead, tfoot, td, th, tr, button, datalist, fieldset, form, input, label, legend, meter, optgroup, option, output, progress, select, textarea, details, dialog, menu, menuitem, summary, shadow, element, content, slot, template, bgsound, blink, center, command, frameset",
+            )
+            .remove();
+        return sanity
+            .html()
+            .replace(/-{([^|:;]*?)}-/g, "$1")
+            .replace(/-{(?:A\|)?([^|]+?:[^|]+?)}-/g, transcode);
     };
     const temp = document.createElement("div");
     sections.forEach((_a) => {

@@ -128,7 +128,7 @@
 }
 
 .pageAwaitingDelection-table div:not(.br, .pageAwaitingDelection-caption) {
-    border: 1px solid #E0E0E0;
+    border: 1px solid #e0e0e0;
 }
 
 .pageAwaitingDelection-table div:not(.br, .has-page) {
