@@ -13,23 +13,32 @@ $(() => {
     /**
      * @type {JQuery<HTMLElement>}
      */
-    const btn = insertToBottomRightCorner("跳到底部").attr({
-        title: "跳到底部",
-        id: "LetYouDown",
-    }).css({
-        "user-select": "none",
-        transition: "opacity .13s ease-in-out",
-        order: "999",
-    }).on("click", () => {
-        $("html, body").animate({
-            scrollTop: scrollTop,
-        }, 130);
-    });
+    const btn = insertToBottomRightCorner("跳到底部")
+        .attr({
+            title: "跳到底部",
+            id: "LetYouDown",
+        })
+        .css({
+            "user-select": "none",
+            transition: "opacity .13s ease-in-out",
+            order: "999",
+        })
+        .on("click", () => {
+            $("html, body").animate(
+                {
+                    scrollTop: scrollTop,
+                },
+                130,
+            );
+        });
     const $document = $(document);
-    $(window).on("resize", () => {
-        scrollTop = getScrollTop();
-    }).on("scroll", () => {
-        btn.css("opacity", $document.scrollTop() < scrollTop ? ".6" : "0");
-    }).trigger("scroll");
+    $(window)
+        .on("resize", () => {
+            scrollTop = getScrollTop();
+        })
+        .on("scroll", () => {
+            btn.css("opacity", $document.scrollTop() < scrollTop ? ".6" : "0");
+        })
+        .trigger("scroll");
 });
 // </pre>

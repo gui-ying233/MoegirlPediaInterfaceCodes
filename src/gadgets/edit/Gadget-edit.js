@@ -81,35 +81,47 @@ $(() => {
         }
         const talkpage = `${talkns}:${page}`;
         const container = $("<div/>", {
-            "class": "editRequest",
+            class: "editRequest",
         });
         const now = new Date();
         container.append("虽然您无权编辑本页面，但您可以点击右侧按钮在本页的讨论页提出编辑请求，让可以编辑的人代为编辑：");
-        $("<span/>").addClass("newComment").text("提出编辑请求").on("click", () => {
-            window.open(`${mw.config.get("wgServer")}${mw.config.get("wgScriptPath")}/index.php?action=edit&preload=Template:编辑请求/${/^MediaWiki:Conversiontable\/zh-[a-z]+$/.test(wgPageName) ? page : "comment"}&preloadtitle=编辑请求 - ${encodeURIComponent(`${mw.config.get("wgUserName")} - ${now.getFullYear()}.${prefixNumber(now.getMonth() + 1)}.${prefixNumber(now.getDate())}`)}&section=new&title=${encodeURIComponent(talkpage)}`, "_blank");
-        }).appendTo(container);
+        $("<span/>")
+            .addClass("newComment")
+            .text("提出编辑请求")
+            .on("click", () => {
+                window.open(
+                    `${mw.config.get("wgServer")}${mw.config.get("wgScriptPath")}/index.php?action=edit&preload=Template:编辑请求/${/^MediaWiki:Conversiontable\/zh-[a-z]+$/.test(wgPageName) ? page : "comment"}&preloadtitle=编辑请求 - ${encodeURIComponent(`${mw.config.get("wgUserName")} - ${now.getFullYear()}.${prefixNumber(now.getMonth() + 1)}.${prefixNumber(now.getDate())}`)}&section=new&title=${encodeURIComponent(talkpage)}`,
+                    "_blank",
+                );
+            })
+            .appendTo(container);
         $("#mw-content-text").children(".wikiEditor-ui:first, textarea[readonly]:first").before("<hr>").before(container);
     }
 
     const explainconflict = $("#mw-content-text > .mw-explainconflict #explainconflict-info");
     if (explainconflict[0]) {
-        $("html, body").animate({
-            scrollTop: explainconflict.closest(".infoBox").offset().top - 2,
-        }, 137);
+        $("html, body").animate(
+            {
+                scrollTop: explainconflict.closest(".infoBox").offset().top - 2,
+            },
+            137,
+        );
     }
     // 只在ns0和ns2的子页面加载预加载工具
-    if (![0, 2].includes(wgNamespaceNumber) || wgNamespaceNumber === 2 && !wgPageName.includes("/") || mw.config.get("wgPageContentModel") !== "wikitext") {
+    if (![0, 2].includes(wgNamespaceNumber) || (wgNamespaceNumber === 2 && !wgPageName.includes("/")) || mw.config.get("wgPageContentModel") !== "wikitext") {
         $("#multiboilerplateform").remove();
     }
     // 非维护组、技术组成员提出方针编辑请求时提醒需要走提案
     if (
-        new URLSearchParams(location.search).get("preloadtitle")?.startsWith("编辑请求")
-            && wgNamespaceNumber === 5
-            && mw.config.get("wgAction") === "edit"
-            && !mw.config.get("wgUserGroups").some((value) => ["patroller", "sysop", "techeditor", "interface-admin", "staff"].includes(value))
+        new URLSearchParams(location.search).get("preloadtitle")?.startsWith("编辑请求") &&
+        wgNamespaceNumber === 5 &&
+        mw.config.get("wgAction") === "edit" &&
+        !mw.config.get("wgUserGroups").some((value) => ["patroller", "sysop", "techeditor", "interface-admin", "staff"].includes(value))
     ) {
         OO.ui.alert(
-            $('<p>进行<b>实质性</b>修改时，需要通过<a href="/萌娘百科:提案" style="font-weight:bold">提案</a>或<a href="/萌娘百科:快速提案" style="font-weight:bold">快速提案</a>流程才可对方针和指引进行改动。</p><p>在讨论页发起的编辑请求仅可用于修正错别字等<b>非实质性</b>修改。</p>'),
+            $(
+                '<p>进行<b>实质性</b>修改时，需要通过<a href="/萌娘百科:提案" style="font-weight:bold">提案</a>或<a href="/萌娘百科:快速提案" style="font-weight:bold">快速提案</a>流程才可对方针和指引进行改动。</p><p>在讨论页发起的编辑请求仅可用于修正错别字等<b>非实质性</b>修改。</p>',
+            ),
             {
                 title: "提醒",
                 size: "small",
@@ -119,7 +131,8 @@ $(() => {
                         label: "我知道了",
                     },
                 ],
-            });
+            },
+        );
     }
 
     // Customized File Insertion dialog

@@ -12,13 +12,13 @@ div.vectorMenu li.checkuser-show {
     content: " ";
     display: block;
     height: 1px;
-    color: #A2A9B1;
-    background-color: #A2A9B1;
+    color: #a2a9b1;
+    background-color: #a2a9b1;
     border: 0;
     margin: 7px;
 }
 
-.vectorMenu .checkuser-show~.checkuser-show::before {
+.vectorMenu .checkuser-show ~ .checkuser-show::before {
     display: none;
 }
 
@@ -26,7 +26,7 @@ div.vectorMenu li.checkuser-show {
     cursor: default;
 }
 
-.vectorMenu .checkuser-show~.checkuser-show,
+.vectorMenu .checkuser-show ~ .checkuser-show,
 .vectorMenu .checkuser-show a {
     cursor: pointer;
 }

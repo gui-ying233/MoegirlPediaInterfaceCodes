@@ -28,36 +28,44 @@
     $("body").addClass("sideBarPic-executed");
     $sidebarCharacter.addClass("executed");
 
-    await Promise.all($sidebarCharacter.find("img").toArray().map((img) => new Promise((res) => {
-        let retryCount = 0;
-        try {
-            const lazyload = new Image();
-            const url = new mw.Uri(img.dataset.src || img.src);
-            if (url.host.endsWith(".moegirl.org")) {
-                url.host += ".cn";
-            }
-            lazyload.addEventListener("load", () => {
-                img.src = url;
-                res();
-            });
-            lazyload.addEventListener("error", () => {
-                if (retryCount++ < 3) {
-                    const url = new mw.Uri(lazyload.src);
-                    url.query._ = Math.random();
-                    lazyload.src = url;
-                } else {
-                    console.info("Widget:SideBarPic img-load-failed\n", img.dataset.src);
-                    img.remove();
-                    res();
-                }
-            });
-            lazyload.src = url;
-        } catch (e) {
-            console.info("Widget:SideBarPic img-load-failed\n", e);
-            img.remove();
-            res();
-        }
-    })));
+    await Promise.all(
+        $sidebarCharacter
+            .find("img")
+            .toArray()
+            .map(
+                (img) =>
+                    new Promise((res) => {
+                        let retryCount = 0;
+                        try {
+                            const lazyload = new Image();
+                            const url = new mw.Uri(img.dataset.src || img.src);
+                            if (url.host.endsWith(".moegirl.org")) {
+                                url.host += ".cn";
+                            }
+                            lazyload.addEventListener("load", () => {
+                                img.src = url;
+                                res();
+                            });
+                            lazyload.addEventListener("error", () => {
+                                if (retryCount++ < 3) {
+                                    const url = new mw.Uri(lazyload.src);
+                                    url.query._ = Math.random();
+                                    lazyload.src = url;
+                                } else {
+                                    console.info("Widget:SideBarPic img-load-failed\n", img.dataset.src);
+                                    img.remove();
+                                    res();
+                                }
+                            });
+                            lazyload.src = url;
+                        } catch (e) {
+                            console.info("Widget:SideBarPic img-load-failed\n", e);
+                            img.remove();
+                            res();
+                        }
+                    }),
+            ),
+    );
     $("body").addClass("sideBarPic");
 
     $sidebarCharacter.each((_, ele) => {
@@ -67,15 +75,20 @@
         }
         console.info("Widget:SideBarPic append-check\n", $sidebar);
         $this.appendTo($sidebar);
-        $this.fadeIn().addClass(ele.dataset.align === "top" ? "top" : "bottom").css("user-select", "none");
+        $this
+            .fadeIn()
+            .addClass(ele.dataset.align === "top" ? "top" : "bottom")
+            .css("user-select", "none");
         $this.addClass("active").find("img").removeAttr("width").removeAttr("height");
     });
-    $(window).on("resize", () => {
-        $sidebarCharacter.each((_, ele) => {
-            const self = $(ele);
-            self.find("img").width(self.width());
-        });
-    }).trigger("resize");
+    $(window)
+        .on("resize", () => {
+            $sidebarCharacter.each((_, ele) => {
+                const self = $(ele);
+                self.find("img").width(self.width());
+            });
+        })
+        .trigger("resize");
     if ($sidebarCharacter.data("displaylogo") === "yes") {
         $("body").addClass("show-logo");
     }

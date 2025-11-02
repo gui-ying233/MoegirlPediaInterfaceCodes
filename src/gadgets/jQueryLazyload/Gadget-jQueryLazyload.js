@@ -29,16 +29,16 @@
     };
 
     /**
-    * Merge two or more objects. Returns a new object.
-    * @private
-    * @param {Boolean}  deep     If true, do a deep (or recursive) merge [optional]
-    * @param {Object}   objects  The objects to merge together
-    * @returns {Object}          Merged values of defaults and options
-    */
+     * Merge two or more objects. Returns a new object.
+     * @private
+     * @param {Boolean}  deep     If true, do a deep (or recursive) merge [optional]
+     * @param {Object}   objects  The objects to merge together
+     * @returns {Object}          Merged values of defaults and options
+     */
     const extend = (_deep, ..._args) => {
         const extended = {};
         const deep = typeof _deep === "boolean" ? _deep : false;
-        const args = [...typeof _deep !== "boolean" ? [_deep] : [], ..._args];
+        const args = [...(typeof _deep !== "boolean" ? [_deep] : []), ..._args];
 
         /* Merge the object into the extended object */
         const merge = (obj) => {

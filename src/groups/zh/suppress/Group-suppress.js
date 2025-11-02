@@ -14,7 +14,7 @@
         const reasonpage = isNewVersion ? "MediaWiki:Revdelete-reason-dropdown-suppress" : "MediaWiki:Revdelete-reason-dropdown";
         const link = $("<div/>", {
             id: "hideAbuselogLink",
-            "class": "mw-revdel-editreasons",
+            class: "mw-revdel-editreasons",
             css: {
                 "font-size": "90%",
                 "text-align": "right",
