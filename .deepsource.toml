@@ -45,7 +45,8 @@ exclude_patterns = [
   "src/gadgets/Navigation_popups/**",
   "src/gadgets/localforage/**",
   "src/gadgets/code-prettify/**",
-  "src/gadgets/SpecialWikitext/**"
+  "src/gadgets/SpecialWikitext/**",
+  "src/gadgets/FlowThreadCheck/**"
 ]
 
 [[analyzers]]
