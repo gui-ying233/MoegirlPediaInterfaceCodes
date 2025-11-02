@@ -7,7 +7,8 @@ exclude_patterns = [
   "src/gadgets/HotCat/Gadget-HotCat.js",
   "src/gadgets/Navigation_popups/Gadget-popups.js",
   "src/gadgets/localforage/Gadget-localforage.js",
-  "src/gadgets/code-prettify/Gadget-code-prettify.js"
+  "src/gadgets/code-prettify/Gadget-code-prettify.js",
+  "src/gadgets/libPolyfill**"
 ]
 
 [[analyzers]]
