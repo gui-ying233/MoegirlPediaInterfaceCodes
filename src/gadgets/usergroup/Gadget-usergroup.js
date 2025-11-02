@@ -144,12 +144,11 @@
     const api = new mw.Api();
     const eol = Symbol();
     const fixZero = (n, l = 2) => `${n}`.padStart(l, "0");
-    const toLocalTimeZoneString = (date = new Date()) => `${date.getFullYear()}/${fixZero(date.getMonth() + 1)}/${fixZero(date.getDate())} ${fixZero(date.getHours())}:${fixZero(date.getMinutes())}:${fixZero(date.getSeconds())}.${fixZero(date.getMilliseconds(), 3)}`;
+    const toLocalTimeZoneString = (date = new Date()) =>
+        `${date.getFullYear()}/${fixZero(date.getMonth() + 1)}/${fixZero(date.getDate())} ${fixZero(date.getHours())}:${fixZero(date.getMinutes())}:${fixZero(date.getSeconds())}.${fixZero(date.getMilliseconds(), 3)}`;
     try {
         cache = localObjectStorage.getItem("cache");
-        if (!cache
-            || typeof cache.timestamp !== "number" || cache.timestamp < new Date().getTime() - 30 * 60 * 1000
-            || !cache.groups) {
+        if (!cache || typeof cache.timestamp !== "number" || cache.timestamp < new Date().getTime() - 30 * 60 * 1000 || !cache.groups) {
             throw new Error();
         } else {
             for (const i of groupsKey) {
@@ -176,10 +175,7 @@
             } else {
                 aufrom = eol;
             }
-            _result.query.allusers.forEach(({
-                name,
-                groups,
-            }) => {
+            _result.query.allusers.forEach(({ name, groups }) => {
                 groups.forEach((group) => {
                     if (groupsKey.includes(group)) {
                         result[group] ||= [];

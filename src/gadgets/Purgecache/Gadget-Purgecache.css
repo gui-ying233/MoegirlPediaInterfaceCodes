@@ -1,7 +1,7 @@
 .skin-moeskin #p-purge-cache .n-button {
-    --n-bezier: cubic-bezier(.4, 0, .2, 1);
-    --n-bezier-ease-out: cubic-bezier(0, 0, .2, 1);
-    --n-ripple-duration: .6s;
+    --n-bezier: cubic-bezier(0.4, 0, 0.2, 1);
+    --n-bezier-ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --n-ripple-duration: 0.6s;
     --n-opacity-disabled: 0.5;
     --n-wave-opacity: 0.6;
     --n-color: #0000;
@@ -32,9 +32,9 @@
 }
 
 .skin-moeskin #mobile-page-actions .purgecache.n-button {
-    --n-bezier: cubic-bezier(.4, 0, .2, 1);
-    --n-bezier-ease-out: cubic-bezier(0, 0, .2, 1);
-    --n-ripple-duration: .6s;
+    --n-bezier: cubic-bezier(0.4, 0, 0.2, 1);
+    --n-bezier-ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --n-ripple-duration: 0.6s;
     --n-opacity-disabled: 0.5;
     --n-wave-opacity: 0.6;
     --n-color: rgb(24 160 88 / 16%);
@@ -66,6 +66,6 @@
 
 .skin-moeskin .mobile-edit-button {
     display: flex;
-    gap: .5em;
+    gap: 0.5em;
     flex: 0;
 }

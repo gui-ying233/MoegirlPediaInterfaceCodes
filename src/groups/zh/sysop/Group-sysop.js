@@ -56,9 +56,17 @@
                         body.toggleClass("AbuseFilterHidden");
                     },
                 });
-                $('form[action="/Special:%E6%BB%A5%E7%94%A8%E6%97%A5%E5%BF%97"] > fieldset').append("<p/>").find("p").append($("<span/>", {
-                    text: `点击隐藏/显示防滥用过滤器${Array.from(needToggle.values()).join("、").replace(/、(?=[^、]+$)/, "和")}的日志：`,
-                })).append(input);
+                $('form[action="/Special:%E6%BB%A5%E7%94%A8%E6%97%A5%E5%BF%97"] > fieldset')
+                    .append("<p/>")
+                    .find("p")
+                    .append(
+                        $("<span/>", {
+                            text: `点击隐藏/显示防滥用过滤器${Array.from(needToggle.values())
+                                .join("、")
+                                .replace(/、(?=[^、]+$)/, "和")}的日志：`,
+                        }),
+                    )
+                    .append(input);
                 if (lastStatus) {
                     body.addClass("AbuseFilterHidden");
                 }
@@ -88,10 +96,12 @@
     // i18n语言链接
     const i18nLink = () => {
         $('#mw-content-text a.new[href$="/zh-cn"], #mw-content-text a.new[href$="/zh-tw"], #mw-content-text a.new[href$="/zh-hk"]').each((_, ele) => {
-            $(ele).removeClass("new").attr({
-                title: ele.title.replace(/\/zh-[a-z]+|（页面不存在）/g, ""),
-                href: ele.href.replace(/\/zh-[a-z]+/g, ""),
-            });
+            $(ele)
+                .removeClass("new")
+                .attr({
+                    title: ele.title.replace(/\/zh-[a-z]+|（页面不存在）/g, ""),
+                    href: ele.href.replace(/\/zh-[a-z]+/g, ""),
+                });
         });
     };
     /* 函数执行块 */
@@ -123,12 +133,16 @@
     if (mw.config.get("wgCanonicalSpecialPageName") === "Userrights") {
         const wpExpiryPatroller = document.querySelector("#mw-input-wpExpiry-patroller");
         if (wpExpiryPatroller && !document.getElementById("wpGroup-patroller").checked) {
-            Array.from(wpExpiryPatroller.options).filter((ele) => ele.value === "1 week")[0].after(new Option("15天", "15 days"));
+            Array.from(wpExpiryPatroller.options)
+                .filter((ele) => ele.value === "1 week")[0]
+                .after(new Option("15天", "15 days"));
             wpExpiryPatroller.value = "15 days";
         }
         const wpExpiryFlood = document.querySelector("#mw-input-wpExpiry-flood");
         if (wpExpiryFlood) {
-            Array.from(wpExpiryFlood.options).filter((ele) => ele.value === "1 day")[0].before(new Option("2小时", "2 hours"), new Option("6小时", "6 hours"), new Option("12小时", "12 hours"));
+            Array.from(wpExpiryFlood.options)
+                .filter((ele) => ele.value === "1 day")[0]
+                .before(new Option("2小时", "2 hours"), new Option("6小时", "6 hours"), new Option("12小时", "12 hours"));
         }
         const wpExpiryManuallyConfirmed = document.querySelector("#mw-input-wpExpiry-manually-confirmed");
         if (wpExpiryManuallyConfirmed && !document.getElementById("wpGroup-manually-confirmed").checked) {

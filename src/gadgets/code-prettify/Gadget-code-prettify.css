@@ -131,12 +131,12 @@ li.L3,
 li.L5,
 li.L7,
 li.L9 {
-    background: #EEE;
+    background: #eee;
 }
 
 li.linenums-active {
-    background-color: #FFF8C5;
-    box-shadow: inset 2px 0 0 #D4A72C66;
+    background-color: #fff8c5;
+    box-shadow: inset 2px 0 0 #d4a72c66;
 }
 
 /* 优化移动端代码显示 */

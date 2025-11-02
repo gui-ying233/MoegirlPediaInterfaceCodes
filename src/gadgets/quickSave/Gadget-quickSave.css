@@ -10,7 +10,6 @@
     display: flex;
 }
 
-
 .AnnTools_log_message {
     flex-grow: 1;
 }
@@ -22,9 +21,9 @@
 }
 
 .AnnTools_log-success .AnnTools_log_status {
-    color: #67CA75;
+    color: #67ca75;
 }
 
 .AnnTools_log-failed {
-    color: #FF7272;
+    color: #ff7272;
 }

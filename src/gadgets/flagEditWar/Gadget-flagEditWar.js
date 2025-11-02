@@ -2,7 +2,12 @@
 "use strict";
 $(() => {
     const protectLevel = ["sysop", "patrolleredit", "extendedconfirmed", "techedit", "autoconfirmed"];
-    if ($("#EditWarWarningEndTime")[0] || mw.config.get("wgNamespaceNumber") !== 0 || !mw.config.get("wgUserGroups").includes("sysop") || !protectLevel.includes(mw.config.get("wgRestrictionEdit")[0])) {
+    if (
+        $("#EditWarWarningEndTime")[0] ||
+        mw.config.get("wgNamespaceNumber") !== 0 ||
+        !mw.config.get("wgUserGroups").includes("sysop") ||
+        !protectLevel.includes(mw.config.get("wgRestrictionEdit")[0])
+    ) {
         return;
     }
 
@@ -23,15 +28,17 @@ $(() => {
                 autoHide: false,
                 tag: "lr-flagEditWar",
             });
-            const data = (await api.get({
-                action: "query",
-                assertuser: username,
-                list: "logevents",
-                letype: "protect",
-                leprop: "user|details",
-                lelimit: 1,
-                letitle: pagename,
-            })).query.logevents["0"];
+            const data = (
+                await api.get({
+                    action: "query",
+                    assertuser: username,
+                    list: "logevents",
+                    letype: "protect",
+                    leprop: "user|details",
+                    lelimit: 1,
+                    letitle: pagename,
+                })
+            ).query.logevents["0"];
             const { user } = data;
             let endTime = data.params.details[0].expiry;
             if (endTime === "infinite") {
@@ -39,7 +46,8 @@ $(() => {
             } else {
                 endTime = moment(endTime).utcOffset(8).format("YYYY年M月D日 HH:mm:ss [(CST)]");
             }
-            const template = `{{编辑战|sysop=${user}|end=${endTime}}}\n`, summary = `编辑战模板：由[[User_talk:${user}|${user}]]保护至${endTime}`;
+            const template = `{{编辑战|sysop=${user}|end=${endTime}}}\n`,
+                summary = `编辑战模板：由[[User_talk:${user}|${user}]]保护至${endTime}`;
 
             if (hasWarning) {
                 mw.notify("检测到编辑战模板，正在获取页面内容……", {
@@ -47,13 +55,15 @@ $(() => {
                     autoHide: false,
                     tag: "lr-flagEditWar",
                 });
-                let text = (await api.get({
-                    action: "parse",
-                    assertuser: username,
-                    prop: "wikitext",
-                    page: pagename,
-                    section: 0,
-                })).parse.wikitext["*"];
+                let text = (
+                    await api.get({
+                        action: "parse",
+                        assertuser: username,
+                        prop: "wikitext",
+                        page: pagename,
+                        section: 0,
+                    })
+                ).parse.wikitext["*"];
                 text = text.replace(/\{\{编辑战(?:\|.*?)?\}\}\n?/, template);
 
                 mw.notify("正在修改编辑战模板……", {
@@ -107,9 +117,12 @@ $(() => {
 
     $(mw.util.addPortletLink("p-tb", "#", "标记编辑战", "t-lr-flagEditWar", `${hasWarning ? "修改此页面的" : "在此页面悬挂"}编辑战模板`)).on("click", async (e) => {
         e.preventDefault();
-        if (working || !await oouiDialog.confirm(`确定要${hasWarning ? "修改此页面的" : "在此页面悬挂"}编辑战模板吗？`, {
-            title: "标记编辑战小工具",
-        })) {
+        if (
+            working ||
+            !(await oouiDialog.confirm(`确定要${hasWarning ? "修改此页面的" : "在此页面悬挂"}编辑战模板吗？`, {
+                title: "标记编辑战小工具",
+            }))
+        ) {
             return;
         }
         main();

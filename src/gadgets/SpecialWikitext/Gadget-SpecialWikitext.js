@@ -8,7 +8,7 @@
     mw.config.set("wgIsSpecialWikitextPreview", true);
     await $.ready;
 
-    const getCleanText = (input) => typeof input === "string" || input ? `${input}`.trim() : "";
+    const getCleanText = (input) => (typeof input === "string" || input ? `${input}`.trim() : "");
 
     /* 与[[Module:SpecialWikitext]]保持一致 */
     const wikiTextKey = "_addText";
@@ -20,9 +20,7 @@
             }
             let text = new_str;
             if (_escape) {
-                const escape_str = JSON.parse(`[${JSON.stringify(
-                    `${new_str}`.replace(/\\([ux])/ig, "$1"),
-                ).replace(/\\\\/g, "\\")}]`)[0];
+                const escape_str = JSON.parse(`[${JSON.stringify(`${new_str}`.replace(/\\([ux])/gi, "$1")).replace(/\\\\/g, "\\")}]`)[0];
                 text = escape_str;
             }
             input_string += text;
@@ -48,9 +46,7 @@
         let wikitext = "";
         try {
             str.replace(new RegExp(`${wikiTextKey}\\s*\\{[^c\\}]*content\\s*:\\s*[^\n]*`, "g"), (text) => {
-                const temp_text = (/content\s*:\s*[^\n]*/.exec(text) || ["content:"])[0]
-                    .replace(/^[\s\uFEFF\xA0\t\r\n\f ;}]+|[\s\uFEFF\xA0\t\r\n\f ;}]+$/g, "")
-                    .replace(/\s*content\s*:\s*/, "");
+                const temp_text = (/content\s*:\s*[^\n]*/.exec(text) || ["content:"])[0].replace(/^[\s\uFEFF\xA0\t\r\n\f ;}]+|[\s\uFEFF\xA0\t\r\n\f ;}]+$/g, "").replace(/\s*content\s*:\s*/, "");
                 if (wikitext !== "") {
                     wikitext += "\n";
                 }
@@ -66,8 +62,7 @@
         let wikitext = "";
         try {
             str.replace(new RegExp(`${wikiTextKey}\\s*[\\=:]\\s*[^\n]*`, "g"), (text) => {
-                const temp_text = text.replace(/^[\s\uFEFF\xA0\t\r\n\f ;}]+|[\s\uFEFF\xA0\t\r\n\f ;}]+$/g, "")
-                    .replace(new RegExp(`${wikiTextKey}\\s*[\\=:]\\s*`), "");
+                const temp_text = text.replace(/^[\s\uFEFF\xA0\t\r\n\f ;}]+|[\s\uFEFF\xA0\t\r\n\f ;}]+$/g, "").replace(new RegExp(`${wikiTextKey}\\s*[\\=:]\\s*`), "");
                 if (wikitext !== "") {
                     wikitext += "\n";
                 }
@@ -107,14 +102,16 @@
         try {
             const json_data = JSON.parse(json_text);
             Object.keys(json_data).forEach((key) => {
-                const k = key, v = json_data[key];
+                const k = key,
+                    v = json_data[key];
                 if (new RegExp(wikiTextKey).exec(k) && typeof v === "string") {
                     wikitext = lua_addText(wikitext, v);
                 }
                 if (typeof v !== "string") {
                     for (const prop in v) {
                         if (Object.hasOwnProperty.bind(v)(prop)) {
-                            const testArr_k = prop, testArr_v = v[prop];
+                            const testArr_k = prop,
+                                testArr_v = v[prop];
                             if (new RegExp(wikiTextKey).exec(testArr_k) && typeof testArr_v === "string") {
                                 wikitext = lua_addText(wikitext, testArr_v);
                             }
@@ -349,7 +346,7 @@
                 }
                 $("#mw-clearyourcache").empty();
                 if (!document.querySelector("#wpTextbox1")) {
-                    addLoadingNotice();// 放置提示，提示使用者等待AJAX
+                    addLoadingNotice(); // 放置提示，提示使用者等待AJAX
                     mwGetFromNowRevision();
                 }
             } else if (document.querySelector("#mw-revision-info") && mwConfigIfMatchInLowerCase("wgAction", "view")) {
@@ -451,7 +448,9 @@
             }
             const parsedNodes = $(parsedHTML);
             for (let i = 0; i <= wikitextPackages.length; i++) {
-                $(`.special-wikitext-preview-testcase[data-preview-id=${i}]`).find(".mw-_addText-preview-loading").before(parsedNodes.find(`.special-wikitext-preview-testcase-container > .special-wikitext-preview-testcase[data-preview-id=${i}]`));
+                $(`.special-wikitext-preview-testcase[data-preview-id=${i}]`)
+                    .find(".mw-_addText-preview-loading")
+                    .before(parsedNodes.find(`.special-wikitext-preview-testcase-container > .special-wikitext-preview-testcase[data-preview-id=${i}]`));
             }
             removeLoadingNotice();
         } catch (e) {

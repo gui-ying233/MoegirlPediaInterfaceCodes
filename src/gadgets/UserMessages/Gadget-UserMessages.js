@@ -8,7 +8,7 @@
  */
 "use strict";
 (async () => {
-    if (window.AxUserMsg || !mw.config.get("wgUserGroups").includes("patroller") && !mw.config.get("wgUserGroups").includes("sysop")) {
+    if (window.AxUserMsg || (!mw.config.get("wgUserGroups").includes("patroller") && !mw.config.get("wgUserGroups").includes("sysop"))) {
         return;
     }
     // alternative for jQuery UI autocomplete: jquery.suggestions
@@ -79,7 +79,7 @@
                     }
                     return;
                 }
-                const User = this.oldValue = this.callingObject.umCleanFileAndUser(val);
+                const User = (this.oldValue = this.callingObject.umCleanFileAndUser(val));
                 const query = {
                     action: "query",
                     assertuser: mw.config.get("wgUserName"),
@@ -128,11 +128,13 @@
             }
         }
     }
-    const umsg = window.AxUserMsg = {
+    const umsg = (window.AxUserMsg = {
         umInstall: () => {
             if ($("#t-AjaxUserMessage").length === 0) {
                 const $LODLinkNode = $("#t-AjaxUserMessageLOD");
-                const $Href = $LODLinkNode.length ? $LODLinkNode.eq(0) : $(mw.util.addPortletLink("p-tb", "#", wgULS("向该用户发出提醒", "對此使用者發送提醒", null, null, "對此用戶發送提醒"), "t-AjaxUserMessage", "加载 UserMessages 小工具"));
+                const $Href = $LODLinkNode.length
+                    ? $LODLinkNode.eq(0)
+                    : $(mw.util.addPortletLink("p-tb", "#", wgULS("向该用户发出提醒", "對此使用者發送提醒", null, null, "對此用戶發送提醒"), "t-AjaxUserMessage", "加载 UserMessages 小工具"));
                 $Href.on("click", (e) => {
                     e.preventDefault();
                     umsg.fireImmediately = false;
@@ -184,13 +186,13 @@
             o.umTemplate.forEach((currentTag, id) => {
                 if ($(`#umOpt${id}`, o.$tagSelect).length === 0) {
                     // check wether to add
-                    if (-1 === userstate && !(currentTag[3] & o.umFlagUM) || true === userstate && !(currentTag[3] & o.umFlagIP)) {
+                    if ((-1 === userstate && !(currentTag[3] & o.umFlagUM)) || (true === userstate && !(currentTag[3] & o.umFlagIP))) {
                         o.$tagSelect.append(`<option id="umOpt${id}" value="${id}">${mw.html.escape(`${currentTag[1]} - ${currentTag[2]}`)}</option>`);
                         return;
                     }
                 } else {
                     // check wether to remove
-                    if (-1 === userstate && currentTag[3] & o.umFlagUM || true === userstate && currentTag[3] & o.umFlagIP) {
+                    if ((-1 === userstate && currentTag[3] & o.umFlagUM) || (true === userstate && currentTag[3] & o.umFlagIP)) {
                         $(`#umOpt${id}`, o.$tagSelect).remove();
                         return;
                     }
@@ -208,45 +210,50 @@
         },
         umDlg: () => {
             const $win = $(window);
-            umsg.dlg = $("<div>").html('<div id="AjaxUmContainer"></div>').dialog({
-                modal: true,
-                closeOnEscape: true,
-                position: [Math.round(($win.width() - Math.min($win.width(), 850)) / 2), Math.round(($win.height() - Math.min($win.height(), 800)) / 2)],
-                title: '用户讨论页留言小工具 - <span class="mw-parser-output"><a href="//commons.wikimedia.org/wiki/MediaWiki_talk:Gadget-UserMessages.js" target="_blank" rel="nofollow noreferrer noopener" class="external text">在维基共享报告错误和建议</a> | <a href="/Help:UserMessages%E5%B0%8F%E5%B7%A5%E5%85%B7" target="_blank" class="external text">点此查看帮助</a></span>',
-                height: Math.min($win.height(), 800),
-                width: Math.min($win.width(), 850),
-                buttons: {
-                    [umsg.i18n.submitButtonLabel]: () => {
-                        try {
-                            if (umsg.umIsValid) {
-                                umsg.umNotifyUserExecute();
+            umsg.dlg = $("<div>")
+                .html('<div id="AjaxUmContainer"></div>')
+                .dialog({
+                    modal: true,
+                    closeOnEscape: true,
+                    position: [Math.round(($win.width() - Math.min($win.width(), 850)) / 2), Math.round(($win.height() - Math.min($win.height(), 800)) / 2)],
+                    title: '用户讨论页留言小工具 - <span class="mw-parser-output"><a href="//commons.wikimedia.org/wiki/MediaWiki_talk:Gadget-UserMessages.js" target="_blank" rel="nofollow noreferrer noopener" class="external text">在维基共享报告错误和建议</a> | <a href="/Help:UserMessages%E5%B0%8F%E5%B7%A5%E5%85%B7" target="_blank" class="external text">点此查看帮助</a></span>',
+                    height: Math.min($win.height(), 800),
+                    width: Math.min($win.width(), 850),
+                    buttons: {
+                        [umsg.i18n.submitButtonLabel]: () => {
+                            try {
+                                if (umsg.umIsValid) {
+                                    umsg.umNotifyUserExecute();
+                                }
+                            } catch (ex) {
+                                umsg.fail(ex);
                             }
-                        } catch (ex) {
-                            umsg.fail(ex);
-                        }
+                        },
+                        [umsg.i18n.cancelButtonLabel]: function () {
+                            $(this).dialog("close");
+                            console.info("[this.i18n.cancelButtonLabel]", this, umsg.dlg);
+                        },
                     },
-                    [umsg.i18n.cancelButtonLabel]: function () {
-                        $(this).dialog("close");
-                        console.info("[this.i18n.cancelButtonLabel]", this, umsg.dlg);
+                    close: function () {
+                        console.info("close", this, umsg.dlg);
+                        $(this).dialog("destroy");
+                        $(this).remove();
+                        umsg.umDlgPresent = false;
                     },
-                },
-                close: function () {
-                    console.info("close", this, umsg.dlg);
-                    $(this).dialog("destroy");
-                    $(this).remove();
-                    umsg.umDlgPresent = false;
-                },
-                open: function () {
-                    const $dlg = $(this); // 不可去除
-                    $dlg.parents(".ui-dialog").css({
-                        position: "fixed", top: `${Math.round(($win.height() - Math.min($win.height(), 800)) / 2)}px`,
-                    });
-                },
-            });
+                    open: function () {
+                        const $dlg = $(this); // 不可去除
+                        $dlg.parents(".ui-dialog").css({
+                            position: "fixed",
+                            top: `${Math.round(($win.height() - Math.min($win.height(), 800)) / 2)}px`,
+                        });
+                    },
+                });
             umsg.umDlgPresent = true;
             if (umsg.dlg) {
                 const $AjaxUmContainer = $("#AjaxUmContainer");
-                $AjaxUmContainer.append(`<label for="umUser">${mw.html.escape(umsg.i18n.umFillInUser)}</label><br><input type="text" id="umUser" style="width: 95%;" value="${mw.html.escape(umsg.umUser)}"/>${umsg.umInitImgUserExists.replace("%ID%", "umUserExists")}<br><br>`);
+                $AjaxUmContainer.append(
+                    `<label for="umUser">${mw.html.escape(umsg.i18n.umFillInUser)}</label><br><input type="text" id="umUser" style="width: 95%;" value="${mw.html.escape(umsg.umUser)}"/>${umsg.umInitImgUserExists.replace("%ID%", "umUserExists")}<br><br>`,
+                );
                 umsg.$tagSelect = $("<select>", {
                     size: "1",
                     id: "umTagToInsert",
@@ -254,7 +261,8 @@
                 });
                 $AjaxUmContainer.append([
                     `<label for="umTagToInsert">${mw.html.escape(umsg.i18n.umSelectTag)}</label><br>`,
-                    umsg.$tagSelect, "<br><br>",
+                    umsg.$tagSelect,
+                    "<br><br>",
                     `<span id="umMediaWrapper"><label for="umMedia">${mw.html.escape(umsg.i18n.umFillInMedia)}</label><br><input type="text" id="umMedia" style="width: 95%;" value="File:"/><br><br></span>`,
                     `<span id="umP2Wrapper"><label for="umP2">${mw.html.escape(umsg.i18n.umFillInAdditional)}</label><br><input type="text" id="umP2" style="width: 95%;"/><br><br></span>`,
                     `<span id="umP3Wrapper"><label for="umP3">${mw.html.escape(umsg.i18n.umFillInAdditional)}</label><br><input type="text" id="umP3" style="width: 95%;"/><br><br></span>`,
@@ -295,8 +303,7 @@
                             }
                             return `File:${m[1]}`;
                         }
-                    } catch {
-                    }
+                    } catch {}
                 };
                 const umFile = guessFile();
                 if (umFile) {
@@ -445,7 +452,8 @@
             const searchTerms = [];
             result.forEach((fii) => {
                 searchTerms.push({
-                    id: fii.timestamp, value: `File:${fii.name}`,
+                    id: fii.timestamp,
+                    value: `File:${fii.name}`,
                 });
             });
             if ("function" === typeof pCallback) {
@@ -520,7 +528,9 @@
                 if ("\n{{subst:}}" === umsg.talkTag) {
                     umsg.talkTag = "\n";
                 }
-                umsg.talkTag += `\n${$("#umAddText").val().replace(/~{3,5}$/, "")}${sigText}\n`;
+                umsg.talkTag += `\n${$("#umAddText")
+                    .val()
+                    .replace(/~{3,5}$/, "")}${sigText}\n`;
                 umsg.umParseTemplate(false);
                 // If the user wants the old behaviour back, we fire immediately
                 if (umsg.fireImmediately) {
@@ -536,7 +546,12 @@
         umCleanFileAndUser: (input) => {
             let output = "";
             if (input) {
-                output = input.replace(/_/g, " ").replace(/File:/g, "").replace(/Image:/g, "").replace(/User:/g, "").replace(/^\s+|\s+$/g, "");
+                output = input
+                    .replace(/_/g, " ")
+                    .replace(/File:/g, "")
+                    .replace(/Image:/g, "")
+                    .replace(/User:/g, "")
+                    .replace(/^\s+|\s+$/g, "");
                 output = output.substring(0, 1).toUpperCase() + output.substring(1);
             }
             return output;
@@ -651,7 +666,7 @@
         },
         umNotifyUserExecuteCB: (/* result */) => {
             let encTitle = umsg.umUserTalkPrefix + $("#umUser").val();
-            encTitle = encodeURIComponent(encTitle.replace(/ /g, "_")).replace(/%2F/ig, "/").replace(/%3A/ig, ":");
+            encTitle = encodeURIComponent(encTitle.replace(/ /g, "_")).replace(/%2F/gi, "/").replace(/%3A/gi, ":");
             const newLoc = `${mw.config.get("wgServer")}${mw.config.get("wgArticlePath").replace("$1", encTitle)}`;
             if (window.location.pathname === mw.config.get("wgArticlePath").replace("$1", encTitle)) {
                 window.location.hash = "#footer";
@@ -786,7 +801,9 @@
                 err = mw.html.escape(_err.toString());
             }
             if (umsg.umDlgPresent) {
-                $("#umInstantPreviewContainer").empty().html(`<p class="center"><img src="${umsg.umImgErr}" width="64" height="64"/></p><br>小工具发生错误：<br>${mw.html.escape(err)}`);
+                $("#umInstantPreviewContainer")
+                    .empty()
+                    .html(`<p class="center"><img src="${umsg.umImgErr}" width="64" height="64"/></p><br>小工具发生错误：<br>${mw.html.escape(err)}`);
             } else {
                 mw.notify(`小工具发生错误：${err}`);
             }
@@ -803,7 +820,8 @@
             cancelButtonLabel: "取消",
         },
         umInstPrevContainer: $("<div>", {
-            id: "umInstantPreviewContainer", style: "background-color:#EFD;height:380px;overflow:scroll;vertical-align:middle;",
+            id: "umInstantPreviewContainer",
+            style: "background-color:#EFD;height:380px;overflow:scroll;vertical-align:middle;",
         }),
         umInitImgUserExists: '<img id="%ID%" src="https://img.moegirl.org.cn/common/thumb/4/42/P_no.svg/20px-P_no.svg.png" alt="?"/>',
         umImgUserUndefined: "https://img.moegirl.org.cn/common/thumb/4/42/P_no.svg/20px-P_no.svg.png",
@@ -824,7 +842,7 @@
         umFlagRqMqNs: 0b00001101, // Combination of (umFlagRq | umFlagMQ | umFlagNS)
         umUserTalkPrefix: `${mw.config.get("wgFormattedNamespaces")[3]}:`,
         apiURL: mw.util.wikiScript("api"),
-    };
+    });
     const builtinTemplate = [
         /*! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
          * Append new messages at the bottom. Otherwise pre-selection for users will break.
@@ -866,11 +884,7 @@
                 if (!Array.isArray(window.AxUserMsgCustomTemplate)) {
                     window.AxUserMsgCustomTemplate = [];
                 }
-                const result = [
-                    ...window.AxUserMsgUseBuiltinTemplate !== false ? builtinTemplate : [],
-                    ...window.AxUserMsgCustomTemplate,
-                    placeholderTemplate,
-                ];
+                const result = [...(window.AxUserMsgUseBuiltinTemplate !== false ? builtinTemplate : []), ...window.AxUserMsgCustomTemplate, placeholderTemplate];
                 result.push = (...args) => window.AxUserMsgCustomTemplate.push(...args);
                 return result;
             },
@@ -898,7 +912,7 @@
      *
      * Author: someone from the jQuery UI-Team?
      * slightly altered
-    **/
+     **/
     const initCombobox = ($) => {
         $.widget("ui.combobox", {
             // These options will be used as defaults
@@ -941,106 +955,113 @@
                 if (selectId) {
                     selectLabels = $(`label[for="${selectId}"]`);
                 }
-                const portMessure = this.portMessure = $("<div>", {
+                const portMessure = (this.portMessure = $("<div>", {
                     id: `${ownId}vp`,
                 }).css({
-                    position: "fixed", top: "0", height: "0",
-                });
+                    position: "fixed",
+                    top: "0",
+                    height: "0",
+                }));
                 $("body").append(portMessure);
-                const input = this.input = $("<input>", {
+                const input = (this.input = $("<input>", {
                     id: ownId,
-                }).insertAfter(select).val(value).autocomplete({
-                    delay: 0,
-                    minLength: 0,
-                    source: (request, response) => {
-                        let i = 0;
-                        const matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
-                        response(select.children("option").map((_, ele) => {
-                            if (i > (window.AxUserMsgMaxSelect || 20) && request.term) {
-                                return;
-                            }
-                            const text = $(ele).text();
-                            if (ele.value && (!request.term || matcher.test(text))) {
-                                i++;
-                                return {
-                                    label: text.replace(
-                                        new RegExp(
-                                            `(?![^&;]+;)(?!<[^<>]*)(${$.ui.autocomplete.escapeRegex(request.term)
-                                            })(?![^<>]*>)(?![^&;]+;)`, "gi",
-                                        ), "<b>$1</b>"),
-                                    value: text,
-                                    option: ele,
-                                };
-                            }
-                        }));
-                    },
-                    select: (event, ui) => {
-                        ui.item.option.selected = true;
-                        self._trigger("selected", event, {
-                            item: ui.item.option,
-                        });
-                        select.triggerHandler("change");
-                    },
-                    change: function (_, ui) {
-                        setTimeout(() => {
-                            console.info("change", input, this, ui);
-                        }, 16);
-                        if (!ui.item) {
-                            const matcher = new RegExp(`^${$.ui.autocomplete.escapeRegex($(this).val())}$`, "i");
-                            valid = false;
-                            select.children("option").each((_, ele) => {
-                                if ($(ele).text().match(matcher)) {
-                                    ele.selected = valid = true;
+                })
+                    .insertAfter(select)
+                    .val(value)
+                    .autocomplete({
+                        delay: 0,
+                        minLength: 0,
+                        source: (request, response) => {
+                            let i = 0;
+                            const matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
+                            response(
+                                select.children("option").map((_, ele) => {
+                                    if (i > (window.AxUserMsgMaxSelect || 20) && request.term) {
+                                        return;
+                                    }
+                                    const text = $(ele).text();
+                                    if (ele.value && (!request.term || matcher.test(text))) {
+                                        i++;
+                                        return {
+                                            label: text.replace(new RegExp(`(?![^&;]+;)(?!<[^<>]*)(${$.ui.autocomplete.escapeRegex(request.term)})(?![^<>]*>)(?![^&;]+;)`, "gi"), "<b>$1</b>"),
+                                            value: text,
+                                            option: ele,
+                                        };
+                                    }
+                                }),
+                            );
+                        },
+                        select: (event, ui) => {
+                            ui.item.option.selected = true;
+                            self._trigger("selected", event, {
+                                item: ui.item.option,
+                            });
+                            select.triggerHandler("change");
+                        },
+                        change: function (_, ui) {
+                            setTimeout(() => {
+                                console.info("change", input, this, ui);
+                            }, 16);
+                            if (!ui.item) {
+                                const matcher = new RegExp(`^${$.ui.autocomplete.escapeRegex($(this).val())}$`, "i");
+                                valid = false;
+                                select.children("option").each((_, ele) => {
+                                    if ($(ele).text().match(matcher)) {
+                                        ele.selected = valid = true;
+                                        return false;
+                                    }
+                                });
+                                if (!valid) {
+                                    // remove invalid value, as it didn't match anything
+                                    $(this).val("");
+                                    input.data("autocomplete").term = "";
+                                    select.val(self.options.emptyMessage);
+                                    select.triggerHandler("change");
                                     return false;
                                 }
-                            });
-                            if (!valid) {
-                                // remove invalid value, as it didn't match anything
-                                $(this).val("");
-                                input.data("autocomplete").term = "";
-                                select.val(self.options.emptyMessage);
                                 select.triggerHandler("change");
-                                return false;
                             }
-                            select.triggerHandler("change");
+                        },
+                        create: function () {
+                            const $this = $(this); // 不可去除
+                            const t_top = $this.offset().top - portMessure.offset().top;
+                            $(".ui-autocomplete.ui-menu").css({
+                                position: "fixed",
+                                overflow: "auto",
+                                "max-height": `${Math.round($(window).height() - t_top - $this.height() - 20)}px`,
+                            });
+                        },
+                        close: () => {
+                            setTimeout(() => {
+                                isOpen = false;
+                            }, 1);
+                        },
+                        open: function () {
+                            setTimeout(() => {
+                                console.info("open", input, this);
+                            }, 16);
+                            isOpen = true;
+                            const _t = $(this),
+                                t_top = _t.offset().top - portMessure.offset().top;
+                            $(".ui-autocomplete.ui-menu").css({
+                                position: "fixed",
+                                "max-height": `${Math.round($(window).height() - t_top - _t.height() - 20)}px`,
+                            });
+                        },
+                    })
+                    .addClass("ui-widget ui-widget-content ui-corner-left")
+                    .css("width", `${selectWidth - 70}px`)
+                    .on("click", () => {
+                        $(input).trigger("select");
+                    })
+                    .on("keydown", (e) => {
+                        if (self.options.passEnter && 13 === e.which && !isOpen && valid) {
+                            const kup = $.Event("keyup");
+                            kup.ctrlKey = false;
+                            kup.keyCode = kup.which = 13;
+                            select.triggerHandler(kup);
                         }
-                    },
-                    create: function () {
-                        const $this = $(this); // 不可去除
-                        const t_top = $this.offset().top - portMessure.offset().top;
-                        $(".ui-autocomplete.ui-menu").css({
-                            position: "fixed",
-                            overflow: "auto",
-                            "max-height": `${Math.round($(window).height() - t_top - $this.height() - 20)}px`,
-                        });
-                    },
-                    close: () => {
-                        setTimeout(() => {
-                            isOpen = false;
-                        }, 1);
-                    },
-                    open: function () {
-                        setTimeout(() => {
-                            console.info("open", input, this);
-                        }, 16);
-                        isOpen = true;
-                        const _t = $(this),
-                            t_top = _t.offset().top - portMessure.offset().top;
-                        $(".ui-autocomplete.ui-menu").css({
-                            position: "fixed",
-                            "max-height": `${Math.round($(window).height() - t_top - _t.height() - 20)}px`,
-                        });
-                    },
-                }).addClass("ui-widget ui-widget-content ui-corner-left").css("width", `${selectWidth - 70}px`).on("click", () => {
-                    $(input).trigger("select");
-                }).on("keydown", (e) => {
-                    if (self.options.passEnter && 13 === e.which && !isOpen && valid) {
-                        const kup = $.Event("keyup");
-                        kup.ctrlKey = false;
-                        kup.keyCode = kup.which = 13;
-                        select.triggerHandler(kup);
-                    }
-                });
+                    }));
                 if (selectLabels) {
                     selectLabels.attr("for", ownId);
                 }
@@ -1051,23 +1072,28 @@
                     text: "&nbsp;",
                     title: "Show All Items",
                     style: "height:1.5em;padding:0!important;width:20px;margin:0!important;position:relative;top:-2px;",
-                }).insertAfter(input).button({
-                    icons: {
-                        primary: "ui-icon-triangle-1-s",
-                    },
-                    text: false,
-                }).removeClass("ui-corner-all").addClass("ui-corner-right ui-button-icon").on("click", () => {
-                    // close if already visible
-                    if (input.autocomplete("widget").is(":visible")) {
-                        input.autocomplete("close");
-                        return;
-                    }
-                    // work around a bug (likely same cause as #5265)
-                    this.button.blur();
-                    // pass empty string as value to search for, displaying all results
-                    input.autocomplete("search", "");
-                    input.focus();
-                });
+                })
+                    .insertAfter(input)
+                    .button({
+                        icons: {
+                            primary: "ui-icon-triangle-1-s",
+                        },
+                        text: false,
+                    })
+                    .removeClass("ui-corner-all")
+                    .addClass("ui-corner-right ui-button-icon")
+                    .on("click", () => {
+                        // close if already visible
+                        if (input.autocomplete("widget").is(":visible")) {
+                            input.autocomplete("close");
+                            return;
+                        }
+                        // work around a bug (likely same cause as #5265)
+                        this.button.blur();
+                        // pass empty string as value to search for, displaying all results
+                        input.autocomplete("search", "");
+                        input.focus();
+                    });
             },
             destroy: function () {
                 if (this.options.shutOff) {
@@ -1081,10 +1107,13 @@
             },
         });
     };
-    const linktext = wgULS("向该用户发出提醒", "對此使用者發送提醒", null, null, "對此用戶發送提醒"), nsNr = mw.config.get("wgNamespaceNumber");
-    if (nsNr === 3 || nsNr === 2
-        || nsNr === -1
-        && ["Contributions", "DeletedContributions", "Block", "CentralAuth", "Userrights", "Listfiles", "Log"].includes(mw.config.get("wgCanonicalSpecialPageName"))) {
+    const linktext = wgULS("向该用户发出提醒", "對此使用者發送提醒", null, null, "對此用戶發送提醒"),
+        nsNr = mw.config.get("wgNamespaceNumber");
+    if (
+        nsNr === 3 ||
+        nsNr === 2 ||
+        (nsNr === -1 && ["Contributions", "DeletedContributions", "Block", "CentralAuth", "Userrights", "Listfiles", "Log"].includes(mw.config.get("wgCanonicalSpecialPageName")))
+    ) {
         const loadFullScript = () => {
             initCombobox($);
             umsg.umInstall();

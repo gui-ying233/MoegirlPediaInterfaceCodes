@@ -12,13 +12,16 @@
     if (/(?:^内容|內容|被清空前|页面为空|頁面為空|page was empty|content was|content before blanking was)/i.test(wpReason.value)) {
         wpReason.value = "";
     }
-    const html = (await api.post({
-        action: "parse",
-        pageid: mw.config.get("wgArticleId"),
-        prop: "text",
-        format: "json",
-        formatversion: 2,
-    }))?.parse?.text || null;
+    const html =
+        (
+            await api.post({
+                action: "parse",
+                pageid: mw.config.get("wgArticleId"),
+                prop: "text",
+                format: "json",
+                formatversion: 2,
+            })
+        )?.parse?.text || null;
     if (!html) {
         return;
     }

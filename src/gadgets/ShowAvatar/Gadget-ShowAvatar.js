@@ -1,11 +1,12 @@
 "use strict";
 // <pre>
 $(() => {
-    const UploadAvatar = (_, children) => $("<a>", {
-        href: "https://commons.moegirl.org.cn/Special:UploadAvatar",
-        title: "上传头像",
-        target: "_blank",
-    }).append(children);
+    const UploadAvatar = (_, children) =>
+        $("<a>", {
+            href: "https://commons.moegirl.org.cn/Special:UploadAvatar",
+            title: "上传头像",
+            target: "_blank",
+        }).append(children);
     const ViewAvatar = ({ userName }, children) => {
         const url = new URL("https://commons.moegirl.org.cn/Special:Viewavatar");
         userName && url.searchParams.set("user", userName);

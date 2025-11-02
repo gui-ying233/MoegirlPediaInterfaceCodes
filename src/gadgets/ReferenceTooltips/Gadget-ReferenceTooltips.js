@@ -12,39 +12,44 @@
         COMMENTED_TEXT_CLASS = "rt-commentedText",
         COMMENTED_TEXT_SELECTOR = `${COMMENTED_TEXT_CLASS ? `.${COMMENTED_TEXT_CLASS}, ` : ""}abbr[title]`;
 
-    mw.messages.set(wgULS({
-        "rt-settings": "参考文献提示工具设置",
-        "rt-enable-footer": "启用参考文献提示工具",
-        "rt-settings-title": "参考文献提示工具",
-        "rt-save": "保存",
-        "rt-cancel": "取消",
-        "rt-enable": "启用",
-        "rt-disable": "禁用",
-        "rt-activationMethod": "提示工具显示方式",
-        "rt-hovering": "鼠标悬浮",
-        "rt-clicking": "点击",
-        "rt-delay": "工具提示显示延迟（毫秒）",
-        "rt-tooltipsForComments": `在参考文献提示工具样式中用<span title="提示工具的例子" class="${COMMENTED_TEXT_CLASS || "rt-commentedText"}" style="border-bottom: 1px dotted; cursor: help;">虚下划线</span>的方式在文字上显示提示工具（可以在不支持鼠标的设备上显示提示工具）`,
-        "rt-disabledNote": "你可以通过页脚中的链接重新启用参考文献提示工具",
-        "rt-done": "完成",
-        "rt-enabled": "参考文献提示工具已启用",
-    }, {
-        "rt-settings": "參考文獻提示工具設定",
-        "rt-enable-footer": "啟用參考文獻提示工具",
-        "rt-settings-title": "參考文獻提示工具",
-        "rt-save": "儲存",
-        "rt-cancel": "取消",
-        "rt-enable": "啟用",
-        "rt-disable": "停用",
-        "rt-activationMethod": "提示工具顯示方式",
-        "rt-hovering": "滑鼠懸浮",
-        "rt-clicking": "點擊",
-        "rt-delay": "工具提示顯示延遲（毫秒）",
-        "rt-tooltipsForComments": `在參考文獻提示工具樣式中用<span title="提示工具的例子" class="${COMMENTED_TEXT_CLASS || "rt-commentedText"}" style="border-bottom: 1px dotted; cursor: help;">虛底線</span>的方式在文字上顯示提示工具（可以在不支持滑鼠的裝置上顯示提示工具）`,
-        "rt-disabledNote": "你可以通過頁尾中的連結重新啟用參考文獻提示工具",
-        "rt-done": "完成",
-        "rt-enabled": "參考文獻提示工具已啟用",
-    }));
+    mw.messages.set(
+        wgULS(
+            {
+                "rt-settings": "参考文献提示工具设置",
+                "rt-enable-footer": "启用参考文献提示工具",
+                "rt-settings-title": "参考文献提示工具",
+                "rt-save": "保存",
+                "rt-cancel": "取消",
+                "rt-enable": "启用",
+                "rt-disable": "禁用",
+                "rt-activationMethod": "提示工具显示方式",
+                "rt-hovering": "鼠标悬浮",
+                "rt-clicking": "点击",
+                "rt-delay": "工具提示显示延迟（毫秒）",
+                "rt-tooltipsForComments": `在参考文献提示工具样式中用<span title="提示工具的例子" class="${COMMENTED_TEXT_CLASS || "rt-commentedText"}" style="border-bottom: 1px dotted; cursor: help;">虚下划线</span>的方式在文字上显示提示工具（可以在不支持鼠标的设备上显示提示工具）`,
+                "rt-disabledNote": "你可以通过页脚中的链接重新启用参考文献提示工具",
+                "rt-done": "完成",
+                "rt-enabled": "参考文献提示工具已启用",
+            },
+            {
+                "rt-settings": "參考文獻提示工具設定",
+                "rt-enable-footer": "啟用參考文獻提示工具",
+                "rt-settings-title": "參考文獻提示工具",
+                "rt-save": "儲存",
+                "rt-cancel": "取消",
+                "rt-enable": "啟用",
+                "rt-disable": "停用",
+                "rt-activationMethod": "提示工具顯示方式",
+                "rt-hovering": "滑鼠懸浮",
+                "rt-clicking": "點擊",
+                "rt-delay": "工具提示顯示延遲（毫秒）",
+                "rt-tooltipsForComments": `在參考文獻提示工具樣式中用<span title="提示工具的例子" class="${COMMENTED_TEXT_CLASS || "rt-commentedText"}" style="border-bottom: 1px dotted; cursor: help;">虛底線</span>的方式在文字上顯示提示工具（可以在不支持滑鼠的裝置上顯示提示工具）`,
+                "rt-disabledNote": "你可以通過頁尾中的連結重新啟用參考文獻提示工具",
+                "rt-done": "完成",
+                "rt-enabled": "參考文獻提示工具已啟用",
+            },
+        ),
+    );
 
     // "Global" variables
     const SECONDS_IN_A_DAY = 60 * 60 * 24,
@@ -75,11 +80,7 @@
         let teSelector,
             settingsDialogOpening = false;
 
-        const setSettingsCookie = () => mw.cookie.set(
-            "RTsettings",
-            `${+enabled}|${delay}|${+activatedByClick}|${+tooltipsForComments}`,
-            { path: "/", expires: 90 * SECONDS_IN_A_DAY, prefix: "" },
-        );
+        const setSettingsCookie = () => mw.cookie.set("RTsettings", `${+enabled}|${delay}|${+activatedByClick}|${+tooltipsForComments}`, { path: "/", expires: 90 * SECONDS_IN_A_DAY, prefix: "" });
 
         const enableRt = () => {
             enabled = true;
@@ -169,9 +170,7 @@
                         "click.rt": onStartEvent,
                     };
                     // Adds an ability to see tooltips for links
-                    if (this.type === "commentedText"
-                        && (this.$element.closest("a").length || this.$element.has("a").length
-                        )) {
+                    if (this.type === "commentedText" && (this.$element.closest("a").length || this.$element.has("a").length)) {
                         events["contextmenu.rt"] = onStartEvent;
                     }
                 } else {
@@ -221,9 +220,7 @@
                 const reallyShow = () => {
                     let viewportTop, refOffsetTop, teHref;
                     if (!this.$ref && !this.comment) {
-                        teHref = this.type === "supRef"
-                            ? this.$element.find("a").attr("href")
-                            : this.$element.attr("href"); // harvardRef
+                        teHref = this.type === "supRef" ? this.$element.find("a").attr("href") : this.$element.attr("href"); // harvardRef
                         this.$ref = teHref && $(`#${$.escapeSelector(teHref.slice(1))}`);
                         if (!this.$ref || !this.$ref.length || !this.$ref.text()) {
                             this.noRef = true;
@@ -234,11 +231,13 @@
                     if (!tooltipInitiallyPresent && !this.comment) {
                         viewportTop = $window.scrollTop();
                         refOffsetTop = this.$ref.offset().top;
-                        if (!activatedByClick
-                            && viewportTop < refOffsetTop
-                            && viewportTop + $window.height() > refOffsetTop + this.$ref.height()
+                        if (
+                            !activatedByClick &&
+                            viewportTop < refOffsetTop &&
+                            viewportTop + $window.height() > refOffsetTop + this.$ref.height() &&
                             // There can be gadgets/scripts that make references horizontally scrollable.
-                            && $window.width() > this.$ref.offset().left + this.$ref.width()) {
+                            $window.width() > this.$ref.offset().left + this.$ref.width()
+                        ) {
                             // Highlight the reference itself
                             this.$ref.addClass("rt-target");
                             return;
@@ -285,8 +284,7 @@
                 }
 
                 if (activatedByClick) {
-                    if (tooltipInitiallyPresent
-                        || this.$ref && this.$ref.hasClass("rt-target")) {
+                    if (tooltipInitiallyPresent || (this.$ref && this.$ref.hasClass("rt-target"))) {
                         return;
                     }
                     setTimeout(() => {
@@ -313,11 +311,7 @@
 
                 // The last condition is used to determine cases when a clicked tooltip is the current
                 // element's tooltip or one of its descendants
-                while ($current.length
-                    && (!$current.hasClass("rt-tooltip") || !$current.data("tooltip") || !$current.data("tooltip").upToTopParent(
-                        contextMatchesParameter, [this.tooltip],
-                        true,
-                    ))) {
+                while ($current.length && (!$current.hasClass("rt-tooltip") || !$current.data("tooltip") || !$current.data("tooltip").upToTopParent(contextMatchesParameter, [this.tooltip], true))) {
                     $current = $current.parent();
                 }
                 if (!$current.length) {
@@ -340,10 +334,7 @@
                         modes: "basic",
                         action: "save",
                         label: "保存",
-                        flags: [
-                            "primary",
-                            "progressive",
-                        ],
+                        flags: ["primary", "progressive"],
                     },
                     {
                         modes: "basic",
@@ -354,10 +345,7 @@
                         modes: "disabled",
                         action: "deactivated",
                         label: "完成",
-                        flags: [
-                            "primary",
-                            "progressive",
-                        ],
+                        flags: ["primary", "progressive"],
                     },
                 ],
             };
@@ -396,10 +384,7 @@
                 this.activationMethodSelect = new OO.ui.RadioSelectWidget({
                     items: [this.hoverOption, this.clickOption],
                 });
-                this.activationMethodSelect.selectItem(activatedByClick
-                    ? this.clickOption
-                    : this.hoverOption,
-                );
+                this.activationMethodSelect.selectItem(activatedByClick ? this.clickOption : this.hoverOption);
                 this.activationMethodSelect.on("choose", (item) => {
                     if (item === this.clickOption) {
                         this.delayInput.setDisabled(true);
@@ -428,36 +413,21 @@
                 this.tooltipsForCommentsCheckbox = new OO.ui.CheckboxInputWidget({
                     selected: tooltipsForComments,
                 });
-                this.tooltipsForCommentsField = new OO.ui.FieldLayout(
-                    this.tooltipsForCommentsCheckbox,
-                    {
-                        label: new OO.ui.HtmlSnippet(mw.msg("rt-tooltipsForComments")),
-                        align: "inline",
-                        classes: ["rt-tooltipsForCommentsField"],
-                    },
-                );
-                new TooltippedElement(
-                    this.tooltipsForCommentsField.$element.find(
-                        `.${COMMENTED_TEXT_CLASS || "rt-commentedText"}`,
-                    ),
-                );
+                this.tooltipsForCommentsField = new OO.ui.FieldLayout(this.tooltipsForCommentsCheckbox, {
+                    label: new OO.ui.HtmlSnippet(mw.msg("rt-tooltipsForComments")),
+                    align: "inline",
+                    classes: ["rt-tooltipsForCommentsField"],
+                });
+                new TooltippedElement(this.tooltipsForCommentsField.$element.find(`.${COMMENTED_TEXT_CLASS || "rt-commentedText"}`));
 
                 this.fieldset = new OO.ui.FieldsetLayout();
-                this.fieldset.addItems([
-                    this.activationMethodField,
-                    this.delayField,
-                    this.tooltipsForCommentsField,
-                ]);
+                this.fieldset.addItems([this.activationMethodField, this.delayField, this.tooltipsForCommentsField]);
 
                 this.panelSettings = new OO.ui.PanelLayout({
                     padded: true,
                     expanded: false,
                 });
-                this.panelSettings.$element.append(
-                    this.enableSelect.$element,
-                    $("<hr>").addClass("rt-settingsFormSeparator"),
-                    this.fieldset.$element,
-                );
+                this.panelSettings.$element.append(this.enableSelect.$element, $("<hr>").addClass("rt-settingsFormSeparator"), this.fieldset.$element);
 
                 this.panelDisabled = new OO.ui.PanelLayout({
                     padded: true,
@@ -471,9 +441,7 @@
                                 $("<td>").append(
                                     $("<img>").attr("src", "https://en.wikipedia.org/w/load.php?modules=ext.popups.images&image=footer&format=rasterized&lang=ru&skin=vector&version=0uotisb"),
                                 ),
-                                $("<td>")
-                                    .addClass("rt-disabledNote")
-                                    .text(mw.msg("rt-disabledNote")),
+                                $("<td>").addClass("rt-disabledNote").text(mw.msg("rt-disabledNote")),
                             ),
                         ),
                 );
@@ -485,7 +453,8 @@
                 this.$body.append(this.stackLayout.$element);
             }
             getSetupProcess(data) {
-                return SettingsDialog.super.prototype.getSetupProcess.bind(this)(data)
+                return SettingsDialog.super.prototype.getSetupProcess
+                    .bind(this)(data)
                     .next(() => {
                         this.stackLayout.setItem(this.panelSettings);
                         this.actions.setMode("basic");
@@ -539,17 +508,19 @@
                             .contents()
                             .filter((i, ele) => {
                                 const $this = $(ele);
-                                return ele.nodeType === Node.TEXT_NODE
-                                    || !($this.is(".mw-cite-backlink") || i === 0 && (/* Template:Cnote, Template:Note */$this.is("b") || /* Template:Note_label */$this.is("a") && $this.attr("href").indexOf("#ref") === 0
-                                    ));
+                                return (
+                                    ele.nodeType === Node.TEXT_NODE ||
+                                    !(
+                                        $this.is(".mw-cite-backlink") ||
+                                        (i === 0 && /* Template:Cnote, Template:Note */ ($this.is("b") || /* Template:Note_label */ ($this.is("a") && $this.attr("href").indexOf("#ref") === 0)))
+                                    )
+                                );
                             })
                             .clone(true);
                         break;
                     case "harvardRef":
                         this.id = `rt-${this.te.$originalElement.closest("li").attr("id")}`;
-                        this.$content = this.te.$ref
-                            .clone(true)
-                            .removeAttr("id");
+                        this.$content = this.te.$ref.clone(true).removeAttr("id");
                         break;
                     case "commentedText":
                         this.id = `rt-${`${Math.random()}`.slice(2)}`;
@@ -562,23 +533,14 @@
 
                 this.insideWindow = !!this.te.$element.closest(".oo-ui-window").length;
 
-                this.$element = $("<div>")
-                    .addClass("rt-tooltip")
-                    .attr("id", this.id)
-                    .attr("role", "tooltip")
-                    .data("tooltip", this);
+                this.$element = $("<div>").addClass("rt-tooltip").attr("id", this.id).attr("role", "tooltip").data("tooltip", this);
                 if (this.insideWindow) {
                     this.$element.addClass("rt-tooltip-insideWindow");
                 }
 
                 // We need the $content interlayer here in order for the settings icon to have correct
                 // margins
-                this.$content = this.$content
-                    .wrapAll("<div>")
-                    .parent()
-                    .addClass("rt-tooltipContent")
-                    .addClass("mw-parser-output")
-                    .appendTo(this.$element);
+                this.$content = this.$content.wrapAll("<div>").parent().addClass("rt-tooltipContent").addClass("mw-parser-output").appendTo(this.$element);
 
                 if (!activatedByClick) {
                     this.$element
@@ -592,9 +554,7 @@
                         .on("mouseleave", (e) => {
                             // https://stackoverflow.com/q/47649442 workaround. Relying on relatedTarget
                             // alone has pitfalls: when alt-tabbing, relatedTarget is empty too
-                            if (CLIENT_NAME !== "chrome"
-                                || (!e.originalEvent || e.originalEvent.relatedTarget !== null || !this.clickedTime || Date.now() - this.clickedTime > 50
-                                )) {
+                            if (CLIENT_NAME !== "chrome" || !e.originalEvent || e.originalEvent.relatedTarget !== null || !this.clickedTime || Date.now() - this.clickedTime > 50) {
                                 this.upToTopParent((tt) => {
                                     tt.te.hideRef();
                                 });
@@ -630,10 +590,7 @@
                             this.upToTopParent((tt) => {
                                 if (tt.isPresent) {
                                     if (tt.$element[0].style.right) {
-                                        tt.$element.css(
-                                            "right",
-                                            `+=${window.innerWidth - $window.width()}`,
-                                        );
+                                        tt.$element.css("right", `+=${window.innerWidth - $window.width()}`);
                                     }
                                     tt.te.hideRef(true);
                                 }
@@ -659,9 +616,7 @@
 
                 // Tooltip tail element is inside tooltip content element in order for the tooltip
                 // not to disappear when the mouse is above the tail
-                this.$tail = $("<div>")
-                    .addClass("rt-tooltipTail")
-                    .prependTo(this.$element);
+                this.$tail = $("<div>").addClass("rt-tooltipTail").prependTo(this.$element);
 
                 this.disappearing = false;
             }
@@ -670,9 +625,7 @@
                 clearTimeout(this.te.hideTimer);
                 clearTimeout(this.te.removeTimer);
 
-                this.$element
-                    .removeClass(CLASSES.FADE_OUT_DOWN)
-                    .removeClass(CLASSES.FADE_OUT_UP);
+                this.$element.removeClass(CLASSES.FADE_OUT_DOWN).removeClass(CLASSES.FADE_OUT_UP);
 
                 if (!this.isPresent) {
                     $body.append(this.$element);
@@ -684,13 +637,9 @@
                 this.disappearing = true;
 
                 if (this.$element.hasClass("rt-tooltip-above")) {
-                    this.$element
-                        .removeClass(CLASSES.FADE_IN_DOWN)
-                        .addClass(CLASSES.FADE_OUT_UP);
+                    this.$element.removeClass(CLASSES.FADE_IN_DOWN).addClass(CLASSES.FADE_OUT_UP);
                 } else {
-                    this.$element
-                        .removeClass(CLASSES.FADE_IN_UP)
-                        .addClass(CLASSES.FADE_OUT_DOWN);
+                    this.$element.removeClass(CLASSES.FADE_IN_UP).addClass(CLASSES.FADE_OUT_DOWN);
                 }
 
                 this.te.removeTimer = setTimeout(() => {
@@ -709,20 +658,21 @@
                 }, 200);
             }
             calculatePosition(ePageX, ePageY) {
-                let teOffsets, teOffset, tooltipTailOffsetX, tooltipTailLeft, offsetYCorrection = 0;
+                let teOffsets,
+                    teOffset,
+                    tooltipTailOffsetX,
+                    tooltipTailLeft,
+                    offsetYCorrection = 0;
 
                 this.$tail.css("left", "");
 
                 const teElement = this.te.$element.get(0);
                 if (ePageX !== undefined) {
                     tooltipTailOffsetX = ePageX;
-                    teOffsets = teElement.getClientRects && teElement.getClientRects() || teElement.getBoundingClientRect();
+                    teOffsets = (teElement.getClientRects && teElement.getClientRects()) || teElement.getBoundingClientRect();
                     if (teOffsets.length > 1) {
                         for (let i = teOffsets.length - 1; i >= 0; i--) {
-                            if (ePageY >= Math.round($window.scrollTop() + teOffsets[i].top)
-                                && ePageY <= Math.round(
-                                    $window.scrollTop() + teOffsets[i].top + teOffsets[i].height,
-                                )) {
+                            if (ePageY >= Math.round($window.scrollTop() + teOffsets[i].top) && ePageY <= Math.round($window.scrollTop() + teOffsets[i].top + teOffsets[i].height)) {
                                 teOffset = teOffsets[i];
                             }
                         }
@@ -730,7 +680,7 @@
                 }
 
                 if (!teOffset) {
-                    teOffset = teElement.getClientRects && teElement.getClientRects()[0] || teElement.getBoundingClientRect();
+                    teOffset = (teElement.getClientRects && teElement.getClientRects()[0]) || teElement.getBoundingClientRect();
                 }
                 teOffset = {
                     top: $window.scrollTop() + teOffset.top,
@@ -794,10 +744,11 @@
             // the execution stops when the function in question returns true for the first time,
             // and ToolTip.upToTopParent returns true as well.
             upToTopParent(func, parameters, stopAtTrue) {
-                let returnValue, currentTooltip = this;
+                let returnValue,
+                    currentTooltip = this;
 
                 do {
-                    returnValue = func.bind(currentTooltip)(currentTooltip, ...parameters ?? []);
+                    returnValue = func.bind(currentTooltip)(currentTooltip, ...(parameters ?? []));
                     if (stopAtTrue && returnValue) {
                         break;
                     }
@@ -832,9 +783,7 @@
         activatedByClick = !!+settings[2];
         // The forth value was added later, so we provide for a default value. See comments below
         // for why we use "IS_TOUCHSCREEN && IS_MOBILE".
-        tooltipsForComments = settings[3] === undefined
-            ? IS_TOUCHSCREEN && IS_MOBILE
-            : !!+settings[3];
+        tooltipsForComments = settings[3] === undefined ? IS_TOUCHSCREEN && IS_MOBILE : !!+settings[3];
     } else {
         enabled = true;
         delay = 200;

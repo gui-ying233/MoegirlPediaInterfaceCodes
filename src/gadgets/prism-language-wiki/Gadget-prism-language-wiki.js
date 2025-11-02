@@ -79,17 +79,16 @@
      * @param {(string | Prism.Token)[]} stream 流
      * @param {string} code 完整代码
      */
-    const getSliceFunc = (stream, code) =>
-        (type, parentType, start, end) => {
-            const text = code.slice(start, end);
-            let t = type || parentType;
-            if (parentType === "image-parameter") {
-                t = "root";
-            } else if (type === "converter" && text === ";") {
-                t = "converter-rule";
-            }
-            stream.push(Reflect.has(map, t) ? new Prism.Token(map[t], [text]) : text);
-        };
+    const getSliceFunc = (stream, code) => (type, parentType, start, end) => {
+        const text = code.slice(start, end);
+        let t = type || parentType;
+        if (parentType === "image-parameter") {
+            t = "root";
+        } else if (type === "converter" && text === ";") {
+            t = "converter-rule";
+        }
+        stream.push(Reflect.has(map, t) ? new Prism.Token(map[t], [text]) : text);
+    };
 
     const { tokenize } = Prism;
 
@@ -104,7 +103,11 @@
                 last = 0,
                 out = false;
             while (last < code.length) {
-                const { type, range: [, to], childNodes } = cur,
+                const {
+                        type,
+                        range: [, to],
+                        childNodes,
+                    } = cur,
                     parentNode = stack[0]?.[0];
                 if (out || !childNodes?.length) {
                     const [, i] = stack[0];
@@ -121,7 +124,9 @@
                     } else {
                         cur = parentNode.childNodes[index];
                         out = false;
-                        const { range: [from] } = cur;
+                        const {
+                            range: [from],
+                        } = cur;
                         if (last < from) {
                             slice(parentNode.type, stack[1]?.[0].type, last, from);
                             last = from;
@@ -129,7 +134,9 @@
                     }
                 } else {
                     const child = childNodes[0],
-                        { range: [from] } = child;
+                        {
+                            range: [from],
+                        } = child;
                     if (last < from) {
                         slice(type, parentNode?.type, last, from);
                         last = from;

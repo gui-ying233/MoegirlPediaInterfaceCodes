@@ -1,185 +1,208 @@
 // <pre>
 // remake by [[User:Leranjun]]
 "use strict";
-$(() => (async () => {
-    if (mw.config.get("wgCanonicalSpecialPageName") !== "Contributions") {
-        return;
-    }
-    const target = (document.querySelector('[name="target"]') || {}).value;
-    if (typeof target !== "string" || target.length === 0) {
-        return;
-    }
-    const userRights = await mw.user.getRights();
-    const hasApiHighLimits = !userRights.includes("apihighlimits");
-    const isPatrolViewable = userRights.includes("patrol") || userRights.includes("patrolmarks");
-    const wgUserName = mw.config.get("wgUserName");
-    const upperFirstCase = (s) => /^[a-z]/.test(s) ? s.substring(0, 1).toUpperCase() + s.substring(1) : s;
-    const api = new mw.Api();
-    const ns = {
-        0: "",
-        1: "讨论",
-        2: "用户",
-        3: "用户讨论",
-        4: "萌娘百科",
-        5: "萌娘百科讨论",
-        6: "文件",
-        7: "文件讨论",
-        8: "MediaWiki",
-        9: "MediaWiki讨论",
-        10: "模板",
-        11: "模板讨论",
-        12: "帮助",
-        13: "帮助讨论",
-        14: "分类",
-        15: "分类讨论",
-        274: "Widget",
-        275: "Widget_talk",
-        710: "Timedtext",
-        711: "Timedtext_talk",
-        828: "模块",
-        829: "模块讨论",
-        2300: "Gadget",
-        2301: "Gadget_talk",
-        2302: "Gadget_definition",
-        2303: "Gadget_definition_talk",
-    };
-    const p = $('<div class="cdx-card" style="background-color:transparent;display:block"><span class="cdx-card__text"><span class="cdx-card__text__title">用户贡献分布</span><span class="cdx-card__text__description">是否需要加载用户贡献分布（对编辑数量较多的用户慎重使用！）</span><div><button id="confirmQueryContributions" class="cdx-button cdx-button--action-progressive">确认</button> <button id="cancelQueryContributions" class="cdx-button cdx-button--action-destructive">取消</button></div></span></div>').insertAfter("#mw-content-text > .mw-htmlform-ooui-wrapper");
-    p.find("#confirmQueryContributions").on("click", async () => {
-        p.text(`加载中${hasApiHighLimits ? "（由于您没有“在API查询中使用更高的上限”[apihighlimits]权限，本次加载将需要较长时间，请稍等）" : ""}……`);
-        const list = await (async () => {
-            const result = [];
-            const eol = Symbol();
-            let uccontinue = undefined;
-            while (uccontinue !== eol) {
-                const _result = await api.post({
+$(() =>
+    (async () => {
+        if (mw.config.get("wgCanonicalSpecialPageName") !== "Contributions") {
+            return;
+        }
+        const target = (document.querySelector('[name="target"]') || {}).value;
+        if (typeof target !== "string" || target.length === 0) {
+            return;
+        }
+        const userRights = await mw.user.getRights();
+        const hasApiHighLimits = !userRights.includes("apihighlimits");
+        const isPatrolViewable = userRights.includes("patrol") || userRights.includes("patrolmarks");
+        const wgUserName = mw.config.get("wgUserName");
+        const upperFirstCase = (s) => (/^[a-z]/.test(s) ? s.substring(0, 1).toUpperCase() + s.substring(1) : s);
+        const api = new mw.Api();
+        const ns = {
+            0: "",
+            1: "讨论",
+            2: "用户",
+            3: "用户讨论",
+            4: "萌娘百科",
+            5: "萌娘百科讨论",
+            6: "文件",
+            7: "文件讨论",
+            8: "MediaWiki",
+            9: "MediaWiki讨论",
+            10: "模板",
+            11: "模板讨论",
+            12: "帮助",
+            13: "帮助讨论",
+            14: "分类",
+            15: "分类讨论",
+            274: "Widget",
+            275: "Widget_talk",
+            710: "Timedtext",
+            711: "Timedtext_talk",
+            828: "模块",
+            829: "模块讨论",
+            2300: "Gadget",
+            2301: "Gadget_talk",
+            2302: "Gadget_definition",
+            2303: "Gadget_definition_talk",
+        };
+        const p = $(
+            '<div class="cdx-card" style="background-color:transparent;display:block"><span class="cdx-card__text"><span class="cdx-card__text__title">用户贡献分布</span><span class="cdx-card__text__description">是否需要加载用户贡献分布（对编辑数量较多的用户慎重使用！）</span><div><button id="confirmQueryContributions" class="cdx-button cdx-button--action-progressive">确认</button> <button id="cancelQueryContributions" class="cdx-button cdx-button--action-destructive">取消</button></div></span></div>',
+        ).insertAfter("#mw-content-text > .mw-htmlform-ooui-wrapper");
+        p.find("#confirmQueryContributions").on("click", async () => {
+            p.text(`加载中${hasApiHighLimits ? "（由于您没有“在API查询中使用更高的上限”[apihighlimits]权限，本次加载将需要较长时间，请稍等）" : ""}……`);
+            const list = await (async () => {
+                const result = [];
+                const eol = Symbol();
+                let uccontinue = undefined;
+                while (uccontinue !== eol) {
+                    const _result = await api.post({
+                        action: "query",
+                        assertuser: wgUserName,
+                        format: "json",
+                        list: "usercontribs",
+                        ucuser: target,
+                        ucprop: `title|flags${isPatrolViewable ? "|patrolled" : ""}`,
+                        uccontinue,
+                        uclimit: "max",
+                    });
+                    if (_result.continue) {
+                        uccontinue = _result.continue.uccontinue;
+                        p[0].innerText += "…";
+                    } else {
+                        uccontinue = eol;
+                    }
+                    result.push(..._result.query.usercontribs);
+                }
+                return result;
+            })();
+            const nslist = Object.fromEntries(Object.keys(ns).map((key) => [key, { count: 0, patrolled: 0, autopatrolled: 0, new: 0, distinct: new Set() }]));
+            const globalInfo = { patrolled: 0, autopatrolled: 0, new: 0, distinct: new Set() };
+            list.forEach((item) => {
+                nslist[item.ns].count++;
+                if (Reflect.has(item, "patrolled")) {
+                    nslist[item.ns].patrolled++;
+                    globalInfo.patrolled++;
+                }
+                if (Reflect.has(item, "autopatrolled")) {
+                    nslist[item.ns].autopatrolled++;
+                    globalInfo.autopatrolled++;
+                }
+                if (Reflect.has(item, "new")) {
+                    nslist[item.ns].new++;
+                    globalInfo.new++;
+                }
+                nslist[item.ns].distinct.add(item.title);
+                globalInfo.distinct.add(item.title);
+            });
+            let GHIAEditCount = 0;
+            if (["zh.moegirl.org.cn", "mzh.moegirl.org.cn"].includes(mw.config.get("wgServerName"))) {
+                const {
+                    query: {
+                        pages: [
+                            {
+                                revisions: [{ content }],
+                            },
+                        ],
+                    },
+                } = await api.post({
                     action: "query",
                     assertuser: wgUserName,
-                    format: "json",
-                    list: "usercontribs",
-                    ucuser: target,
-                    ucprop: `title|flags${isPatrolViewable ? "|patrolled" : ""}`,
-                    uccontinue,
-                    uclimit: "max",
+                    titles: "MediaWiki:GHIAHistory.json",
+                    prop: "revisions",
+                    rvprop: ["content"],
+                    rvlimit: 1,
+                    rvdir: "older",
+                    formatversion: 2,
                 });
-                if (_result.continue) {
-                    uccontinue = _result.continue.uccontinue;
-                    p[0].innerText += "…";
-                } else {
-                    uccontinue = eol;
-                }
-                result.push(..._result.query.usercontribs);
+                const GHIAHistory = JSON.parse(content);
+                GHIAEditCount = Reflect.has(GHIAHistory, `U:${target}`) ? GHIAHistory[`U:${target}`].reduce((p, { changedFiles }) => p + changedFiles, 0) : 0;
+                nslist[8].count += GHIAEditCount;
             }
-            return result;
-        })();
-        const nslist = Object.fromEntries(Object.keys(ns).map((key) => [key, { count: 0, patrolled: 0, autopatrolled: 0, "new": 0, distinct: new Set() }]));
-        const globalInfo = { patrolled: 0, autopatrolled: 0, "new": 0, distinct: new Set() };
-        list.forEach((item) => {
-            nslist[item.ns].count++;
-            if (Reflect.has(item, "patrolled")) {
-                nslist[item.ns].patrolled++;
-                globalInfo.patrolled++;
-            }
-            if (Reflect.has(item, "autopatrolled")) {
-                nslist[item.ns].autopatrolled++;
-                globalInfo.autopatrolled++;
-            }
-            if (Reflect.has(item, "new")) {
-                nslist[item.ns].new++;
-                globalInfo.new++;
-            }
-            nslist[item.ns].distinct.add(item.title);
-            globalInfo.distinct.add(item.title);
-        });
-        let GHIAEditCount = 0;
-        if (["zh.moegirl.org.cn", "mzh.moegirl.org.cn"].includes(mw.config.get("wgServerName"))) {
-            const { query: { pages: [{ revisions: [{ content }] }] } } = await api.post({
-                action: "query",
-                assertuser: wgUserName,
-                titles: "MediaWiki:GHIAHistory.json",
-                prop: "revisions",
-                rvprop: ["content"],
-                rvlimit: 1,
-                rvdir: "older",
-                formatversion: 2,
-            });
-            const GHIAHistory = JSON.parse(content);
-            GHIAEditCount = Reflect.has(GHIAHistory, `U:${target}`) ? GHIAHistory[`U:${target}`].reduce((p, { changedFiles }) => p + changedFiles, 0) : 0;
-            nslist[8].count += GHIAEditCount;
-        }
-        const table = $(`<table class="wikitable sortable"><thead><tr><th>命名空间</th><th>编辑次数</th>${isPatrolViewable ? "<th>被巡查次数</th><th>被手动巡查次数</th>" : ""}<th>不同页面数量</th>><th>创建页面数量</th></tr></thead><tbody></tbody></table>`).find("tbody");
-        p.html(`该用户在本站未被删除的编辑共有 ${list.length} 次${isPatrolViewable ? `（其中有 ${globalInfo.patrolled} 次编辑被巡查，${globalInfo.patrolled - globalInfo.autopatrolled} 次编辑被手动巡查（注：通过api编辑不会自动巡查））` : ""}，共编辑 ${globalInfo.distinct.size} 个不同页面，创建了 ${globalInfo.new} 个页面。按命名空间划分如下：`);
+            const table = $(
+                `<table class="wikitable sortable"><thead><tr><th>命名空间</th><th>编辑次数</th>${isPatrolViewable ? "<th>被巡查次数</th><th>被手动巡查次数</th>" : ""}<th>不同页面数量</th>><th>创建页面数量</th></tr></thead><tbody></tbody></table>`,
+            ).find("tbody");
+            p.html(
+                `该用户在本站未被删除的编辑共有 ${list.length} 次${isPatrolViewable ? `（其中有 ${globalInfo.patrolled} 次编辑被巡查，${globalInfo.patrolled - globalInfo.autopatrolled} 次编辑被手动巡查（注：通过api编辑不会自动巡查））` : ""}，共编辑 ${globalInfo.distinct.size} 个不同页面，创建了 ${globalInfo.new} 个页面。按命名空间划分如下：`,
+            );
 
-        const chartData = [];
-        Object.entries(nslist).filter(([, { count }]) => count > 0).sort(([a], [b]) => a - b).forEach(([nsnumber, { count, patrolled, autopatrolled, distinct, "new": newCount }]) => {
-            table.append(`<tr><td data-sort-value="${nsnumber}">${+nsnumber === 0 ? "（主命名空间）" : upperFirstCase(ns[+nsnumber])}</td><td>${count}</td>${isPatrolViewable ? `<td>${patrolled}</td><td>${patrolled - autopatrolled}</td>` : ""}<td>${distinct.size}</td><td>${newCount}</td></tr>`);
-            chartData.push({ value: count, name: +nsnumber === 0 ? "（主）" : upperFirstCase(ns[+nsnumber]) });
-        });
-        p.append(table.closest("table"));
-        if (typeof table.closest("table").tablesorter === "function") {
-            table.closest("table").tablesorter();
-        }
-        if (GHIAEditCount > 0) {
-            const GHIAInfo = $("<p>");
-            GHIAInfo.text(`注：来自 GHIA 库的未被删除的编辑共有 ${GHIAEditCount} 笔，这些编辑均会被视为 MediaWiki 命名空间下的编辑，且不会被统计为“被巡查”“被手动巡查”“不同页面”和“创建页面”。在 GHIA 库里对已被删除文件的编辑无法统计。`);
-            p.append(GHIAInfo);
-        }
-        p.append("<button id=\"toChartQueryContributions\" class=\"cdx-button cdx-button--action-progressive\">显示饼图</button>");
-        p.find("#toChartQueryContributions").on("click", async (e) => {
-            $(e.target).remove();
-            p.append('<div id="contributionChart" style="width:100%;height:400px;">加载中……</div>');
-            await libCachedCode.injectCachedCode("https://testingcf.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js", "script");
-            const chart = echarts.init(document.getElementById("contributionChart"));
-            chart.setOption({
-                tooltip: {
-                    trigger: "item",
-                    formatter: "{c} ({d}%)",
-                },
-                toolbox: {
-                    show: true,
-                    feature: {
-                        saveAsImage: {
-                            excludeComponents: ["toolbox"],
-                        },
+            const chartData = [];
+            Object.entries(nslist)
+                .filter(([, { count }]) => count > 0)
+                .sort(([a], [b]) => a - b)
+                .forEach(([nsnumber, { count, patrolled, autopatrolled, distinct, new: newCount }]) => {
+                    table.append(
+                        `<tr><td data-sort-value="${nsnumber}">${+nsnumber === 0 ? "（主命名空间）" : upperFirstCase(ns[+nsnumber])}</td><td>${count}</td>${isPatrolViewable ? `<td>${patrolled}</td><td>${patrolled - autopatrolled}</td>` : ""}<td>${distinct.size}</td><td>${newCount}</td></tr>`,
+                    );
+                    chartData.push({ value: count, name: +nsnumber === 0 ? "（主）" : upperFirstCase(ns[+nsnumber]) });
+                });
+            p.append(table.closest("table"));
+            if (typeof table.closest("table").tablesorter === "function") {
+                table.closest("table").tablesorter();
+            }
+            if (GHIAEditCount > 0) {
+                const GHIAInfo = $("<p>");
+                GHIAInfo.text(
+                    `注：来自 GHIA 库的未被删除的编辑共有 ${GHIAEditCount} 笔，这些编辑均会被视为 MediaWiki 命名空间下的编辑，且不会被统计为“被巡查”“被手动巡查”“不同页面”和“创建页面”。在 GHIA 库里对已被删除文件的编辑无法统计。`,
+                );
+                p.append(GHIAInfo);
+            }
+            p.append('<button id="toChartQueryContributions" class="cdx-button cdx-button--action-progressive">显示饼图</button>');
+            p.find("#toChartQueryContributions").on("click", async (e) => {
+                $(e.target).remove();
+                p.append('<div id="contributionChart" style="width:100%;height:400px;">加载中……</div>');
+                await libCachedCode.injectCachedCode("https://testingcf.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js", "script");
+                const chart = echarts.init(document.getElementById("contributionChart"));
+                chart.setOption({
+                    tooltip: {
+                        trigger: "item",
+                        formatter: "{c} ({d}%)",
                     },
-                },
-                legend: {
-                    top: "5%",
-                    left: "center",
-                },
-                series: [
-                    {
-                        name: "用户贡献分布",
-                        type: "pie",
-                        radius: ["40%", "70%"],
-                        avoidLabelOverlap: false,
-                        itemStyle: {
-                            borderRadius: 10,
-                            borderColor: "#fff",
-                            borderWidth: 2,
-                        },
-                        label: {
-                            show: false,
-                            position: "center",
-                        },
-                        emphasis: {
-                            label: {
-                                show: true,
-                                fontSize: "40",
-                                fontWeight: "bold",
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            saveAsImage: {
+                                excludeComponents: ["toolbox"],
                             },
                         },
-                        labelLine: {
-                            show: false,
-                        },
-                        data: chartData,
                     },
-                ],
+                    legend: {
+                        top: "5%",
+                        left: "center",
+                    },
+                    series: [
+                        {
+                            name: "用户贡献分布",
+                            type: "pie",
+                            radius: ["40%", "70%"],
+                            avoidLabelOverlap: false,
+                            itemStyle: {
+                                borderRadius: 10,
+                                borderColor: "#fff",
+                                borderWidth: 2,
+                            },
+                            label: {
+                                show: false,
+                                position: "center",
+                            },
+                            emphasis: {
+                                label: {
+                                    show: true,
+                                    fontSize: "40",
+                                    fontWeight: "bold",
+                                },
+                            },
+                            labelLine: {
+                                show: false,
+                            },
+                            data: chartData,
+                        },
+                    ],
+                });
+                $(window).on("resize", () => chart.trigger("resize"));
             });
-            $(window).on("resize", () => chart.trigger("resize"));
         });
-    });
-    p.find("#cancelQueryContributions").on("click", () => {
-        p.remove();
-    });
-})());
+        p.find("#cancelQueryContributions").on("click", () => {
+            p.remove();
+        });
+    })(),
+);
 // </pre>
