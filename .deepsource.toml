@@ -5,6 +5,8 @@ exclude_patterns = [
   "src/gadgets/lib**",
   "src/gadgets/libip/**",
   "src/gadgets/libPolyfill/**",
+  "src/gadgets/libJSON5/**",
+  "src/gadgets/libHashwasm/**",
   "src/gadgets/prism/**",
   "src/gadgets/prism-core/**",
   "src/gadgets/prism-language-bash/**",
