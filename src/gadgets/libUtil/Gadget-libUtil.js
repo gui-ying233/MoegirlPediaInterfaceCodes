@@ -17,10 +17,12 @@
             }
             switch (mw.config.get("wgNamespaceNumber")) {
                 case 3: // User_talk
-                case 2: { // User
+                case 2: {
+                    // User
                     return mw.config.get("wgPageName").match(/.*?:(.*?)(\/.*)*$/)[1];
                 }
-                case -1: { // Special pages
+                case -1: {
+                    // Special pages
                     try {
                         switch (mw.config.get("wgCanonicalSpecialPageName")) {
                             case "CentralAuth": // T131740
@@ -41,12 +43,11 @@
                                 break;
                             case "Log":
                                 if (mw.util.getParamValue("page") && /User:+./.test(mw.util.getParamValue("page"))) {
-                                    return mw.util.getParamValue("page")
-                                        .replace("User:", "");
+                                    return mw.util.getParamValue("page").replace("User:", "");
                                 }
                                 break;
                         }
-                    } catch { }
+                    } catch {}
                     break;
                 }
             }
@@ -66,7 +67,8 @@
         },
         getTalkPageFromTitle: (_title) => {
             const rens = /^(.+):/;
-            let pref = _title.match(rens), nsid = -1;
+            let pref = _title.match(rens),
+                nsid = -1;
             let title = _title;
             if (pref) {
                 pref = pref[1].toLowerCase().replace(/ /g, "_");
@@ -89,14 +91,20 @@
         titleFromImgSrc: (src) => {
             mw.log.warn(".titleFromImgSrc() is deprecated. Use mw.Title.newFromImg() instead.");
             try {
-                return decodeURIComponent(src).match(/\/[a-f0-9]\/[a-f0-9]{2}\/(\S+\.\S{2,5})\//)[1].replace(/_/g, " ");
+                return decodeURIComponent(src)
+                    .match(/\/[a-f0-9]\/[a-f0-9]{2}\/(\S+\.\S{2,5})\//)[1]
+                    .replace(/_/g, " ");
             } catch {
                 try {
-                    return decodeURIComponent(src).match(/thumb\.php.*(?:\?|&)f=(\S+\.\S{2,5})(?:&.+)?$/)[1].replace(/_/g, " ");
+                    return decodeURIComponent(src)
+                        .match(/thumb\.php.*(?:\?|&)f=(\S+\.\S{2,5})(?:&.+)?$/)[1]
+                        .replace(/_/g, " ");
                 } catch {
                     try {
-                        return decodeURIComponent(src).match(/\/[a-f0-9]\/[a-f0-9]{2}\/(\S+\.\S{2,5})$/)[1].replace(/_/g, " ");
-                    } catch { }
+                        return decodeURIComponent(src)
+                            .match(/\/[a-f0-9]\/[a-f0-9]{2}\/(\S+\.\S{2,5})$/)[1]
+                            .replace(/_/g, " ");
+                    } catch {}
                 }
             }
         },

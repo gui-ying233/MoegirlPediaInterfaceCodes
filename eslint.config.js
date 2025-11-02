@@ -6,12 +6,7 @@ import readDir from "./scripts/modules/readDir.js";
 /**
  * @type { import("eslint").Linter.Config["ignores"] }
  */
-const ignores = [
-    "**/dist/**",
-    "**/.*/**",
-    "node_modules",
-    "src/gadgets/libPolyfill/*",
-];
+const ignores = ["**/dist/**", "**/.*/**", "node_modules", "src/gadgets/libPolyfill/*"];
 
 const srcESlintrcFiles = (await readDir("./src")).filter((n) => path.basename(n) === ".eslintrc.yaml");
 for (const srcESlintrcFile of srcESlintrcFiles) {
@@ -32,23 +27,12 @@ for (const srcESlintrcFile of srcESlintrcFiles) {
  */
 const fileSpec = {
     browser: {
-        files: [
-            "src/**/*",
-            "scripts/generatePolyfill/customPolyfills/**/*",
-        ],
-        ignores: [
-            ...ignores,
-        ],
+        files: ["src/**/*", "scripts/generatePolyfill/customPolyfills/**/*"],
+        ignores: [...ignores],
     },
     node: {
-        files: [
-            "scripts/**/*",
-            "eslint.config.js",
-        ],
-        ignores: [
-            ...ignores,
-            "scripts/generatePolyfill/customPolyfills/**/*",
-        ],
+        files: ["scripts/**/*", "eslint.config.js"],
+        ignores: [...ignores, "scripts/generatePolyfill/customPolyfills/**/*"],
     },
 };
 
@@ -127,17 +111,7 @@ const config = [
             camelcase: [
                 "error",
                 {
-                    allow: [
-                        "pull_number",
-                        "issue_number",
-                        "head_commit",
-                        "commit_long",
-                        "state_reason",
-                        "workflow_id",
-                        "exclude_pull_requests",
-                        "per_page",
-                        "workflow_runs",
-                    ],
+                    allow: ["pull_number", "issue_number", "head_commit", "commit_long", "state_reason", "workflow_id", "exclude_pull_requests", "per_page", "workflow_runs"],
                 },
             ],
 

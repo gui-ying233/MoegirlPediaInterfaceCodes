@@ -20,6 +20,6 @@ $(() => {
             img.classList.remove("lazyload");
             img.after(img.cloneNode(true));
             img.remove();
-        } catch { }
+        } catch {}
     }
 });

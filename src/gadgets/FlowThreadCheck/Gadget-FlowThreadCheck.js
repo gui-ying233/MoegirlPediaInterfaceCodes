@@ -3,7 +3,9 @@
 $(() => {
     const rules = [],
         checkBox = {
-            node: $('<div id="flowthreadCheckBox"><div id="flowthreadCheckBoxTitle"><div id="flowthreadCheckBoxTitleContent">评论预览</div><span id="flowthreadCheckBoxCloseButton">×</span></div><div id="flowthreadCheckBoxContent"><div id="flowthreadCheckBoxContentBox"></div></div></div>'),
+            node: $(
+                '<div id="flowthreadCheckBox"><div id="flowthreadCheckBoxTitle"><div id="flowthreadCheckBoxTitleContent">评论预览</div><span id="flowthreadCheckBoxCloseButton">×</span></div><div id="flowthreadCheckBoxContent"><div id="flowthreadCheckBoxContentBox"></div></div></div>',
+            ),
             closeButton: $("#flowthreadCheckBoxCloseButton"),
             content: $("#flowthreadCheckBoxContentBox"),
         };
@@ -25,10 +27,17 @@ $(() => {
             checkBox.content.append("您的评论没有触发黑名单机制。");
         } else {
             const dot = ".";
-            const table = checkBox.content.append(`您的评论触发以下黑名单（使用正则表达式<sup><a rel="nofollow" target="_blank" class="external text" href="http://baike${dot}baidu.com/view/94238.htm">解释</a></sup>）：`).append($("<table/>")).find("table");
+            const table = checkBox.content
+                .append(`您的评论触发以下黑名单（使用正则表达式<sup><a rel="nofollow" target="_blank" class="external text" href="http://baike${dot}baidu.com/view/94238.htm">解释</a></sup>）：`)
+                .append($("<table/>"))
+                .find("table");
             table.append("<tr><th>No.</th>" /* + '<th>黑名单</th>' */ + "<th>命中字符串</th></tr>");
             errorText.forEach((n) => {
-                table.append($("<tr/>").append($("<td/>").addClass("first").text(table.find("tr").length))/* .append($('<td/>').text(n[0])) */.append($("<td/>").append(n[1].map((t) => `<code>${$("<span/>").text(t).html()}</code>`).join("<br/>"))));
+                table.append(
+                    $("<tr/>")
+                        .append($("<td/>").addClass("first").text(table.find("tr").length)) /* .append($('<td/>').text(n[0])) */
+                        .append($("<td/>").append(n[1].map((t) => `<code>${$("<span/>").text(t).html()}</code>`).join("<br/>"))),
+                );
             });
         }
     };
@@ -86,7 +95,9 @@ $(() => {
             checkButton.on("click", showCheckBox);
             submitButton.before(checkButton).data("addCheckButton", true);
         });
-        const container = $(".comment-container, .comment-container-top").map((_, ele) => (($(ele).find('[href^="/"]')[0] || {}).onmouseover || {}).name !== "mouseOverWikiLink" ? ele : undefined).filter((_, e) => e);
+        const container = $(".comment-container, .comment-container-top")
+            .map((_, ele) => ((($(ele).find('[href^="/"]')[0] || {}).onmouseover || {}).name !== "mouseOverWikiLink" ? ele : undefined))
+            .filter((_, e) => e);
         if (container.length > 0) {
             mw.hook("wikipage.content").fire(container);
         }
