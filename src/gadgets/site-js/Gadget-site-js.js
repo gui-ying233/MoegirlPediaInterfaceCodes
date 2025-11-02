@@ -28,21 +28,23 @@
     }
     /* 浮动滚动条 */
     const forbiddenScroll = ["hidden", "clip"];
-    $window.on("resize", () => {
-        const innerWidth = window.innerWidth;
-        let scrollbarWidth;
-        if (!forbiddenScroll.includes(getComputedStyle(body).overflowY)) {
-            scrollbarWidth = innerWidth - body.clientWidth;
-        } else if (!forbiddenScroll.includes(getComputedStyle(html).overflowY)) {
-            scrollbarWidth = innerWidth - html.clientWidth;
-        } else {
-            const backup = body.style.overflowY;
-            body.style.overflowY = "scroll";
-            scrollbarWidth = innerWidth - body.clientWidth;
-            body.style.overflowY = backup;
-        }
-        $body[scrollbarWidth <= 0 ? "addClass" : "removeClass"]("overlay-scrollbars");
-    }).trigger("resize");
+    $window
+        .on("resize", () => {
+            const innerWidth = window.innerWidth;
+            let scrollbarWidth;
+            if (!forbiddenScroll.includes(getComputedStyle(body).overflowY)) {
+                scrollbarWidth = innerWidth - body.clientWidth;
+            } else if (!forbiddenScroll.includes(getComputedStyle(html).overflowY)) {
+                scrollbarWidth = innerWidth - html.clientWidth;
+            } else {
+                const backup = body.style.overflowY;
+                body.style.overflowY = "scroll";
+                scrollbarWidth = innerWidth - body.clientWidth;
+                body.style.overflowY = backup;
+            }
+            $body[scrollbarWidth <= 0 ? "addClass" : "removeClass"]("overlay-scrollbars");
+        })
+        .trigger("resize");
     /* Tabs */
     const tabs = () => {
         const defaultStyle = {
@@ -152,16 +154,20 @@
                     return true;
                 }
                 const classList = Array.from(this.classList).filter((n) => Reflect.has(defaultStyle, n));
-                const data = $.extend({
-                    labelPadding: "2px",
-                    labelBorderColor: "#aaa",
-                    labelColor: "green",
-                    labelBackgroundColor: $("#content").css("background-color") || "rgba(247,251,255,0.8)",
-                    textPadding: "20px 30px",
-                    textBorderColor: "#aaa",
-                    textBackgroundColor: "white",
-                    defaultTab: 1,
-                }, classList[0] ? defaultStyle[classList[0]] || {} : {}, this.dataset || {});
+                const data = $.extend(
+                    {
+                        labelPadding: "2px",
+                        labelBorderColor: "#aaa",
+                        labelColor: "green",
+                        labelBackgroundColor: $("#content").css("background-color") || "rgba(247,251,255,0.8)",
+                        textPadding: "20px 30px",
+                        textBorderColor: "#aaa",
+                        textBackgroundColor: "white",
+                        defaultTab: 1,
+                    },
+                    classList[0] ? defaultStyle[classList[0]] || {} : {},
+                    this.dataset || {},
+                );
                 const styleSheet = {
                     label: {},
                     text: {},
@@ -201,20 +207,24 @@
                 if (isNaN(defaultTab) || defaultTab <= 0 || defaultTab > tabLabel.children(".TabLabelText").length) {
                     defaultTab = 1;
                 }
-                tabLabel.children(".TabLabelText").on("click", function () {
-                    const label = $(this);
-                    label.addClass("selected").siblings().removeClass("selected").css({
-                        "border-color": "transparent",
-                        "background-color": "inherit",
-                    });
-                    tabContent.children(".TabContentText").eq(tabLabel.children(".TabLabelText").index(label)).addClass("selected").siblings().removeClass("selected").removeAttr("style");
-                    if (getOwnPropertyNamesLength(styleSheet.label) > 0) {
-                        label.css(styleSheet.label);
-                    }
-                    setTimeout(() => {
-                        $window.triggerHandler("scroll");
-                    }, 1);
-                }).eq(defaultTab - 1).trigger("click");
+                tabLabel
+                    .children(".TabLabelText")
+                    .on("click", function () {
+                        const label = $(this);
+                        label.addClass("selected").siblings().removeClass("selected").css({
+                            "border-color": "transparent",
+                            "background-color": "inherit",
+                        });
+                        tabContent.children(".TabContentText").eq(tabLabel.children(".TabLabelText").index(label)).addClass("selected").siblings().removeClass("selected").removeAttr("style");
+                        if (getOwnPropertyNamesLength(styleSheet.label) > 0) {
+                            label.css(styleSheet.label);
+                        }
+                        setTimeout(() => {
+                            $window.triggerHandler("scroll");
+                        }, 1);
+                    })
+                    .eq(defaultTab - 1)
+                    .trigger("click");
                 if (labelPadding) {
                     tabLabel.children(".TabLabelText").css("padding", labelPadding);
                 }
@@ -289,14 +299,17 @@
             }
         });
         if (wgNamespaceNumber >= 0 && wgNamespaceNumber % 2 === 0 && target.length > 0) {
-            if (+mw.user.options.get("gadget-enable-nest-highlight", 0) === 1 || isMGPMGUser && !wgUserGroups.includes("staff")) {
+            if (+mw.user.options.get("gadget-enable-nest-highlight", 0) === 1 || (isMGPMGUser && !wgUserGroups.includes("staff"))) {
                 target.css("border", "3px dashed red");
             }
             if (isMGPMGUser && !wgUserGroups.includes("staff") && +mw.user.options.get("gadget-disable-nest-alert", 0) !== 1) {
-                oouiDialog.alert(`本页面含有嵌套使用（混用）以下标签或模板的内容（已用红色虚线边框标识），请检查源码并修改之：<ul><li>删除线：<code>${oouiDialog.sanitize("<s>")}</code>、<code>${oouiDialog.sanitize("<del>")}</code>；</li><li>黑幕：<code>{{黑幕}}</code>、<code>{{Block}}</code>、<code>{{Heimu}}</code>；</li><li>彩色幕：<code>{{彩色幕}}</code>；</li><li>胡话：<code>{{胡话}}</code>、<code>{{jk}}</code>，大小写不限。</li></ul>`, {
-                    title: "萌娘百科提醒您",
-                    size: "medium",
-                });
+                oouiDialog.alert(
+                    `本页面含有嵌套使用（混用）以下标签或模板的内容（已用红色虚线边框标识），请检查源码并修改之：<ul><li>删除线：<code>${oouiDialog.sanitize("<s>")}</code>、<code>${oouiDialog.sanitize("<del>")}</code>；</li><li>黑幕：<code>{{黑幕}}</code>、<code>{{Block}}</code>、<code>{{Heimu}}</code>；</li><li>彩色幕：<code>{{彩色幕}}</code>；</li><li>胡话：<code>{{胡话}}</code>、<code>{{jk}}</code>，大小写不限。</li></ul>`,
+                    {
+                        title: "萌娘百科提醒您",
+                        size: "medium",
+                    },
+                );
             }
         }
     };
@@ -315,21 +328,27 @@
                 new window.TencentCaptcha(tcBtn);
                 tcBtn.innerText = originText;
             }
-            document.getElementById("wpSave").addEventListener("click", (e) => {
-                if (!tcBtn.disabled && (!wpCaptchaWord.value || !wpCaptchaId.value)) {
-                    oouiDialog.alert("请点击验证按钮，完成验证后再提交");
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    e.stopPropagation();
-                }
-            }, {
-                capture: true,
-            });
+            document.getElementById("wpSave").addEventListener(
+                "click",
+                (e) => {
+                    if (!tcBtn.disabled && (!wpCaptchaWord.value || !wpCaptchaId.value)) {
+                        oouiDialog.alert("请点击验证按钮，完成验证后再提交");
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                        e.stopPropagation();
+                    }
+                },
+                {
+                    capture: true,
+                },
+            );
         }
     };
     /* 域名跳转提示 */
     const domainChangedAlert = () => {
-        $body.before('<div style="background: #3366CC; color: white; text-align: center; padding: .5rem; position: static;" id="domainChangedAlert"><p>萌娘百科已将域名替换为 <code>*.moegirl.org<b><u>.cn</u></b></code>，原有域名可能访问困难，请更换您的书签等的页面地址。</p></div>');
+        $body.before(
+            '<div style="background: #3366CC; color: white; text-align: center; padding: .5rem; position: static;" id="domainChangedAlert"><p>萌娘百科已将域名替换为 <code>*.moegirl.org<b><u>.cn</u></b></code>，原有域名可能访问困难，请更换您的书签等的页面地址。</p></div>',
+        );
         $body.css({
             "background-position-y": $("#domainChangedAlert").outerHeight(),
             position: "relative",
@@ -394,16 +413,25 @@
                 console.info("[watermark] Recreate watermark:", reasons);
                 try {
                     ele.remove();
-                } catch { }
+                } catch {}
                 ele = appendChild(cloneNode.bind(template)(true));
             }
         }, 1000);
     };
     /* 获取特定命名空间前缀正则表达式 */
-    const getNamespacePrefixRegex = (namespaceNumber) => RegExp(`^(?:${Object.entries(mw.config.get("wgNamespaceIds")).filter((config) => config[1] === namespaceNumber).map((config) => config[0].toLowerCase()).join("|")}):`, "i");
+    const getNamespacePrefixRegex = (namespaceNumber) =>
+        RegExp(
+            `^(?:${Object.entries(mw.config.get("wgNamespaceIds"))
+                .filter((config) => config[1] === namespaceNumber)
+                .map((config) => config[0].toLowerCase())
+                .join("|")}):`,
+            "i",
+        );
     // 列表侧边距
     const listMarginLeft = () => {
-        $(".mw-parser-output ul:not(.margin-left-set), .mw-parser-output ol:not(.margin-left-set), #mw-content-text > pre.prettyprint ul:not(.margin-left-set), #mw-content-text > pre.prettyprint ol:not(.margin-left-set)").each((_, ele) => {
+        $(
+            ".mw-parser-output ul:not(.margin-left-set), .mw-parser-output ol:not(.margin-left-set), #mw-content-text > pre.prettyprint ul:not(.margin-left-set), #mw-content-text > pre.prettyprint ol:not(.margin-left-set)",
+        ).each((_, ele) => {
             const $ele = $(ele);
             if (/none.+none/i.test($ele.css("list-style")) || $ele.is(".gallery")) {
                 if ($ele.parent().is("li") && $ele.parent().parent().is("ul, ol")) {
@@ -517,10 +545,13 @@
             /* const now = new Date().getTime();
             if (!Reflect.has(reverseProxyhostAlerted, detectedHost) || typeof reverseProxyhostAlerted[detectedHost] !== "number" || reverseProxyhostAlerted[detectedHost] < now - 24 * 60 * 60 * 1000) {
                 reverseProxyhostAlerted[detectedHost] = now; */
-            oouiDialog.alert(`<p>您当前是在${currentHostFlag ? "非萌百域名" : "嵌套窗口"}访问，请注意不要在此域名下输入您的用户名或密码，以策安全！</p><p>${detectedHost ? `${currentHostFlag ? "当前" : "顶层窗口"}域名为 <code>${detectedHost}</code>，` : ""}萌百域名是以 <code>.moegirl.org.cn</code> 结尾的。</p>`, {
-                title: "萌娘百科提醒您",
-                size: "medium",
-            });
+            oouiDialog.alert(
+                `<p>您当前是在${currentHostFlag ? "非萌百域名" : "嵌套窗口"}访问，请注意不要在此域名下输入您的用户名或密码，以策安全！</p><p>${detectedHost ? `${currentHostFlag ? "当前" : "顶层窗口"}域名为 <code>${detectedHost}</code>，` : ""}萌百域名是以 <code>.moegirl.org.cn</code> 结尾的。</p>`,
+                {
+                    title: "萌娘百科提醒您",
+                    size: "medium",
+                },
+            );
             /* }
             localStorage.setItem("reverse proxy alerted", JSON.stringify(reverseProxyhostAlerted)); */
         } else if (!location.hostname.endsWith(".moegirl.org.cn")) {
@@ -544,7 +575,7 @@
                     ele.src = url;
                 }
                 ele.classList.add("org-changed");
-            } catch { }
+            } catch {}
         });
     }, 200);
     // 修复错误嵌套模板
@@ -592,12 +623,16 @@
     // 列表侧边距
     setInterval(listMarginLeft, 200);
     ["copy", "keydown", "scroll", "mousemove"].forEach((type) => {
-        document.addEventListener(type, () => {
-            $(".mailSymbol").replaceWith('<span title="Template:Mail@">@</span>');
-        }, {
-            capture: true,
-            passive: true,
-        });
+        document.addEventListener(
+            type,
+            () => {
+                $(".mailSymbol").replaceWith('<span title="Template:Mail@">@</span>');
+            },
+            {
+                capture: true,
+                passive: true,
+            },
+        );
     });
     // 小工具使用统计移除默认启用的小工具
     if (mw.config.get("wgCanonicalSpecialPageName") === "GadgetUsage") {
@@ -621,7 +656,9 @@
                     inprop: "varianttitles",
                     titles: wgPageName,
                 });
-                const matchTitles = Object.values(result.query.pages[mw.config.get("wgArticleId")].varianttitles).filter((title) => displayedTitle === title.replace(/ /g, "_").replace(namespacePrefixRegex, "").trim());
+                const matchTitles = Object.values(result.query.pages[mw.config.get("wgArticleId")].varianttitles).filter(
+                    (title) => displayedTitle === title.replace(/ /g, "_").replace(namespacePrefixRegex, "").trim(),
+                );
                 if (matchTitles.length === 0) {
                     watermark("用户页面，非正式条目<br/>不代表萌娘百科立场", 300);
                 }

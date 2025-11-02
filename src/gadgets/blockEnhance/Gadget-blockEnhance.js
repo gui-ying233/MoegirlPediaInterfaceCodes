@@ -16,7 +16,7 @@
             return;
         }
         form.style.display = "inline";
-        const iplist = document.getElementById("mw-checkuser-iplist")/*  as HTMLTextAreaElement */;
+        const iplist = document.getElementById("mw-checkuser-iplist"); /*  as HTMLTextAreaElement */
         if (!iplist) {
             return;
         }
@@ -37,14 +37,28 @@
         } else {
             ips = text.split(";");
         }
-        let binPrefix = 0/*  as any */, prefixCidr = 0/*  as any */, prefix = "", foundV4 = false, foundV6 = false, ipCount, blocs, isOverflow;
+        let binPrefix = 0 /*  as any */,
+            prefixCidr = 0 /*  as any */,
+            prefix = "",
+            foundV4 = false,
+            foundV6 = false,
+            ipCount,
+            blocs,
+            isOverflow;
         for (let i = 0; i < ips.length; i++) {
             const addy = ips[i].replace(/^\s*|\s*$/, "");
             const ipV4 = mw.util.isIPv4Address(addy, true);
             const ipV6 = mw.util.isIPv6Address(addy, true);
             const ipCidr = addy.match(/^(.*)(?:\/(\d+))?$/);
             let bin = "";
-            let x = 0, z = 0, start = 0, end = 0, ip, cidr, bloc, binBlock;
+            let x = 0,
+                z = 0,
+                start = 0,
+                end = 0,
+                ip,
+                cidr,
+                bloc,
+                binBlock;
             if (ipV4) {
                 foundV4 = !0;
                 if (foundV6) {
@@ -175,7 +189,9 @@
             showResults("?", "");
         }
     };
-    $("#mw-content-text form").prepend('<fieldset id="mw-checkuser-cidrform" class="checkuser-show" style="display: block; float: right;"><legend>检查指定IP列表的共同区段</legend><textarea id="mw-checkuser-iplist" dir="ltr" rows="5" cols="50"></textarea><br>通用CIDR：&nbsp;<input name="mw-checkuser-cidr-res" size="35" value="" id="mw-checkuser-cidr-res">&nbsp;<strong id="mw-checkuser-ipnote">?</strong></fieldset><style>#mw-content-text form .oo-ui-fieldLayout:before, #mw-content-text form .oo-ui-fieldLayout:after {clear: left;}');
+    $("#mw-content-text form").prepend(
+        '<fieldset id="mw-checkuser-cidrform" class="checkuser-show" style="display: block; float: right;"><legend>检查指定IP列表的共同区段</legend><textarea id="mw-checkuser-iplist" dir="ltr" rows="5" cols="50"></textarea><br>通用CIDR：&nbsp;<input name="mw-checkuser-cidr-res" size="35" value="" id="mw-checkuser-cidr-res">&nbsp;<strong id="mw-checkuser-ipnote">?</strong></fieldset><style>#mw-content-text form .oo-ui-fieldLayout:before, #mw-content-text form .oo-ui-fieldLayout:after {clear: left;}',
+    );
     updateCIDRresult();
     $("#mw-checkuser-iplist").on("keyup click", updateCIDRresult);
 
@@ -198,9 +214,15 @@
             // powerfulUserList has not been loaded yet
             return;
         }
-        if (powerfulUserList.includes(wpTarget.val()) && !await oouiDialog.confirm(`您要${wgULS("封禁的用户", "封鎖的使用者", null, null, "封鎖的用戶")}【${wpTarget.val()}】${wgULS("持有“封禁”和“自我解封”权限，您的封禁很可能无效且有可能违反封禁方针，您是否要继续？", "持有「封鎖」和「自我解封」權限，您的封鎖很可能無效且有可能違反封鎖方針，您是否要繼續？")}`, {
-            title: wgULS("封禁辅助工具", "封鎖輔助工具"),
-        })) {
+        if (
+            powerfulUserList.includes(wpTarget.val()) &&
+            !(await oouiDialog.confirm(
+                `您要${wgULS("封禁的用户", "封鎖的使用者", null, null, "封鎖的用戶")}【${wpTarget.val()}】${wgULS("持有“封禁”和“自我解封”权限，您的封禁很可能无效且有可能违反封禁方针，您是否要继续？", "持有「封鎖」和「自我解封」權限，您的封鎖很可能無效且有可能違反封鎖方針，您是否要繼續？")}`,
+                {
+                    title: wgULS("封禁辅助工具", "封鎖輔助工具"),
+                },
+            ))
+        ) {
             // User cancelled the action
             return;
         }
@@ -220,7 +242,9 @@
         powerfulUserList = result.query.allusers.filter((au) => au.rights.includes("block") && au.rights.includes("unblockself")).map((au) => au.name);
     } catch (error) {
         console.error(error);
-        submitButton.after(`<span class="error">${wgULS("无法获取持有“封禁”和“自我解封”权限的用户列表，请谨慎操作", "無法獲取持有「封鎖」和「自我解封」權限的使用者列表，請謹慎操作", null, null, "無法獲取持有「封鎖」和「自我解封」權限的用戶列表，請謹慎操作")}。</span>`);
+        submitButton.after(
+            `<span class="error">${wgULS("无法获取持有“封禁”和“自我解封”权限的用户列表，请谨慎操作", "無法獲取持有「封鎖」和「自我解封」權限的使用者列表，請謹慎操作", null, null, "無法獲取持有「封鎖」和「自我解封」權限的用戶列表，請謹慎操作")}。</span>`,
+        );
     } finally {
         submitButton.setDisabled(false).setLabel(submitButtonText);
         flag = true;

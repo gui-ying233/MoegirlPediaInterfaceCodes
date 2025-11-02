@@ -66,7 +66,7 @@ $(() => {
                     link.searchParams.delete("action");
                     newLink.href = link;
                 }
-            } catch { }
+            } catch {}
         }
     };
     const api = new mw.Api();

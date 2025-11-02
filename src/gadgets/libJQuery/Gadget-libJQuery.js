@@ -5,16 +5,20 @@
 "use strict";
 (($, mw) => {
     $.extend({
-        createIcon: (iconClass) => $("<span>", {
-            "class": `ui-icon ${iconClass} jquery-inline-icon`,
-            text: " ",
-        }),
-        createNotifyArea: (textNode, icon, state) => $("<div>", {
-            "class": "ui-widget",
-        }).append($("<div>", {
-            "class": `${state} ui-corner-all`,
-            style: "margin-top:20px; padding:0.7em;",
-        }).append($("<p>").append($.createIcon(icon).css("margin-right", ".3em"), textNode))),
+        createIcon: (iconClass) =>
+            $("<span>", {
+                class: `ui-icon ${iconClass} jquery-inline-icon`,
+                text: " ",
+            }),
+        createNotifyArea: (textNode, icon, state) =>
+            $("<div>", {
+                class: "ui-widget",
+            }).append(
+                $("<div>", {
+                    class: `${state} ui-corner-all`,
+                    style: "margin-top:20px; padding:0.7em;",
+                }).append($("<p>").append($.createIcon(icon).css("margin-right", ".3em"), textNode)),
+            ),
         /* @deprecated since 1.26 */
         ucFirst: (str) => str.charAt(0).toUpperCase() + str.slice(1),
     });
@@ -26,17 +30,17 @@
     const buttonConfig = {
         proceed: {
             icon: "ui-icon-circle-check",
-            "class": "ui-button-green",
+            class: "ui-button-green",
             title: "libjq-proceed-title",
         },
         cancel: {
             icon: "ui-icon-circle-close",
-            "class": "ui-button-red",
+            class: "ui-button-red",
             title: "libjq-cancel-title",
         },
         report: {
             icon: "ui-icon-circle-check",
-            "class": "",
+            class: "",
             title: "libjq-report-title",
         },
     };
@@ -51,7 +55,9 @@
                 icons: {
                     primary: buttonConfig[which].icon,
                 },
-            }).addClass(buttonConfig[which].class).attr("title", mw.msg(buttonConfig[which].title));
+            })
+                .addClass(buttonConfig[which].class)
+                .attr("title", mw.msg(buttonConfig[which].title));
         },
         /**
          * Add event/state classes to a node if they are in that state
@@ -71,17 +77,21 @@
                 mouseleave: () => {
                     this.removeClass("ui-state-hover").removeClass("ui-state-active");
                 },
-            }).on("focusin", () => {
-                this.addClass("ui-state-focus");
-            }).on("focusout", () => {
-                this.removeClass("ui-state-focus");
-            }).on("mousedown", (e) => {
-                if (0 === e.originalEvent.button) {
-                    this.addClass("ui-state-active");
-                }
-            }).on("mouseup", () => {
-                this.removeClass("ui-state-active");
-            });
+            })
+                .on("focusin", () => {
+                    this.addClass("ui-state-focus");
+                })
+                .on("focusout", () => {
+                    this.removeClass("ui-state-focus");
+                })
+                .on("mousedown", (e) => {
+                    if (0 === e.originalEvent.button) {
+                        this.addClass("ui-state-active");
+                    }
+                })
+                .on("mouseup", () => {
+                    this.removeClass("ui-state-active");
+                });
         },
     });
 })(jQuery, mediaWiki);

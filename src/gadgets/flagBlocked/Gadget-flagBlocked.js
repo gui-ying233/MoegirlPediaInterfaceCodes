@@ -3,7 +3,7 @@
 $(() => {
     const usergroup = mw.config.get("wgUserGroups");
     const pagename = mw.config.get("wgPageName");
-    if (mw.config.get("wgNamespaceNumber") !== 2 || !mw.config.get("wgIsArticle") || /\//.test(pagename) || !usergroup.includes("sysop") && !usergroup.includes("patroller")) {
+    if (mw.config.get("wgNamespaceNumber") !== 2 || !mw.config.get("wgIsArticle") || /\//.test(pagename) || (!usergroup.includes("sysop") && !usergroup.includes("patroller"))) {
         return;
     }
 
@@ -21,15 +21,17 @@ $(() => {
                 autoHide: false,
                 tag: "lr-flagBlocked",
             });
-            const data = (await api.get({
-                action: "query",
-                assertuser: mw.config.get("wgUserName"),
-                list: "logevents",
-                letype: "block",
-                leprop: "timestamp|details|comment",
-                lelimit: 1,
-                letitle: pagename,
-            })).query.logevents["0"];
+            const data = (
+                await api.get({
+                    action: "query",
+                    assertuser: mw.config.get("wgUserName"),
+                    list: "logevents",
+                    letype: "block",
+                    leprop: "timestamp|details|comment",
+                    lelimit: 1,
+                    letitle: pagename,
+                })
+            ).query.logevents["0"];
             const { comment } = data;
             const { duration } = data.params;
             let blockTime = data.timestamp;
@@ -41,7 +43,7 @@ $(() => {
             if (data.params.flags.includes("hiddenname") || Reflect.has(data, "suppressed")) {
                 throw new Error("用户名被隐藏或日志被监督！");
             }
-            const template = `{{永久封禁|time=${blockTime}|reason=${comment}${/Abuse|长期破坏者|a\s*\d+/ig.test(comment) ? `|abuse=${comment.replace(/\D*/g, "")}` : ""}}}`;
+            const template = `{{永久封禁|time=${blockTime}|reason=${comment}${/Abuse|长期破坏者|a\s*\d+/gi.test(comment) ? `|abuse=${comment.replace(/\D*/g, "")}` : ""}}}`;
 
             mw.notify("正在添加永久封禁模板……", {
                 title: "正在标记永久封禁",
@@ -78,9 +80,12 @@ $(() => {
 
     $(mw.util.addPortletLink("p-tb", "#", "标记永久封禁", "t-lr-flagBlocked", "将此页面替换为永久封禁模板")).on("click", async (e) => {
         e.preventDefault();
-        if (working || !await oouiDialog.confirm("确定要将此页面替换为永久封禁模板吗？", {
-            title: "标记永久封禁小工具",
-        })) {
+        if (
+            working ||
+            !(await oouiDialog.confirm("确定要将此页面替换为永久封禁模板吗？", {
+                title: "标记永久封禁小工具",
+            }))
+        ) {
             return;
         }
         main();

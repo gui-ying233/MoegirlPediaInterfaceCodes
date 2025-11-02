@@ -13,10 +13,10 @@ actions:
 
 categories: []
 
-namespaces: 
+namespaces:
   - 8
 
-contentModels: 
+contentModels:
   - wikitext
 
 type: general

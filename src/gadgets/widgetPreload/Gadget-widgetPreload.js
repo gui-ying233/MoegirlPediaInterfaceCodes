@@ -6,11 +6,21 @@ $(() => {
         if (regex.test(mw.config.get("wgPageName"))) {
             window.onbeforeunload = undefined;
             $(window).off("beforeunload");
-            location.replace(`${mw.config.get("wgServer")}${mw.config.get("wgScriptPath")}/index.php?action=edit&title=${mw.config.get("wgPageName").replace(/ |_/g, "").replace(/^([^/]*)[/\\].*$/i, "$1").split(regex).map((n) => toUpperFirstCase(n)).join("")}`);
+            location.replace(
+                `${mw.config.get("wgServer")}${mw.config.get("wgScriptPath")}/index.php?action=edit&title=${mw.config
+                    .get("wgPageName")
+                    .replace(/ |_/g, "")
+                    .replace(/^([^/]*)[/\\].*$/i, "$1")
+                    .split(regex)
+                    .map((n) => toUpperFirstCase(n))
+                    .join("")}`,
+            );
             return;
         }
         const flag = `wg${mw.config.get("wgTitle")}`.replace(/ /g, "");
-        $("#wpTextbox1").val(`<noinclude> </noinclude><includeonly><!--{if !isset($${flag}) || !$${flag}}--><!--{assign var="${flag}" value=true scope="global"}--><script>\n"use strict";\nwindow.RLQ = window.RLQ || [];\nwindow.RLQ.push(["jquery", () => {\n\n}]);\n</script><!--{/if}--></includeonly>`);
+        $("#wpTextbox1").val(
+            `<noinclude> </noinclude><includeonly><!--{if !isset($${flag}) || !$${flag}}--><!--{assign var="${flag}" value=true scope="global"}--><script>\n"use strict";\nwindow.RLQ = window.RLQ || [];\nwindow.RLQ.push(["jquery", () => {\n\n}]);\n</script><!--{/if}--></includeonly>`,
+        );
 
         if ($("#mw-content-text > .mw-parser-output > .noarticletext")[0]) {
             $(document.body).addClass("noWidget");

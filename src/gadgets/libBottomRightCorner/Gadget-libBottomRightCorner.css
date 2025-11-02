@@ -14,7 +14,7 @@ body.overlay-scrollbars.skin-vector-2022 #bottomRightCorner {
     right: 20px;
 }
 
-#bottomRightCorner>div {
+#bottomRightCorner > div {
     width: 20px;
     order: 0;
     font-size: 12px;
@@ -22,7 +22,7 @@ body.overlay-scrollbars.skin-vector-2022 #bottomRightCorner {
     padding: 5px 0;
     margin-top: 17px;
     background-color: #000;
-    color: #FFF;
+    color: #fff;
     opacity: 0.6;
 }
 

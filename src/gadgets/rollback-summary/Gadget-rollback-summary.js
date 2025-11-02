@@ -19,8 +19,11 @@ $(() => {
     };
     const loop = (_, ele) => {
         const self = $(ele);
-        self.data("href", self.attr("href")).removeAttr("href") // 取消拖动链接回退
-            .attr("title", `${ele.title}（启用自定义摘要）`).css("cursor", "pointer").append("<sup>+</sup>");
+        self.data("href", self.attr("href"))
+            .removeAttr("href") // 取消拖动链接回退
+            .attr("title", `${ele.title}（启用自定义摘要）`)
+            .css("cursor", "pointer")
+            .append("<sup>+</sup>");
         if ($(".ns-special")[0] && self.text().includes("10")) {
             self.parent().text(wgULS("[超过10次的编辑]", "[超過10次的編輯]")).attr("title", "超过10次的编辑请使用撤销功能，以便检查差异（自定义摘要小工具）");
         }
@@ -56,14 +59,19 @@ $(() => {
         if (mw.config.get("wgRollbacking")) {
             return false;
         }
-        const rollbackSummary = await oouiDialog.prompt(`<ul><li>${wgULS("回退操作的编辑摘要", "還原操作的編輯摘要")}：<code>xxx//Rollback</code></li><li>${wgULS("空白则使用默认回退摘要", "留空則使用默認的還原摘要")}，${wgULS("取消则不进行回退", "取消則不進行還原")}</li></ul><hr>${wgULS("请输入回退摘要", "請輸入還原摘要")}：`, {
-            title: "回退小工具",
-            size: "medium",
-            required: false,
-        });
+        const rollbackSummary = await oouiDialog.prompt(
+            `<ul><li>${wgULS("回退操作的编辑摘要", "還原操作的編輯摘要")}：<code>xxx//Rollback</code></li><li>${wgULS("空白则使用默认回退摘要", "留空則使用默認的還原摘要")}，${wgULS("取消则不进行回退", "取消則不進行還原")}</li></ul><hr>${wgULS("请输入回退摘要", "請輸入還原摘要")}：`,
+            {
+                title: "回退小工具",
+                size: "medium",
+                required: false,
+            },
+        );
         if (rollbackSummary !== null) {
             const uri = new mw.Uri(self.data("href"));
-            self.replaceWith(`<span id="rbing"><img src="https://img.moegirl.org.cn/common/d/d1/Windows_10_loading.gif" style="height: 1em; margin-top: -.25em;">${wgULS("正在回退中", "正在還原")}……</span>`);
+            self.replaceWith(
+                `<span id="rbing"><img src="https://img.moegirl.org.cn/common/d/d1/Windows_10_loading.gif" style="height: 1em; margin-top: -.25em;">${wgULS("正在回退中", "正在還原")}……</span>`,
+            );
             const rbing = $("#rbing");
             $(".mw-rollback-link a").not(rbing).css({
                 color: "#aaa",
@@ -84,7 +92,14 @@ $(() => {
                     });
                     rbing.css("color", "green").html(`成功！${wgULS("将在", "將在")}<span id="rbcount">3</span>秒${wgULS("内刷新", "內重新整理")}`);
                 } catch (e) {
-                    const errorText = e instanceof Error ? `${e} ${e.stack.split("\n")[1].trim()}` : $.isPlainObject(e) ? JSON.stringify(e) : typeof e === "string" && Reflect.has(possibleError, e) ? possibleError[e] : `${e}`;
+                    const errorText =
+                        e instanceof Error
+                            ? `${e} ${e.stack.split("\n")[1].trim()}`
+                            : $.isPlainObject(e)
+                              ? JSON.stringify(e)
+                              : typeof e === "string" && Reflect.has(possibleError, e)
+                                ? possibleError[e]
+                                : `${e}`;
                     rbing.css("color", "red").html(`${wgULS("错误", "錯誤")}：${errorText}。${wgULS("将在", "將在")}<span id="rbcount">3</span>${wgULS("秒内刷新", "秒內重新整理")}`);
                 } finally {
                     exit();
