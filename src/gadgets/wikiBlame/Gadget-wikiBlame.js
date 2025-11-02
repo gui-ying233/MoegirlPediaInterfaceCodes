@@ -28,40 +28,52 @@ $(() => {
                 endMonthList = [],
                 endDayList = [];
             for (let i = 2010; i <= currentYear; i++) {
-                startYearList.push(new OO.ui.MenuOptionWidget({
-                    data: String(i),
-                    label: String(i),
-                }));
-                endYearList.push(new OO.ui.MenuOptionWidget({
-                    data: String(i),
-                    label: String(i),
-                }));
+                startYearList.push(
+                    new OO.ui.MenuOptionWidget({
+                        data: String(i),
+                        label: String(i),
+                    }),
+                );
+                endYearList.push(
+                    new OO.ui.MenuOptionWidget({
+                        data: String(i),
+                        label: String(i),
+                    }),
+                );
             }
             Array(12)
                 .fill(1)
                 .map((x, y) => x + y)
                 .forEach((i) => {
-                    startMonthList.push(new OO.ui.MenuOptionWidget({
-                        data: String(i),
-                        label: String(i),
-                    }));
-                    endMonthList.push(new OO.ui.MenuOptionWidget({
-                        data: String(i),
-                        label: String(i),
-                    }));
+                    startMonthList.push(
+                        new OO.ui.MenuOptionWidget({
+                            data: String(i),
+                            label: String(i),
+                        }),
+                    );
+                    endMonthList.push(
+                        new OO.ui.MenuOptionWidget({
+                            data: String(i),
+                            label: String(i),
+                        }),
+                    );
                 });
             Array(31)
                 .fill(1)
                 .map((x, y) => x + y)
                 .forEach((i) => {
-                    startDayList.push(new OO.ui.MenuOptionWidget({
-                        data: String(i),
-                        label: String(i),
-                    }));
-                    endDayList.push(new OO.ui.MenuOptionWidget({
-                        data: String(i),
-                        label: String(i),
-                    }));
+                    startDayList.push(
+                        new OO.ui.MenuOptionWidget({
+                            data: String(i),
+                            label: String(i),
+                        }),
+                    );
+                    endDayList.push(
+                        new OO.ui.MenuOptionWidget({
+                            data: String(i),
+                            label: String(i),
+                        }),
+                    );
                 });
 
             const currentSelection = new OO.ui.TextInputWidget({
@@ -164,8 +176,7 @@ $(() => {
                 new OO.ui.FieldLayout(submit, {
                     align: "right",
                 }),
-                new OO.ui.FieldLayout(progress, {
-                }),
+                new OO.ui.FieldLayout(progress, {}),
             ]);
             this.content = new OO.ui.PanelLayout({
                 padded: true,
@@ -194,11 +205,11 @@ $(() => {
                 width: "33%",
             });
             $(".oo-ui-fieldsetLayout-group .oo-ui-fieldLayout-align-right").css({
-                "float": "right",
+                float: "right",
             });
             $("#wiki-blame-close > a").removeClass("oo-ui-buttonElement-button");
             $("#wiki-blame-close > a").css({ "text-decoration": "none" });
-            $("#wiki-blame-close").css({ "float": "right" });
+            $("#wiki-blame-close").css({ float: "right" });
         }
         getBodyHeight() {
             return this.content.$element.outerHeight(true) + 10;
@@ -263,7 +274,7 @@ $(() => {
             $("#wiki-blame-close > a").removeClass("oo-ui-buttonElement-button");
             $("#wiki-blame-close > a").css({ "text-decoration": "none" });
             $("#wiki-blame-booklet").css({ "margin-top": "20px" });
-            $("#wiki-blame-close").css({ "float": "right" });
+            $("#wiki-blame-close").css({ float: "right" });
         }
 
         getBodyHeight = () => 500;
@@ -303,7 +314,7 @@ $(() => {
                 const pageId = Object.keys(data.query.pages)[0];
                 const revisionsResult = data.query.pages[pageId].revisions;
                 if (revisionsResult === undefined) {
-                    $("#wiki-blame-progress").html("<p style=\"color: red\">指定区间内无编辑或API错误</p>");
+                    $("#wiki-blame-progress").html('<p style="color: red">指定区间内无编辑或API错误</p>');
                     return;
                 }
                 revisions.push(...revisionsResult);
@@ -339,22 +350,24 @@ $(() => {
             progress.innerText = "0";
             $("#wiki-blame-progress").html(`<p>/${targetRevisions.length}</p>`).find("p").prepend(progress);
 
-            await Promise.allSettled(targetRevisions.map(async (r) => {
-                try {
-                    const rdata = await api.post({
-                        action: "compare",
-                        assertuser: username,
-                        fromrev: r.revid,
-                        torelative: "prev",
-                    });
-                    rdata.compare.user = r.user;
-                    rdata.compare.revid = rdata.torevid;
-                    const editDate = new Date(r.timestamp);
-                    rdata.compare.timestamp = editDate.toLocaleDateString();
-                    revisionsList.push(rdata.compare);
-                } catch { }
-                progress.innerText = `${+progress.innerText + 1}`;
-            }));
+            await Promise.allSettled(
+                targetRevisions.map(async (r) => {
+                    try {
+                        const rdata = await api.post({
+                            action: "compare",
+                            assertuser: username,
+                            fromrev: r.revid,
+                            torelative: "prev",
+                        });
+                        rdata.compare.user = r.user;
+                        rdata.compare.revid = rdata.torevid;
+                        const editDate = new Date(r.timestamp);
+                        rdata.compare.timestamp = editDate.toLocaleDateString();
+                        revisionsList.push(rdata.compare);
+                    } catch {}
+                    progress.innerText = `${+progress.innerText + 1}`;
+                }),
+            );
             createDiffDialog(revisionsList);
         } catch (err) {
             console.log(err);
@@ -382,11 +395,15 @@ $(() => {
 
     const createDiffDialog = (revisionsList) => {
         const windowManager = window.wikiBlameWindowManager;
-        if (windowManager.currentWindow
-            && window.wikiBlameWindowManager.currentWindow.getElementId() === "wiki-blame-dialog-popup") { windowManager.currentWindow.close(); }
-        const diffDialog = new WikiBlameDiffDialog({
-            size: "larger",
-        }, revisionsList);
+        if (windowManager.currentWindow && window.wikiBlameWindowManager.currentWindow.getElementId() === "wiki-blame-dialog-popup") {
+            windowManager.currentWindow.close();
+        }
+        const diffDialog = new WikiBlameDiffDialog(
+            {
+                size: "larger",
+            },
+            revisionsList,
+        );
         windowManager.addWindows([diffDialog]);
         windowManager.openWindow(diffDialog);
     };

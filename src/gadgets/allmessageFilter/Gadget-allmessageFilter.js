@@ -5,22 +5,16 @@
         if (mw.config.get("wgNamespaceNumber") !== -1 || mw.config.get("wgCanonicalSpecialPageName") !== "Allmessages") {
             return;
         }
-        mw.util.addCSS([
-            ".TablePager_nav {",
-            "    user-select: none;",
-            "}",
-            ".TablePager_nav-enabled {",
-            "    cursor: pointer;",
-            "}",
-            "#mw-allmessages-filter-status {",
-            "    color: red;",
-            "}",
-        ].join("\n"));
+        mw.util.addCSS(
+            [".TablePager_nav {", "    user-select: none;", "}", ".TablePager_nav-enabled {", "    cursor: pointer;", "}", "#mw-allmessages-filter-status {", "    color: red;", "}"].join("\n"),
+        );
         const containter = $("<fieldset/>"),
             api = new mw.Api(),
             length = +$("#mw-table_pager_limit_label").val();
         let index = 0,
-            filter, rfilter, am;
+            filter,
+            rfilter,
+            am;
         const enablePrevLink = (b) => {
             if (!b) {
                 $(".TablePager_nav-prev div").removeClass("TablePager_nav-enabled").addClass("TablePager_nav-disabled");
@@ -61,13 +55,18 @@
             const list = $("#mw-allmessagestable tbody");
             list.empty();
             _am.forEach((n) => {
-                const name = n.name, text = n["*"];
+                const name = n.name,
+                    text = n["*"];
                 const row = $("<tr/>");
                 row.attr("id", name).append('<td class="am_title"></td><td class="am_default"></td>');
-                $("<a/>").addClass("external").attr({
-                    href: `${mw.config.get("wgServer")}${mw.config.get("wgScriptPath")}/MediaWiki:${name}`,
-                    rel: "nofollow",
-                }).html(name.replace(rfilter, `<span style="font-weight: bold;">${filter}</span>`)).appendTo(row.find(".am_title"));
+                $("<a/>")
+                    .addClass("external")
+                    .attr({
+                        href: `${mw.config.get("wgServer")}${mw.config.get("wgScriptPath")}/MediaWiki:${name}`,
+                        rel: "nofollow",
+                    })
+                    .html(name.replace(rfilter, `<span style="font-weight: bold;">${filter}</span>`))
+                    .appendTo(row.find(".am_title"));
                 row.find(".am_default").text(text);
                 list.append(row);
             });
@@ -78,7 +77,9 @@
             }
             $("#mw-allmessages-form").remove();
             $(".TablePager_nav td").remove();
-            $(".TablePager_nav tr").append('<td style="width: 50%;" class="TablePager_nav-prev"><div class="TablePager_nav-disabled">上一页</div></td><td style="width: 50%;" class="TablePager_nav-next"><div class="TablePager_nav-disabled">下一页</div></td>');
+            $(".TablePager_nav tr").append(
+                '<td style="width: 50%;" class="TablePager_nav-prev"><div class="TablePager_nav-disabled">上一页</div></td><td style="width: 50%;" class="TablePager_nav-next"><div class="TablePager_nav-disabled">下一页</div></td>',
+            );
             $(".TablePager_nav-prev div").on("click", function () {
                 if ($(this).hasClass("TablePager_nav-disabled")) {
                     return false;

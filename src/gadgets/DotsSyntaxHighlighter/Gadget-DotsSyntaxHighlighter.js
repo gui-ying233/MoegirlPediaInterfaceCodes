@@ -28,11 +28,12 @@
     let attributeObserver;
     let parentObserver;
 
-    const syntaxHighlighterSiteConfig = window.syntaxHighlighterSiteConfig ||= {};
-    const syntaxHighlighterConfig = window.syntaxHighlighterConfig ||= {};
+    const syntaxHighlighterSiteConfig = (window.syntaxHighlighterSiteConfig ||= {});
+    const syntaxHighlighterConfig = (window.syntaxHighlighterConfig ||= {});
 
     const wgUrlProtocols = mw.config.get("wgUrlProtocols");
-    const entityRegexBase = "&(?:(?:n(?:bsp|dash)|m(?:dash|inus)|lt|e[mn]sp|thinsp|amp|quot|gt|shy|zwn?j|lrm|rlm|Alpha|Beta|Epsilon|Zeta|Eta|Iota|Kappa|[Mm]u|micro|Nu|[Oo]micron|[Rr]ho|Tau|Upsilon|Chi)|#x[0-9a-fA-F]+);\n*";
+    const entityRegexBase =
+        "&(?:(?:n(?:bsp|dash)|m(?:dash|inus)|lt|e[mn]sp|thinsp|amp|quot|gt|shy|zwn?j|lrm|rlm|Alpha|Beta|Epsilon|Zeta|Eta|Iota|Kappa|[Mm]u|micro|Nu|[Oo]micron|[Rr]ho|Tau|Upsilon|Chi)|#x[0-9a-fA-F]+);\n*";
     const breakerRegexBase = `\\[(?:\\[|(?:${wgUrlProtocols}))|\\{(?:\\{\\{?|\\|)|<(?:[:A-Z_a-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD][:\\w\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD-\\.\u00B7\u0300-\u036F\u203F-\u203F-\u2040]*(?=/?>| |\n)|!--[^]*?-->\n*)|(?:${wgUrlProtocols.replace("|\\/\\/", "")})[^\\s"<>[\\]{-}]*[^\\s",\\.:;<>[\\]{-}]\n*|^(?:=|[*#:;]+\n*|-{4,}\n*)|\\\\'\\\\'(?:\\\\')?|~{3,5}\n*|${entityRegexBase}`;
     const breakerRegexWithPrefix = (prefix) => new RegExp(`(${prefix})\n*|${breakerRegexBase}`, "gm");
     const nowikiTagBreakerRegex = (tagName) => new RegExp(`(</${tagName}>)\n*|${entityRegexBase}`, "gm");
@@ -248,7 +249,7 @@
 
             let errorMessage = {
                 zh: "由于渲染耗时过长， Syntax highlighting 已在本页禁用。在设定中渲染时间被限制在$1毫秒以内，但这次我们耗去了$2毫秒。您可以尝试关闭一些标签页和程序，并点击“显示预览”或“显示更改”。如果这不起作用，请尝试更换一个不同的浏览器。如果这还不起作用，请尝试更换一个更快的电脑=w=。",
-                en: "Syntax highlighting on this page was disabled because it took too long. The maximum allowed highlighting time is $1ms, and your computer took $2ms. Try closing some tabs and programs and clicking \"Show preview\" or \"Show changes\". If that doesn't work, try a different web browser, and if that doesn't work, try a faster computer.",
+                en: 'Syntax highlighting on this page was disabled because it took too long. The maximum allowed highlighting time is $1ms, and your computer took $2ms. Try closing some tabs and programs and clicking "Show preview" or "Show changes". If that doesn\'t work, try a different web browser, and if that doesn\'t work, try a faster computer.',
             };
             const wgUserLanguage = mw.config.get("wgUserLanguage");
 
@@ -268,8 +269,7 @@
             const fragment = document.createDocumentFragment();
             do {
                 fragment.appendChild(document.createElement("span")).id = `s${++maxSpanNumber}`;
-            }
-            while (maxSpanNumber < spanNumber);
+            } while (maxSpanNumber < spanNumber);
             wpTextbox0.appendChild(fragment);
         }
 

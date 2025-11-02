@@ -12,13 +12,13 @@ div.vectorMenu li.suppress-show {
     content: " ";
     display: block;
     height: 1px;
-    color: #A2A9B1;
-    background-color: #A2A9B1;
+    color: #a2a9b1;
+    background-color: #a2a9b1;
     border: 0;
     margin: 7px;
 }
 
-.vectorMenu .suppress-show~.suppress-show::before {
+.vectorMenu .suppress-show ~ .suppress-show::before {
     display: none;
 }
 
@@ -26,7 +26,7 @@ div.vectorMenu li.suppress-show {
     cursor: default;
 }
 
-.vectorMenu .suppress-show~.suppress-show,
+.vectorMenu .suppress-show ~ .suppress-show,
 .vectorMenu .suppress-show a {
     cursor: pointer;
 }

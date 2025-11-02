@@ -62,13 +62,13 @@ $(() => {
             },
 
             // eslint-disable-next-line @stylistic/quote-props
-            "违法违禁": {
+            违法违禁: {
                 option: { data: "违法违禁", label: wgULS("违法违禁", "違法違禁") },
                 subTypes: [],
             },
 
             // eslint-disable-next-line @stylistic/quote-props
-            "网络暴力": {
+            网络暴力: {
                 option: { data: "网络暴力", label: wgULS("网络暴力", "網路暴力") },
                 subTypes: [
                     { data: "侮辱谩骂", label: wgULS("侮辱谩骂", "侮辱謾罵") },
@@ -79,7 +79,7 @@ $(() => {
             },
 
             // eslint-disable-next-line @stylistic/quote-props
-            "色情低俗": {
+            色情低俗: {
                 option: { data: "色情低俗", label: "色情低俗" },
                 subTypes: [
                     { data: "低俗信息", label: wgULS("低俗信息", "低俗資訊") },
@@ -90,7 +90,7 @@ $(() => {
             },
 
             // eslint-disable-next-line @stylistic/quote-props
-            "血腥暴力": {
+            血腥暴力: {
                 option: { data: "血腥暴力", label: "血腥暴力" },
                 subTypes: [
                     { data: "暴恐血腥", label: "暴恐血腥" },
@@ -99,13 +99,13 @@ $(() => {
             },
 
             // eslint-disable-next-line @stylistic/quote-props
-            "赌博诈骗": {
+            赌博诈骗: {
                 option: { data: "赌博诈骗", label: wgULS("赌博诈骗", "賭博詐騙") },
                 subTypes: [],
             },
 
             // eslint-disable-next-line @stylistic/quote-props
-            "不实信息": {
+            不实信息: {
                 option: { data: "不实信息", label: wgULS("不实信息", "不實資訊") },
                 subTypes: [
                     { data: "不符合事实", label: wgULS("不符合事实", "不符合事實") },
@@ -121,7 +121,7 @@ $(() => {
             },
 
             // eslint-disable-next-line @stylistic/quote-props
-            "其他反馈": {
+            其他反馈: {
                 option: { data: "其他反馈", label: wgULS("其他反馈", "其他反饋") },
                 subTypes: [],
                 suggestConfirmation: true,
@@ -173,7 +173,9 @@ $(() => {
             this.reasonTextarea = new OO.ui.MultilineTextInputWidget({
                 autosize: true,
                 indicator: "required",
-                label: $(`<span>${wgULS("若问题相对简单请在页面右上", "若問題相對簡單請在頁面右上")}<br>${wgULS("点击编辑链接，自行解决", "點選編輯連結，自行解決", null, null, "點擊編輯連結，自行解決")}</span>`),
+                label: $(
+                    `<span>${wgULS("若问题相对简单请在页面右上", "若問題相對簡單請在頁面右上")}<br>${wgULS("点击编辑链接，自行解决", "點選編輯連結，自行解決", null, null, "點擊編輯連結，自行解決")}</span>`,
+                ),
                 required: true,
                 validate: /[\s\S\n]{5,}/,
                 autocomplete: false,
@@ -236,21 +238,25 @@ $(() => {
             const { subTypes } = config;
             if (subTypes.length > 0) {
                 this.secondaryTypeSelectorField.$element.slideDown("fast", () => this.updateSize());
-                this.secondaryTypeSelector.setOptions([
-                    { data: "placeholder", label: wgULS("请选择一项细节问题", "請選擇一項細節問題") },
-                    ...subTypes,
-                    { data: "其他", label: "其他" },
-                ]);
+                this.secondaryTypeSelector.setOptions([{ data: "placeholder", label: wgULS("请选择一项细节问题", "請選擇一項細節問題") }, ...subTypes, { data: "其他", label: "其他" }]);
             } else {
                 this.secondaryTypeSelectorField.$element.slideUp("fast", () => this.updateSize());
                 this.secondaryTypeSelector.setOptions([{ data: "none", label: "" }]);
                 this.secondaryTypeSelector.setValue("none");
             }
             if (config.suggestConfirmation) {
-                oouiDialog.alert(`${wgULS("请您注意：<br>请在您的反馈意见不符合所有列出的主要问题时才可选择“其他”类别，请再检查您的反馈意见是否符合以下列出的主要问题：", "請您注意：<br>請在您的反饋意見不符合所有列出的主要問題時才可選擇“其他”類別，請再檢查您的反饋意見是否符合以下列出的主要問題：")}<ul><li>${Object.values(MGPReportDialog.types).filter(({ option: { data }, suggestConfirmation }) => data !== "placeholder" && !suggestConfirmation).map(({ option: { label } }) => label).join("</li><li>")}</li></ul>`, {
-                    ...oouiDialogConfig,
-                    size: "medium",
-                });
+                oouiDialog.alert(
+                    `${wgULS("请您注意：<br>请在您的反馈意见不符合所有列出的主要问题时才可选择“其他”类别，请再检查您的反馈意见是否符合以下列出的主要问题：", "請您注意：<br>請在您的反饋意見不符合所有列出的主要問題時才可選擇“其他”類別，請再檢查您的反饋意見是否符合以下列出的主要問題：")}<ul><li>${Object.values(
+                        MGPReportDialog.types,
+                    )
+                        .filter(({ option: { data }, suggestConfirmation }) => data !== "placeholder" && !suggestConfirmation)
+                        .map(({ option: { label } }) => label)
+                        .join("</li><li>")}</li></ul>`,
+                    {
+                        ...oouiDialogConfig,
+                        size: "medium",
+                    },
+                );
             }
             if (userIsAutoconfirmed && config.suggestToTalkBoard) {
                 this.suggestToTalkBoardInputField.$element.slideDown("fast", () => this.updateSize());
@@ -260,7 +266,7 @@ $(() => {
             }
         }
         continueOK() {
-            this.actions.setAbilities({ "continue": true });
+            this.actions.setAbilities({ continue: true });
         }
         async validateFeedback() {
             this.primaryType = this.primaryTypeSelector.getValue();
@@ -320,50 +326,54 @@ $(() => {
                     this.close({ action: action });
                 }, this);
             } else if (action === "continue") {
-                return new OO.ui.Process($.when((async () => {
-                    try {
-                        await this.validateFeedback();
-                        const details = [
-                            `${wgULS("反馈页面", "反饋頁面")}：${this.wgPageName}`,
-                            `主要${wgULS("问题", "問題")}：${this.primaryType}`,
-                        ];
-                        if (this.secondaryType !== "none") {
-                            details.push(`次要${wgULS("问题", "問題")}：${this.secondaryType}`);
-                        }
-                        details.push(
-                            `${wgULS("电子邮件", "電子郵件")}：${this.email}`,
-                            `您的理由：${this.reason}`,
-                        );
-                        if (userIsAutoconfirmed && MGPReportDialog.types[this.primaryType].suggestToTalkBoard) {
-                            details.push(`${wgULS("是否提交到提问求助区", "是否提交到提問求助區")}：${this.suggestToTalkBoardInput.isSelected() ? "是" : "否"}`);
-                        }
-                        this.confirmPanel.$element.find("ul").html(`<li>${details.join("</li><li>")}</li>`);
-                        this.actions.setMode("confirm");
-                        this.stackLayout.setItem(this.confirmPanel);
-                        this.updateSize();
-                    } catch (e) {
-                        throw new OO.ui.Error(e, { recoverable: false });
-                    }
-                })()).promise(), this);
+                return new OO.ui.Process(
+                    $.when(
+                        (async () => {
+                            try {
+                                await this.validateFeedback();
+                                const details = [`${wgULS("反馈页面", "反饋頁面")}：${this.wgPageName}`, `主要${wgULS("问题", "問題")}：${this.primaryType}`];
+                                if (this.secondaryType !== "none") {
+                                    details.push(`次要${wgULS("问题", "問題")}：${this.secondaryType}`);
+                                }
+                                details.push(`${wgULS("电子邮件", "電子郵件")}：${this.email}`, `您的理由：${this.reason}`);
+                                if (userIsAutoconfirmed && MGPReportDialog.types[this.primaryType].suggestToTalkBoard) {
+                                    details.push(`${wgULS("是否提交到提问求助区", "是否提交到提問求助區")}：${this.suggestToTalkBoardInput.isSelected() ? "是" : "否"}`);
+                                }
+                                this.confirmPanel.$element.find("ul").html(`<li>${details.join("</li><li>")}</li>`);
+                                this.actions.setMode("confirm");
+                                this.stackLayout.setItem(this.confirmPanel);
+                                this.updateSize();
+                            } catch (e) {
+                                throw new OO.ui.Error(e, { recoverable: false });
+                            }
+                        })(),
+                    ).promise(),
+                    this,
+                );
             } else if (action === "back") {
                 this.actions.setMode("feedback");
                 this.stackLayout.setItem(this.feedbackPanel);
                 this.updateSize();
             } else if (action === "submit") {
-                return new OO.ui.Process($.when((async () => {
-                    try {
-                        await this.postMessageToBackend();
-                        this.close({ action: action });
-                        mw.notify(wgULS("感谢您的反馈！", "感謝您的反饋！"), {
-                            title: wgULS("反馈提交成功", "反饋提交成功"),
-                            type: "success",
-                        });
-                        this.primaryTypeSelector.setValue("placeholder");
-                        this.reasonTextarea.setValue("");
-                    } catch (e) {
-                        throw new OO.ui.Error(e);
-                    }
-                })()).promise(), this);
+                return new OO.ui.Process(
+                    $.when(
+                        (async () => {
+                            try {
+                                await this.postMessageToBackend();
+                                this.close({ action: action });
+                                mw.notify(wgULS("感谢您的反馈！", "感謝您的反饋！"), {
+                                    title: wgULS("反馈提交成功", "反饋提交成功"),
+                                    type: "success",
+                                });
+                                this.primaryTypeSelector.setValue("placeholder");
+                                this.reasonTextarea.setValue("");
+                            } catch (e) {
+                                throw new OO.ui.Error(e);
+                            }
+                        })(),
+                    ).promise(),
+                    this,
+                );
             }
             // Fallback to parent handler
             return super.getActionProcess(action);
@@ -406,15 +416,20 @@ $(() => {
                 ReportContact: this.email,
             });
             try {
-                console.info("Report [upload]", await (await fetch("https://api.moegirl.org.cn/report", {
-                    headers: {
-                        "content-type": "application/x-www-form-urlencoded",
-                    },
-                    body: body.toString(),
-                    method: "POST",
-                    mode: "no-cors",
-                    credentials: "include",
-                })).text());
+                console.info(
+                    "Report [upload]",
+                    await (
+                        await fetch("https://api.moegirl.org.cn/report", {
+                            headers: {
+                                "content-type": "application/x-www-form-urlencoded",
+                            },
+                            body: body.toString(),
+                            method: "POST",
+                            mode: "no-cors",
+                            credentials: "include",
+                        })
+                    ).text(),
+                );
             } catch (e) {
                 console.error("Report [upload]", e);
                 throw wgULS("上传失败，请重试！", "上傳失敗，請重試！");
@@ -430,10 +445,22 @@ $(() => {
     });
     windowManager.addWindows([reportDialog]);
     const initReport = async () => {
-        if (wgNamespaceNumber > 0 && !await oouiDialog.confirm(`${wgULS("本页面<b>并非条目页面</b>，并不直接介绍事物，而仅为萌娘百科", "本頁面<b>並非條目頁面</b>，並不直接介紹事物，而僅為萌娘百科")}${wgULS("用户", "使用者", null, null, "用戶")}${wgULS("为方便编辑、交流沟通等使用。<br>您确定您仍要反馈本页面吗？", "為方便編輯、交流溝通等使用。<br>您確定您仍要反饋本頁面嗎？")}`, oouiDialogConfig)) {
+        if (
+            wgNamespaceNumber > 0 &&
+            !(await oouiDialog.confirm(
+                `${wgULS("本页面<b>并非条目页面</b>，并不直接介绍事物，而仅为萌娘百科", "本頁面<b>並非條目頁面</b>，並不直接介紹事物，而僅為萌娘百科")}${wgULS("用户", "使用者", null, null, "用戶")}${wgULS("为方便编辑、交流沟通等使用。<br>您确定您仍要反馈本页面吗？", "為方便編輯、交流溝通等使用。<br>您確定您仍要反饋本頁面嗎？")}`,
+                oouiDialogConfig,
+            ))
+        ) {
             return;
         }
-        if (wgCurRevisionId !== wgRevisionId && !await oouiDialog.confirm(`${wgULS("本页面<b>并非最新版本</b>，其内容可能已被修改，您可以点击", "本頁面<b>並非最新版本</b>，其內容可能已被修改，您可以點選")}<a href="/${wgPageName}">${wgULS("此链接查看最新版本</a>以免误反馈。<br>您确定您仍要反馈此版本吗？", "此連結檢視最新版本</a>以免誤反饋。<br>您確定您仍要反饋此版本嗎？")}`, oouiDialogConfig)) {
+        if (
+            wgCurRevisionId !== wgRevisionId &&
+            !(await oouiDialog.confirm(
+                `${wgULS("本页面<b>并非最新版本</b>，其内容可能已被修改，您可以点击", "本頁面<b>並非最新版本</b>，其內容可能已被修改，您可以點選")}<a href="/${wgPageName}">${wgULS("此链接查看最新版本</a>以免误反馈。<br>您确定您仍要反馈此版本吗？", "此連結檢視最新版本</a>以免誤反饋。<br>您確定您仍要反饋此版本嗎？")}`,
+                oouiDialogConfig,
+            ))
+        ) {
             return;
         }
         const moepadFn = window[MOEPAD_JS_BRIDGE_KEY];
@@ -445,14 +472,18 @@ $(() => {
         }
     };
 
-    const WarningIcon = (props = {}) => $("<svg  xmlns=\"http://www.w3.org/2000/svg\"  width=\"24\"  height=\"24\"  viewBox=\"0 0 24 24\"  fill=\"currentColor\"  class=\"icon icon-tabler icons-tabler-filled icon-tabler-alert-triangle\"><path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M12 1.67c.955 0 1.845 .467 2.39 1.247l.105 .16l8.114 13.548a2.914 2.914 0 0 1 -2.307 4.363l-.195 .008h-16.225a2.914 2.914 0 0 1 -2.582 -4.2l.099 -.185l8.11 -13.538a2.914 2.914 0 0 1 2.491 -1.403zm.01 13.33l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007zm-.01 -7a1 1 0 0 0 -.993 .883l-.007 .117v4l.007 .117a1 1 0 0 0 1.986 0l.007 -.117v-4l-.007 -.117a1 1 0 0 0 -.993 -.883z\" /></svg>", props);
+    const WarningIcon = (props = {}) =>
+        $(
+            '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="currentColor"  class="icon icon-tabler icons-tabler-filled icon-tabler-alert-triangle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 1.67c.955 0 1.845 .467 2.39 1.247l.105 .16l8.114 13.548a2.914 2.914 0 0 1 -2.307 4.363l-.195 .008h-16.225a2.914 2.914 0 0 1 -2.582 -4.2l.099 -.185l8.11 -13.538a2.914 2.914 0 0 1 2.491 -1.403zm.01 13.33l-.127 .007a1 1 0 0 0 0 1.986l.117 .007l.127 -.007a1 1 0 0 0 0 -1.986l-.117 -.007zm-.01 -7a1 1 0 0 0 -.993 .883l-.007 .117v4l.007 .117a1 1 0 0 0 1.986 0l.007 -.117v-4l-.007 -.117a1 1 0 0 0 -.993 -.883z" /></svg>',
+            props,
+        );
 
     const $extraReportArea = $("<div>", {
-        "class": "report-article-footer",
+        class: "report-article-footer",
         style: "text-align: center; margin-top: 1em;",
     });
     const $extraReportButton = $("<a>", {
-        "class": "report-article-button",
+        class: "report-article-button",
         style: "display: inline-block; padding: 0.5em 1em; background-color: var(--theme-danger-color, #ff4848); color: var(--theme-accent-link-color, #fff); border-radius: 100vmax; cursor: pointer;",
         text: wgULS("违规举报 & 页面反馈", "違規舉報 & 頁面反饋"),
         click: initReport,
@@ -470,9 +501,11 @@ $(() => {
             break;
         case "vector":
         default:
-            insertToBottomRightCorner(wgULS("页面举报&反馈", "頁面舉報&反饋")).css({
-                order: 0,
-            }).on("click", initReport);
+            insertToBottomRightCorner(wgULS("页面举报&反馈", "頁面舉報&反饋"))
+                .css({
+                    order: 0,
+                })
+                .on("click", initReport);
             $("#bodyContent").append($extraReportArea);
             break;
     }

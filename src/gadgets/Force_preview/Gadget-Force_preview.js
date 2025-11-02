@@ -38,14 +38,26 @@ $(() => {
     if (tcb.length > 0) {
         tcb.attr("disabled", "disabled").hide().after('<button type="button" class="mw-ui-button mw-ui-progressive mw-ui-primary" style="display: block;" disabled="disabled">请先预览</button>');
     }
-    saveButton.attr("disabled", "disabled").val("预览一次后才可保存内容").css("font-weight", "normal").parent().removeClass("oo-ui-widget-enabled oo-ui-flaggedElement-primary oo-ui-flaggedElement-progressive").addClass("oo-ui-widget-disabled");
+    saveButton
+        .attr("disabled", "disabled")
+        .val("预览一次后才可保存内容")
+        .css("font-weight", "normal")
+        .parent()
+        .removeClass("oo-ui-widget-enabled oo-ui-flaggedElement-primary oo-ui-flaggedElement-progressive")
+        .addClass("oo-ui-widget-disabled");
     const hook = mw.hook("wikipage.editform");
     const hookFunc = () => {
         const previewArea = previewContainer.children(".mw-content-ltr, .mw-content-rtl");
         if (previewArea[0] && previewArea.is(":not(:empty)")) {
             if (!isPreviewedLive) {
                 isPreviewedLive = true;
-                saveButton.removeAttr("disabled").val(oldSaveBottonValue).css("font-weight", "700").parent().addClass("oo-ui-widget-enabled oo-ui-flaggedElement-primary oo-ui-flaggedElement-progressive").removeClass("oo-ui-widget-disabled");
+                saveButton
+                    .removeAttr("disabled")
+                    .val(oldSaveBottonValue)
+                    .css("font-weight", "700")
+                    .parent()
+                    .addClass("oo-ui-widget-enabled oo-ui-flaggedElement-primary oo-ui-flaggedElement-progressive")
+                    .removeClass("oo-ui-widget-disabled");
                 previewButton.closest(".oo-ui-buttonElement-framed").removeClass("oo-ui-flaggedElement-primary oo-ui-flaggedElement-progressive");
                 if (tcb.length > 0) {
                     tcb.removeAttr("disabled").show().next().remove();
@@ -54,11 +66,14 @@ $(() => {
             hook.remove(hookFunc);
         }
     };
-    previewButton.closest(".oo-ui-buttonElement-framed").addClass("oo-ui-flaggedElement-primary oo-ui-flaggedElement-progressive").on("click", () => {
-        if (isUserChosenPreviewLive && !isPreviewedLive) {
-            hook.add(hookFunc);
-        }
-    });
+    previewButton
+        .closest(".oo-ui-buttonElement-framed")
+        .addClass("oo-ui-flaggedElement-primary oo-ui-flaggedElement-progressive")
+        .on("click", () => {
+            if (isUserChosenPreviewLive && !isPreviewedLive) {
+                hook.add(hookFunc);
+            }
+        });
     let captureSupported = false;
     try {
         const options = Reflect.defineProperty({}, "capture", {
@@ -68,19 +83,23 @@ $(() => {
             },
         });
         window.addEventListener("test", null, options);
-    } catch { }
-    saveButton[0].addEventListener("click", (e) => {
-        if (!isPreviewedLive) {
-            e.preventDefault();
-            e.stopImmediatePropagation();
-            e.stopPropagation();
-            return false;
-        }
-    }, captureSupported
-        ? {
-            capture: true,
-        }
-        : true);
+    } catch {}
+    saveButton[0].addEventListener(
+        "click",
+        (e) => {
+            if (!isPreviewedLive) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                e.stopPropagation();
+                return false;
+            }
+        },
+        captureSupported
+            ? {
+                  capture: true,
+              }
+            : true,
+    );
     if (Reflect.has(window, "MutationObserver")) {
         const observer = new MutationObserver(() => {
             if (!isPreviewedLive) {

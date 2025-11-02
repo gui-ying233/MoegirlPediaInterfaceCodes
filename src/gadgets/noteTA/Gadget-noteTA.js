@@ -19,7 +19,8 @@ mw.hook("wikipage.content").add(() => {
             return;
         }
         $("#p-variants").nextAll('.noteTA-menu, [class*="mw-indicator"], [id*="mw-indicator"]').remove();
-        let $dialog = null, $this = null;
+        let $dialog = null,
+            $this = null;
         if (mw.config.get("skin") === "moeskin") {
             $this = $("#p-noteTA-moeskin");
             $("#p-noteTA-moeskin > button").addClass("noteTAViewer-button");
@@ -27,18 +28,18 @@ mw.hook("wikipage.content").add(() => {
             const noteTAIndicator = $("[id^=mw-indicator-noteTA-]").hide();
             const $noteTAIndicatorImg = noteTAIndicator.find("img").css("height", "17.5px");
             $this = $("<div/>", {
-                "class": "vector-menu vector-menu-tabs",
+                class: "vector-menu vector-menu-tabs",
                 id: "noteTA-vector-menu-tabs",
                 style: "float: left",
-            }).append(
-                $("<div>", { "class": "vector-menu-content" }).append(
-                    $("<ul>", { "class": "vector-menu-content-list" }).append(
-                        $("<li>", { "class": "mw-list-item vector-tab-noicon" }).append(
-                            $("<a>", { href: "javascript:;" }).append($noteTAIndicatorImg[0]),
+            })
+                .append(
+                    $("<div>", { class: "vector-menu-content" }).append(
+                        $("<ul>", { class: "vector-menu-content-list" }).append(
+                            $("<li>", { class: "mw-list-item vector-tab-noicon" }).append($("<a>", { href: "javascript:;" }).append($noteTAIndicatorImg[0])),
                         ),
                     ),
-                ),
-            ).insertAfter("#vector-variants-dropdown");
+                )
+                .insertAfter("#vector-variants-dropdown");
         }
 
         const parse = async (wikitext) => {
@@ -72,7 +73,8 @@ mw.hook("wikipage.content").add(() => {
                 $dialog.dialog("open");
             }
             if ($dialog.find(".mw-ajax-loader, .noteTAViewer-error").length > 0) {
-                let wikitext = "", collapse = true;
+                let wikitext = "",
+                    collapse = true;
                 const $dom = $("#mw-content-text .mw-parser-output");
                 const actualTitle = mw.config.get("wgPageName").replace(/_/g, " ");
                 // title
@@ -151,37 +153,53 @@ mw.hook("wikipage.content").add(() => {
         $("#ca-varlang-1, #ca-varlang-2").remove();
         const wgUserId = mw.config.get("wgUserId");
 
-        if (typeof wgUserId === "number" && wgUserId > 0 && mw.config.get("wgAction") === "view" && localStorage.getItem("AnnTools-noteTA-alert") !== "true" && !document.getElementById("noteTA-lang") && !/^\/zh-[a-z]+\//.test(location.pathname)) {
+        if (
+            typeof wgUserId === "number" &&
+            wgUserId > 0 &&
+            mw.config.get("wgAction") === "view" &&
+            localStorage.getItem("AnnTools-noteTA-alert") !== "true" &&
+            !document.getElementById("noteTA-lang") &&
+            !/^\/zh-[a-z]+\//.test(location.pathname)
+        ) {
             const url = new mw.Uri();
             if (!(Reflect.has(url.query, "variant") || Reflect.has(url.query, "uselang")) && !url.path.startsWith("/index.php") && name.includes(wgUserVariant)) {
-                $("body").append(`<div id="noteTA-lang"><p>检测到您当前使用的<b>内容</b>语言变体 ${wgUserVariant}${map[wgUserVariant]}会导致繁简转换无法正常工作，我们建议您切换到以下三种<b>内容</b>语言变体之一：</p><p><span class="noteTA-lang-changer mw-ui-button" data-lang="zh-cn">zh-cn（中国大陆）</span> <span class="noteTA-lang-changer mw-ui-button" data-lang="zh-hk">zh-hk（中国香港）</span> <span class="noteTA-lang-changer mw-ui-button" data-lang="zh-tw">zh-tw（台湾地区）</span> | <span id="noteTA-lang-explainer" class="mw-ui-button">了解更多</span> <span id="noteTA-lang-disable" class="mw-ui-button mw-ui-destructive">不再提示</span></div>`);
+                $("body").append(
+                    `<div id="noteTA-lang"><p>检测到您当前使用的<b>内容</b>语言变体 ${wgUserVariant}${map[wgUserVariant]}会导致繁简转换无法正常工作，我们建议您切换到以下三种<b>内容</b>语言变体之一：</p><p><span class="noteTA-lang-changer mw-ui-button" data-lang="zh-cn">zh-cn（中国大陆）</span> <span class="noteTA-lang-changer mw-ui-button" data-lang="zh-hk">zh-hk（中国香港）</span> <span class="noteTA-lang-changer mw-ui-button" data-lang="zh-tw">zh-tw（台湾地区）</span> | <span id="noteTA-lang-explainer" class="mw-ui-button">了解更多</span> <span id="noteTA-lang-disable" class="mw-ui-button mw-ui-destructive">不再提示</span></div>`,
+                );
                 const container = $("#noteTA-lang");
-                $(".noteTA-lang-changer").on("click", async (e) => {
-                    const target = e.target;
-                    const text = target.innerText;
-                    const lang = target.dataset.lang;
-                    container.html(`<p>正在切换至 ${text} ……</p>`);
-                    try {
-                        const result = await api.postWithToken("csrf", {
-                            action: "options",
-                            assertuser: wgUserName,
-                            optionname: "variant",
-                            optionvalue: lang,
-                        });
-                        if (result.options === "success") {
-                            container.html("<p>切换成功，正在刷新页面！</p>");
-                            location.pathname = location.pathname.replace(replaceReg, "");
-                        } else {
-                            throw result;
+                $(".noteTA-lang-changer")
+                    .on("click", async (e) => {
+                        const target = e.target;
+                        const text = target.innerText;
+                        const lang = target.dataset.lang;
+                        container.html(`<p>正在切换至 ${text} ……</p>`);
+                        try {
+                            const result = await api.postWithToken("csrf", {
+                                action: "options",
+                                assertuser: wgUserName,
+                                optionname: "variant",
+                                optionvalue: lang,
+                            });
+                            if (result.options === "success") {
+                                container.html("<p>切换成功，正在刷新页面！</p>");
+                                location.pathname = location.pathname.replace(replaceReg, "");
+                            } else {
+                                throw result;
+                            }
+                        } catch (reason) {
+                            console.info("noteTA-lang-changer:", reason);
+                            container.html(
+                                `<p class="mw-parser-output">发生错误，无法切换，请手动访问<b>【<a href="/Special:Preferences#mw-prefsection-personal-i18n" target="_blank" class="external text">设置页面 - 语言</a> - 内容语言变种】处</b>修改您的内容语言变种为 ${text}</p>`,
+                            );
                         }
-                    } catch (reason) {
-                        console.info("noteTA-lang-changer:", reason);
-                        container.html(`<p class="mw-parser-output">发生错误，无法切换，请手动访问<b>【<a href="/Special:Preferences#mw-prefsection-personal-i18n" target="_blank" class="external text">设置页面 - 语言</a> - 内容语言变种】处</b>修改您的内容语言变种为 ${text}</p>`);
-                    }
-                }).filter(`[data-lang="${wgUserVariant}"]`).addClass("mw-ui-progressive");
-                $("#noteTA-lang-explainer").on("click", () => {
-                    // open(mw.config.get("wgServer") + mw.config.get("wgScriptPath") +,"_blank");
-                }).hide();
+                    })
+                    .filter(`[data-lang="${wgUserVariant}"]`)
+                    .addClass("mw-ui-progressive");
+                $("#noteTA-lang-explainer")
+                    .on("click", () => {
+                        // open(mw.config.get("wgServer") + mw.config.get("wgScriptPath") +,"_blank");
+                    })
+                    .hide();
                 $("#noteTA-lang-disable").on("click", () => {
                     $("#noteTA-lang").remove();
                     localStorage.setItem("AnnTools-noteTA-alert", "true");

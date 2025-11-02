@@ -59,6 +59,7 @@
             $content.find(".mw-userlink[data-user-avatar]").each((_, el) => {
                 attachAvatarToUserLink(el);
             });
-        });
+        },
+    );
 })();
 // </pre>
