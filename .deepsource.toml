@@ -1,10 +1,19 @@
 version = 1
 
+exclude_patterns = [
+  "scripts/**",
+  "src/gadgets/lib**",
+  "src/gadgets/prism**",
+  "src/gadgets/HotCat/Gadget-HotCat.js",
+  "src/gadgets/Navigation_popups/Gadget-popups.js",
+  "src/gadgets/localforage/Gadget-localforage.js",
+  "src/gadgets/code-prettify/Gadget-code-prettify.js"
+]
+
 [[analyzers]]
 name = "javascript"
 
   [analyzers.meta]
-  plugins = ["vue"]
   environment = [
     "browser",
     "jquery"
