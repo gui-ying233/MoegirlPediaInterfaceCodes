@@ -8,7 +8,7 @@ $(() => {
      * @param {string} succesText 清除成功文本
      * @param {string} failText 清除失败文本
      * @returns {JQuery<HTMLElement>}
-    */
+     */
     if (!mw.config.get("wgIsArticle") || mw.config.get("wgPageName") === "Mainpage") {
         return;
     }
@@ -61,14 +61,21 @@ $(() => {
         case "moeskin":
         default:
             $("#moe-article-header-top .right-block.flex").prepend(
-                $('<div class="flex" id="p-purge-cache"></div>').append($purgeButton().append(
-                    '<div aria-hidden="true" class="n-base-wave"></div>',
-                    '<div aria-hidden="true" class="n-button__border"></div>',
-                    '<div aria-hidden="true" class="n-button__state-border"></div>',
-                )));
+                $('<div class="flex" id="p-purge-cache"></div>').append(
+                    $purgeButton().append(
+                        '<div aria-hidden="true" class="n-base-wave"></div>',
+                        '<div aria-hidden="true" class="n-button__border"></div>',
+                        '<div aria-hidden="true" class="n-button__state-border"></div>',
+                    ),
+                ),
+            );
             $("#mobile-page-actions .mobile-edit-button").append(
-                $purgeButton(wgULS("清除缓存", "清除快取"), wgULS("正在清除", "正在清除"), wgULS("清除成功！", "清除成功！"), wgULS("清除失败，点击可重试", "清除失敗，點選可重試", null, null, "清除失敗，點擊可重試"))
-                    .append('<div aria-hidden="true" class="n-base-wave"></div>'),
+                $purgeButton(
+                    wgULS("清除缓存", "清除快取"),
+                    wgULS("正在清除", "正在清除"),
+                    wgULS("清除成功！", "清除成功！"),
+                    wgULS("清除失败，点击可重试", "清除失敗，點選可重試", null, null, "清除失敗，點擊可重試"),
+                ).append('<div aria-hidden="true" class="n-base-wave"></div>'),
             );
     }
 });

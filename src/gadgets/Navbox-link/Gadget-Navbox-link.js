@@ -31,54 +31,56 @@ $(() => {
         }
         return selector;
     };
-    refresh.on("click", async (e) => {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        e.stopPropagation();
-        const result = await api.post({
-            action: "query",
-            assertuser: wgUserName,
-            redirects: "true",
-            generator: "links",
-            gplnamespace: "0",
-            gpllimit: "max",
-            prop: "templates",
-            tllimit: "max",
-            tlnamespace: "10",
-            tltemplates: wgPageName,
-            titles: wgPageName,
-        });
-        targetUl.empty();
-        if (!result.query) {
-            targetUl.text(wgULS("本模板未被任何条目嵌入", "本模板未被任何條目引用"));
-        } else {
-            const redirects = Object.fromEntries((result.query.redirects || []).map(({ from, to }) => [from, to]));
-            for (const { templates, missing, title } of Object.values(result.query.pages)) {
-                if (!Array.isArray(templates) && typeof missing === "undefined") {
-                    const link = $("<a>", {
-                        title,
-                        text: title,
-                        href: `/${encodeURIComponent(title)}`,
-                    });
-                    $("<li>").append(link).appendTo(targetUl);
-                    $(generateSelector(title, redirects)).each((_, ele) => {
-                        if (ele.title.length > 0) {
-                            ele.dataset.title = ele.title;
-                        }
-                    });
-                    link.on("mouseenter", () => {
-                        $(generateSelector(title, redirects)).css("background-color", "yellow");
-                    });
-                    link.on("mouseleave", () => {
-                        $(generateSelector(title, redirects)).css("background-color", "");
-                    });
+    refresh
+        .on("click", async (e) => {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            e.stopPropagation();
+            const result = await api.post({
+                action: "query",
+                assertuser: wgUserName,
+                redirects: "true",
+                generator: "links",
+                gplnamespace: "0",
+                gpllimit: "max",
+                prop: "templates",
+                tllimit: "max",
+                tlnamespace: "10",
+                tltemplates: wgPageName,
+                titles: wgPageName,
+            });
+            targetUl.empty();
+            if (!result.query) {
+                targetUl.text(wgULS("本模板未被任何条目嵌入", "本模板未被任何條目引用"));
+            } else {
+                const redirects = Object.fromEntries((result.query.redirects || []).map(({ from, to }) => [from, to]));
+                for (const { templates, missing, title } of Object.values(result.query.pages)) {
+                    if (!Array.isArray(templates) && typeof missing === "undefined") {
+                        const link = $("<a>", {
+                            title,
+                            text: title,
+                            href: `/${encodeURIComponent(title)}`,
+                        });
+                        $("<li>").append(link).appendTo(targetUl);
+                        $(generateSelector(title, redirects)).each((_, ele) => {
+                            if (ele.title.length > 0) {
+                                ele.dataset.title = ele.title;
+                            }
+                        });
+                        link.on("mouseenter", () => {
+                            $(generateSelector(title, redirects)).css("background-color", "yellow");
+                        });
+                        link.on("mouseleave", () => {
+                            $(generateSelector(title, redirects)).css("background-color", "");
+                        });
+                    }
+                }
+                if (targetUl.children().length === 0) {
+                    targetUl.text(wgULS("本模板所有条目均添加了本模板", "本模板所有條目均添加了本模板"));
                 }
             }
-            if (targetUl.children().length === 0) {
-                targetUl.text(wgULS("本模板所有条目均添加了本模板", "本模板所有條目均添加了本模板"));
-            }
-        }
-        targetLoc.show();
-    }).trigger("click");
+            targetLoc.show();
+        })
+        .trigger("click");
 });
 // </pre>

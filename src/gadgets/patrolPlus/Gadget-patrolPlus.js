@@ -9,12 +9,13 @@ $(() => {
     let running = false;
     const list = [];
 
-    const handlePatroll = async (_title, _revid) => await api.postWithToken("patrol", {
-        action: "patrol",
-        assertuser: mw.config.get("wgUserName"),
-        format: "json",
-        revid: _revid,
-    });
+    const handlePatroll = async (_title, _revid) =>
+        await api.postWithToken("patrol", {
+            action: "patrol",
+            assertuser: mw.config.get("wgUserName"),
+            format: "json",
+            revid: _revid,
+        });
     const sleep = (t) => new Promise((res) => setTimeout(res, t));
     $("abbr.unpatrolled").each((_, ele) => {
         const self = $(ele);
@@ -77,5 +78,5 @@ $(() => {
     });
 
     new Image().src = "https://img.moegirl.org.cn/common/d/d1/Windows_10_loading.gif";
-    $(window).on("beforeunload", () => running ? true : undefined);
+    $(window).on("beforeunload", () => (running ? true : undefined));
 });

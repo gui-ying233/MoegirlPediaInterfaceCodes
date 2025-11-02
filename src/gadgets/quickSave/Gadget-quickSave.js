@@ -88,7 +88,7 @@ $(() => {
         nextStep(newLogLine = true) {
             this.logLine.setStatus("success");
             this.currentStep++;
-            this.progressBarWidget.setProgress(100 * this.currentStep / this.steps);
+            this.progressBarWidget.setProgress((100 * this.currentStep) / this.steps);
             if (newLogLine) {
                 this.generateNewLogLine();
                 this.dialog.delayUpdateSize();
@@ -157,12 +157,15 @@ $(() => {
         }
         initialize() {
             super.initialize();
-            this.panelLayout.$element.append(...[
-                [this.sectionTitleWidget, wgULS("段落标题：", "段落標題：")],
-            ].map(([fieldWidget, labelText]) => new OO.ui.FieldLayout(fieldWidget, {
-                label: QSWindow.bolbLabel(labelText),
-                align: "top",
-            }).$element));
+            this.panelLayout.$element.append(
+                ...[[this.sectionTitleWidget, wgULS("段落标题：", "段落標題：")]].map(
+                    ([fieldWidget, labelText]) =>
+                        new OO.ui.FieldLayout(fieldWidget, {
+                            label: QSWindow.bolbLabel(labelText),
+                            align: "top",
+                        }).$element,
+                ),
+            );
             this.panelLayout.$element.append(this.progressBarFieldLayout.$element, this.progressLogFieldLayout.$element);
 
             this.$body.append(this.panelLayout.$element);
@@ -177,35 +180,47 @@ $(() => {
                 });
             }
             if (action === "submit") {
-                return new OO.ui.Process($.when((async () => {
-                    this.showProgress();
-                    this.progress.log(wgULS("开始检测段落标题……", "開始檢測段落標題……"));
-                    const toclist = Object.fromEntries((await api.post({
-                        action: "parse",
-                        assertuser: wgUserName,
-                        format: "json",
-                        pageid: wgArticleId,
-                        prop: "sections",
-                    })).parse.sections.map(({ anchor, index }) => [anchor, index]));
-                    if (!Reflect.has(toclist, this.sectionTitle)) {
-                        throw new OO.ui.Error(wgULS("小工具无法根据段落标题找到该段落，请移除该段落标题内的模板后再行操作……", "小工具無法根據段落標題找到該段落，請移除該段落標題內的模板後再行操作……"), {
-                            recoverable: false,
-                        });
-                    }
-                    const section = toclist[this.sectionTitle];
-                    try {
-                        await this.quickSave({ section });
-                        mw.notify(wgULS("即将刷新……", "即將刷新……"), {
-                            title: wgULS("存档成功", "存檔成功"),
-                            type: "success",
-                            tag: "AnnTools_QuickSave",
-                        });
-                        setTimeout(() => location.reload(), 730);
-                    } catch (e) {
-                        console.error("[QuickSave] Error:", e);
-                        throw new OO.ui.Error(e);
-                    }
-                })()).promise(), this);
+                return new OO.ui.Process(
+                    $.when(
+                        (async () => {
+                            this.showProgress();
+                            this.progress.log(wgULS("开始检测段落标题……", "開始檢測段落標題……"));
+                            const toclist = Object.fromEntries(
+                                (
+                                    await api.post({
+                                        action: "parse",
+                                        assertuser: wgUserName,
+                                        format: "json",
+                                        pageid: wgArticleId,
+                                        prop: "sections",
+                                    })
+                                ).parse.sections.map(({ anchor, index }) => [anchor, index]),
+                            );
+                            if (!Reflect.has(toclist, this.sectionTitle)) {
+                                throw new OO.ui.Error(
+                                    wgULS("小工具无法根据段落标题找到该段落，请移除该段落标题内的模板后再行操作……", "小工具無法根據段落標題找到該段落，請移除該段落標題內的模板後再行操作……"),
+                                    {
+                                        recoverable: false,
+                                    },
+                                );
+                            }
+                            const section = toclist[this.sectionTitle];
+                            try {
+                                await this.quickSave({ section });
+                                mw.notify(wgULS("即将刷新……", "即將刷新……"), {
+                                    title: wgULS("存档成功", "存檔成功"),
+                                    type: "success",
+                                    tag: "AnnTools_QuickSave",
+                                });
+                                setTimeout(() => location.reload(), 730);
+                            } catch (e) {
+                                console.error("[QuickSave] Error:", e);
+                                throw new OO.ui.Error(e);
+                            }
+                        })(),
+                    ).promise(),
+                    this,
+                );
             }
             return super.getActionProcess(action);
         }
@@ -213,14 +228,16 @@ $(() => {
             this.progress.log(wgULS("标题存在！", "標題存在！"));
             this.progress.nextStep();
             this.progress.log(wgULS("正在获取段落内容……", "正在獲取段落內容……"));
-            const sectionContent = (await api.post({
-                action: "parse",
-                assertuser: wgUserName,
-                format: "json",
-                pageid: wgArticleId,
-                prop: "wikitext",
-                section,
-            })).parse.wikitext["*"];
+            const sectionContent = (
+                await api.post({
+                    action: "parse",
+                    assertuser: wgUserName,
+                    format: "json",
+                    pageid: wgArticleId,
+                    prop: "wikitext",
+                    section,
+                })
+            ).parse.wikitext["*"];
             let sectionTitleRaw = sectionContent.match(/==(.*)==/);
             if (sectionTitleRaw && sectionTitleRaw[1]) {
                 sectionTitleRaw = sectionTitleRaw[1];
@@ -241,7 +258,8 @@ $(() => {
                 summary: `快速存档讨论串：/* ${this.sectionTitle} */`,
             });
             this.progress.nextStep();
-            if ([543140, 443483].includes(wgArticleId)) { // 群组信息、注销
+            if ([543140, 443483].includes(wgArticleId)) {
+                // 群组信息、注销
                 this.progress.log(wgULS("无需添加已存档标记，正在清空段落……", "無需添加已存檔標記，正在清空段落……"));
                 await api.postWithToken("csrf", {
                     action: "edit",
@@ -328,9 +346,7 @@ $(() => {
     for (const { self, sectionTitle } of window.libDiscussionUtil.getDiscussionHeader(["saveNotice"])) {
         const button = $("<a>");
         button.attr("href", "javascript:void(0);").prop("draggable", false).addClass("AnnTools_QuickSave").text(wgULS("快速存档", "快速存檔"));
-        self.find(".mw-editsection-bracket").first()
-            .after('<span class="mw-editsection-divider"> | </span>')
-            .after(button);
+        self.find(".mw-editsection-bracket").first().after('<span class="mw-editsection-divider"> | </span>').after(button);
         button.on("click", () => {
             if (!qsDialog.isVisible()) {
                 qsDialog.setSectionTitle(sectionTitle);

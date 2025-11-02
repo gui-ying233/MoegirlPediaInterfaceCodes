@@ -8,23 +8,25 @@
     /* 函数定义体 */
     /* 滚动公告 */
     const startScroll = () => {
-        $("body > #content > #siteNotice .scrollDiv:not(.scrolling), #moe-sitenotice-container > .moe-sitenotice .scrollDiv:not(.scrolling)").addClass("scrolling").each((_, ele) => {
-            const self = $(ele);
-            self.children().each((_, child) => {
-                if (child.innerHTML.trim() === "") {
-                    child.remove();
+        $("body > #content > #siteNotice .scrollDiv:not(.scrolling), #moe-sitenotice-container > .moe-sitenotice .scrollDiv:not(.scrolling)")
+            .addClass("scrolling")
+            .each((_, ele) => {
+                const self = $(ele);
+                self.children().each((_, child) => {
+                    if (child.innerHTML.trim() === "") {
+                        child.remove();
+                    }
+                });
+                const children = self.children();
+                if (children.length === 0) {
+                    return;
                 }
+                const firstChild = children.first();
+                const firstChildHeight = firstChild.outerHeight();
+                self.height(firstChildHeight);
+                children.slice(1).css("top", `${Math.ceil(firstChildHeight)}px`);
+                firstChild.css("top", "0");
             });
-            const children = self.children();
-            if (children.length === 0) {
-                return;
-            }
-            const firstChild = children.first();
-            const firstChildHeight = firstChild.outerHeight();
-            self.height(firstChildHeight);
-            children.slice(1).css("top", `${Math.ceil(firstChildHeight)}px`);
-            firstChild.css("top", "0");
-        });
     };
     const autoScroll = () => {
         setInterval(() => {

@@ -42,19 +42,23 @@ $(() => {
                 return result + (isBefore ? "前" : "后");
             }
             case "HourMinuteTimezone":
-                return `${then.format(window.LocalComments.twentyFourHours || mw.config.get("LocalComments", {}).twentyFourHours ? "a hh:mm" : " LT")} (UTC+${then.utcOffset() / 60})`.replace("(UTC+-", "(UTC-");
+                return `${then.format(window.LocalComments.twentyFourHours || mw.config.get("LocalComments", {}).twentyFourHours ? "a hh:mm" : " LT")} (UTC+${then.utcOffset() / 60})`.replace(
+                    "(UTC+-",
+                    "(UTC-",
+                );
             case "YearMonthDayDayofweek":
                 return then.format("YYYY[年]M[月]D[日] dddd");
         }
     };
-    const display = (then) => then.calendar(null, {
-        sameDay: () => `[今天${format(then, "HourMinuteTimezone")}]`,
-        nextDay: () => `[明天${format(then, "HourMinuteTimezone")}]`,
-        nextWeek: () => `[${format(then, "YearMonthDayDayofweek")} (${format(then, "fromToNow")}) ${format(then, "HourMinuteTimezone")}]`,
-        lastDay: () => `[昨天${format(then, "HourMinuteTimezone")}]`,
-        lastWeek: () => `[${format(then, "YearMonthDayDayofweek")} (${format(then, "fromToNow")}) ${format(then, "HourMinuteTimezone")}]`,
-        sameElse: () => `[${format(then, "YearMonthDayDayofweek")} (${format(then, "fromToNow")}) ${format(then, "HourMinuteTimezone")}]`,
-    });
+    const display = (then) =>
+        then.calendar(null, {
+            sameDay: () => `[今天${format(then, "HourMinuteTimezone")}]`,
+            nextDay: () => `[明天${format(then, "HourMinuteTimezone")}]`,
+            nextWeek: () => `[${format(then, "YearMonthDayDayofweek")} (${format(then, "fromToNow")}) ${format(then, "HourMinuteTimezone")}]`,
+            lastDay: () => `[昨天${format(then, "HourMinuteTimezone")}]`,
+            lastWeek: () => `[${format(then, "YearMonthDayDayofweek")} (${format(then, "fromToNow")}) ${format(then, "HourMinuteTimezone")}]`,
+            sameElse: () => `[${format(then, "YearMonthDayDayofweek")} (${format(then, "fromToNow")}) ${format(then, "HourMinuteTimezone")}]`,
+        });
     window.LocalComments = {
         enabled: true,
         formats: {
@@ -62,22 +66,20 @@ $(() => {
             week: display,
             other: display,
         },
-        tooltipFormats: [
-            (_, originalText) => `原始时间戳：${originalText}`,
-            "[年月日星时：]LLLL",
-            "[ISO 8601式：]YYYY-MM-DDTHH:mmZ",
-        ],
+        tooltipFormats: [(_, originalText) => `原始时间戳：${originalText}`, "[年月日星时：]LLLL", "[ISO 8601式：]YYYY-MM-DDTHH:mmZ"],
         dynamic: true,
-        excludeNamespaces: Object.keys(mw.config.get("wgFormattedNamespaces")).map((ns) => +ns).filter((ns) => ns < 0 || ns % 2 === 0),
+        excludeNamespaces: Object.keys(mw.config.get("wgFormattedNamespaces"))
+            .map((ns) => +ns)
+            .filter((ns) => ns < 0 || ns % 2 === 0),
         proseTags: ["dd", "li", "p", "td"],
         codeTags: ["code", "input", "pre", "textarea", "#mw-content-text > .diff"],
         parseFormat: ["YYYY-MM-DD HH:mm"],
-        parseRegExp: /[1-9]\d{3}年(?:0?[1-9]|1[012])月(?:0?[1-9]|[12]\d|3[01])日 *(?:[(（](?:[金木水火土日月]|(?:星期)?[一二三四五六日])[)）])? *(?:[01]\d|2[0-3]):(?:[0-5]\d)(?::[0-5]\d)? *[(（]([CJ]ST|UTC(?:[+-](?:[1-9]|1[012]))?)[)）]/,
+        parseRegExp:
+            /[1-9]\d{3}年(?:0?[1-9]|1[012])月(?:0?[1-9]|[12]\d|3[01])日 *(?:[(（](?:[金木水火土日月]|(?:星期)?[一二三四五六日])[)）])? *(?:[01]\d|2[0-3]):(?:[0-5]\d)(?::[0-5]\d)? *[(（]([CJ]ST|UTC(?:[+-](?:[1-9]|1[012]))?)[)）]/,
         utcOffset: 0,
         ...window.LocalComments,
     };
-    if (!window.LocalComments.enabled
-        || window.LocalComments.excludeNamespaces.includes(mw.config.get("wgNamespaceNumber")) || !["view", "submit"].includes(mw.config.get("wgAction"))) {
+    if (!window.LocalComments.enabled || window.LocalComments.excludeNamespaces.includes(mw.config.get("wgNamespaceNumber")) || !["view", "submit"].includes(mw.config.get("wgAction"))) {
         return;
     }
     const timezoneAbbrs = {
@@ -91,7 +93,7 @@ $(() => {
     }
     const proseTags = window.LocalComments.proseTags.join("\n").toUpperCase().split("\n");
     const codeTags = [...window.LocalComments.codeTags, "time"].join(", ");
-    const formatMoment = (then, fmt, originalText) => fmt instanceof Function ? fmt(then, originalText) : then.format(fmt);
+    const formatMoment = (then, fmt, originalText) => (fmt instanceof Function ? fmt(then, originalText) : then.format(fmt));
     const formatTimestamp = () => {
         document.querySelectorAll(".LocalComments").forEach((elt) => {
             const iso = elt.getAttribute("datetime");
@@ -143,7 +145,9 @@ $(() => {
             }
             const dateNode = prefixNode.splitText(result.index);
             dateNode.splitText(result[0].length);
-            const timezoneAbbr = Array.from(result).slice(1).filter((abbr) => !!abbr)[0];
+            const timezoneAbbr = Array.from(result)
+                .slice(1)
+                .filter((abbr) => !!abbr)[0];
             const then = moment.utc(result[0], window.LocalComments.parseFormat);
             if (then.isValid()) {
                 if (Reflect.has(timezoneAbbrs, timezoneAbbr)) {
@@ -179,9 +183,12 @@ $(() => {
     if (!window.LocalComments.dynamic) {
         return;
     }
-    setTimeout(() => {
-        formatTimestamp();
-        setInterval(formatTimestamp(), 60 * 1000);
-    }, 60000 - Date.now() % 60000);
+    setTimeout(
+        () => {
+            formatTimestamp();
+            setInterval(formatTimestamp(), 60 * 1000);
+        },
+        60000 - (Date.now() % 60000),
+    );
 });
 // </pre>

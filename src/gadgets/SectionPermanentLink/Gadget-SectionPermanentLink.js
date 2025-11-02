@@ -9,11 +9,7 @@ $(() => {
             const $divider = $('<span class="mw-editsection-divider"> | </span>');
             const $permanentLink = $(`<a data-thread-id="${$ele.attr("id")}" class="section-permanent-link">${buttunText}</a>`);
             if (!inHistory) {
-                $editsection
-                    .find(".mw-editsection-bracket")
-                    .first()
-                    .after($divider)
-                    .after($permanentLink);
+                $editsection.find(".mw-editsection-bracket").first().after($divider).after($permanentLink);
                 const $marButton = $editsection.find(".AnnTools_MarkAsResolved");
                 if ($marButton[0]) {
                     const $marDivider = $marButton.next(".mw-editsection-divider");
@@ -23,11 +19,7 @@ $(() => {
                 }
             } else {
                 const permanentLinkButton = $('<span class="mw-editsection" style="display:inline!important"></span>');
-                permanentLinkButton.append(
-                    '<span class="mw-editsection-bracket">[</span>',
-                    $permanentLink,
-                    '<span class="mw-editsection-bracket">]</span>',
-                );
+                permanentLinkButton.append('<span class="mw-editsection-bracket">[</span>', $permanentLink, '<span class="mw-editsection-bracket">]</span>');
                 $ele.find(".mw-headline").after(permanentLinkButton);
             }
             $permanentLink.on("click", () => {

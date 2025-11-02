@@ -7,7 +7,7 @@
 
 /* 2023周年topbar */
 body.skin-vector {
-    background: url("https://app.moegirl.org.cn/background/2023Anniversary/vector.jpg") no-repeat top left #F6F6F6;
+    background: url("https://app.moegirl.org.cn/background/2023Anniversary/vector.jpg") no-repeat top left #f6f6f6;
 }
 
 /* 侧边栏、顶部栏 */
@@ -45,7 +45,7 @@ div#mw-page-base {
 
 div#mw-panel {
     top: 0;
-    text-shadow: 1px 1px #F6F6F6;
+    text-shadow: 1px 1px #f6f6f6;
 }
 
 div#mw-panel div.portal {
@@ -128,11 +128,11 @@ div#mw-panel {
 
 #footer-moegirl {
     padding-left: 160px;
-    color: #2F2F2F;
+    color: #2f2f2f;
 }
 
 #footer-moegirl h4 {
-    color: #243C4A;
+    color: #243c4a;
     font-family: AllerBold, "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
     margin-bottom: 8px;
 }
@@ -150,7 +150,7 @@ div#mw-panel {
 }
 
 #footer-moegirl ul a {
-    color: #2F2F2F;
+    color: #2f2f2f;
 }
 
 #footer-moegirl .copyright {
@@ -163,12 +163,12 @@ div#mw-panel {
 /* 标题下划线增强 700 = bold */
 h1 {
     font-weight: 700;
-    border-bottom: 2px solid #0074F9;
+    border-bottom: 2px solid #0074f9;
 }
 
 h2 {
     font-weight: 700;
-    border-bottom: 1px solid #0074F9;
+    border-bottom: 1px solid #0074f9;
 }
 
 /* 命名空间改变背景色 */

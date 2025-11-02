@@ -22,7 +22,10 @@ $(() => {
                 $thisColormu.css("background-color", this.dataset.backgroundColor);
             } else {
                 $thisColormu.addClass("colormu_toggle_on");
-                $thisColormu.css("background-color", this.dataset.backgroundColor.replace(/\brgb\(([^)]+)\)/, "rgba($1, .17)").replace(/\brgba\((\d+,\s*\d+,\s*\d+),\s*\d+(?:\.\d+)?\)/, "rgba($1, .17)"));
+                $thisColormu.css(
+                    "background-color",
+                    this.dataset.backgroundColor.replace(/\brgb\(([^)]+)\)/, "rgba($1, .17)").replace(/\brgba\((\d+,\s*\d+,\s*\d+),\s*\d+(?:\.\d+)?\)/, "rgba($1, .17)"),
+                );
             }
         });
     });

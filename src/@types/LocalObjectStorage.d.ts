@@ -14,8 +14,8 @@ declare class LocalObjectStorage {
             get list(): Transformation[];
 
             add: (transformation: Transformation) => boolean;
-        }
-    }
+        };
+    };
 
     #keyPrefix: string;
 

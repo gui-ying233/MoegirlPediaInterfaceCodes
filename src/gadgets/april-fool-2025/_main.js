@@ -2,17 +2,17 @@
 /* eslint-disable */
 // just fuck off, eslint
 
-'use strict';
+"use strict";
 
-const 常量_山不在高 = 640
-const 常量_把用户放在我心里 = 'moegirl:april-fool-2025'
+const 常量_山不在高 = 640;
+const 常量_把用户放在我心里 = "moegirl:april-fool-2025";
 
 class MoeCaptcha extends HTMLElement {
     constructor() {
         super();
 
         // 创建 Shadow DOM
-        const shadow = this.attachShadow({ mode: 'open' });
+        const shadow = this.attachShadow({ mode: "open" });
 
         // 合并元素
         shadow.appendChild(this.createStyle());
@@ -23,7 +23,7 @@ class MoeCaptcha extends HTMLElement {
      * 创建样式
      */
     createStyle() {
-        const style = document.createElement('style');
+        const style = document.createElement("style");
         style.textContent = `
 :host {
     all: initial;
@@ -90,8 +90,8 @@ class MoeCaptcha extends HTMLElement {
      * 创建容器
      */
     createContainer() {
-        const container = document.createElement('div');
-        container.classList.add('moe-captcha');
+        const container = document.createElement("div");
+        container.classList.add("moe-captcha");
         container.innerHTML = `
 <div class="moe-captcha-spin">
     <span class="loader"></span>
@@ -109,15 +109,15 @@ class MoeCaptcha extends HTMLElement {
 }
 
 // 注册自定义组件
-if (!customElements.get('moe-captcha')) {
-    customElements.define('moe-captcha', MoeCaptcha);
+if (!customElements.get("moe-captcha")) {
+    customElements.define("moe-captcha", MoeCaptcha);
 }
 
 /**
- * @param {JQuery<HTMLDivElement>} $整个内容区域 
+ * @param {JQuery<HTMLDivElement>} $整个内容区域
  */
 function 皮一下($整个内容区域, 超过此高度 = 常量_山不在高) {
-    const $文章 = $整个内容区域.find('> .mw-parser-output');
+    const $文章 = $整个内容区域.find("> .mw-parser-output");
     const 内容高度 = $整个内容区域.height();
     // 内容高度小于 LIMIT 或者没有内容
     if (内容高度 < 超过此高度 || $文章.length === 0) {
@@ -126,38 +126,36 @@ function 皮一下($整个内容区域, 超过此高度 = 常量_山不在高) {
 
     const $覆盖层 = $('<div class="moe-captcha-cover"></div>');
     $覆盖层.css({
-        position: 'relative',
-        width: '100%',
-        backgroundImage: 'linear-gradient(to bottom, rgba(255, 255, 255, 0), rgb(255, 255, 255) 50px, rgb(255, 255, 255))',
-        marginTop: '-50px',
-        padding: '1rem',
-        paddingTop: '80px',
+        position: "relative",
+        width: "100%",
+        backgroundImage: "linear-gradient(to bottom, rgba(255, 255, 255, 0), rgb(255, 255, 255) 50px, rgb(255, 255, 255))",
+        marginTop: "-50px",
+        padding: "1rem",
+        paddingTop: "80px",
         zIndex: 9999,
     });
-    const $验证码 = $('<moe-captcha></moe-captcha>');
+    const $验证码 = $("<moe-captcha></moe-captcha>");
     $覆盖层.append($验证码);
     const $别烦我 = $('<a class="moe-captcha-after-text">能不能别烦我（｀へ´）</a>');
-    $覆盖层.append(
-        $('<div style="margin-top: 1rem; text-align: center;"></div>').append($别烦我)
-    );
+    $覆盖层.append($('<div style="margin-top: 1rem; text-align: center;"></div>').append($别烦我));
     $整个内容区域.append($覆盖层);
 
     const 重置 = () => {
         $覆盖层.remove();
         $文章.css({
-            height: '',
-            overflow: '',
+            height: "",
+            overflow: "",
         });
     };
 
     // 限制高度，添加阴影
     $文章.css({
         height: `${超过此高度}px`,
-        overflow: 'hidden',
+        overflow: "hidden",
     });
 
-    $验证码.on('click', 重置);
-    $别烦我.on('click', () => {
+    $验证码.on("click", 重置);
+    $别烦我.on("click", () => {
         重置();
         别烦我你耳朵龙吗();
     });
@@ -165,17 +163,17 @@ function 皮一下($整个内容区域, 超过此高度 = 常量_山不在高) {
 
 function 用户是不是不太好惹() {
     const dismiss = sessionStorage.getItem(常量_把用户放在我心里);
-    if (dismiss === 'true') {
+    if (dismiss === "true") {
         return true;
     }
     return false;
 }
 function 别烦我你耳朵龙吗() {
-    sessionStorage.setItem(常量_把用户放在我心里, 'true');
+    sessionStorage.setItem(常量_把用户放在我心里, "true");
 }
 
 const 现在 = new Date();
-const 现在是2025愚人节 = `${现在.getFullYear()}-${(现在.getMonth() + 1).toString().padStart(2, '0')}-${现在.getDate().toString().padStart(2, '0')}` === '2025-04-01';
+const 现在是2025愚人节 = `${现在.getFullYear()}-${(现在.getMonth() + 1).toString().padStart(2, "0")}-${现在.getDate().toString().padStart(2, "0")}` === "2025-04-01";
 if (!用户是不是不太好惹() && 现在是2025愚人节) {
-    mw.hook('wikipage.content').add(皮一下);
+    mw.hook("wikipage.content").add(皮一下);
 }
