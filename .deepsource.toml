@@ -2,11 +2,16 @@ version = 1
 
 exclude_patterns = [
   "scripts/**",
-  "src/gadgets/lib**",
-  "src/gadgets/libip/**",
-  "src/gadgets/libPolyfill/**",
-  "src/gadgets/libJSON5/**",
+  "eslint.config.js",
+  "src/gadgets/libBottomRightCorner/**",
+  "src/gadgets/libCachedCode/**",
+  "src/gadgets/libDiscussionUtil/**",
   "src/gadgets/libHashwasm/**",
+  "src/gadgets/libJQuery/**",
+  "src/gadgets/libJSON5/**",
+  "src/gadgets/libOOUIDialog/**",
+  "src/gadgets/libPolyfill/**",
+  "src/gadgets/libUtil/**",
   "src/gadgets/prism/**",
   "src/gadgets/prism-core/**",
   "src/gadgets/prism-language-bash/**",
@@ -34,10 +39,10 @@ exclude_patterns = [
   "src/gadgets/prism-plugin-jsdoc/**",
   "src/gadgets/prism-plugin-match-braces/**",
   "src/gadgets/prism-plugin-phpdoc/**",
-  "src/gadgets/HotCat/Gadget-HotCat.js",
-  "src/gadgets/Navigation_popups/Gadget-popups.js",
-  "src/gadgets/localforage/Gadget-localforage.js",
-  "src/gadgets/code-prettify/Gadget-code-prettify.js",
+  "src/gadgets/HotCat/**",
+  "src/gadgets/Navigation_popups/**",
+  "src/gadgets/localforage/**",
+  "src/gadgets/code-prettify/**",
   "src/gadgets/SpecialWikitext/**"
 ]
 
