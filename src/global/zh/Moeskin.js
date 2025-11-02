@@ -33,12 +33,7 @@
         mw.Title.newFromImg = (img) => {
             let matches, i, regex;
             const thumbPhpRegex = /thumb\.php/,
-                regexes = [
-                    /\/[a-f0-9]\/[a-f0-9]{2}\/([^\s/]+)\/[^\s/]+-[^\s/]*$/,
-                    /\/[a-f0-9]\/[a-f0-9]{2}\/([^\s/]+)$/,
-                    /\/([^\s/]+)\/[^\s/]+-(?:\1|thumbnail)[^\s/]*$/,
-                    /\/([^\s/]+)$/,
-                ],
+                regexes = [/\/[a-f0-9]\/[a-f0-9]{2}\/([^\s/]+)\/[^\s/]+-[^\s/]*$/, /\/[a-f0-9]\/[a-f0-9]{2}\/([^\s/]+)$/, /\/([^\s/]+)\/[^\s/]+-(?:\1|thumbnail)[^\s/]*$/, /\/([^\s/]+)$/],
                 recount = regexes.length,
                 src = img.jquery ? img[0].src || img[0].dataset.lazySrc : img.src || img.dataset.lazySrc;
             matches = src.match(thumbPhpRegex);
@@ -86,12 +81,12 @@
         let $block = $("aside#moe-global-siderail #moe-custom-sidenav-block");
         if (!$block.length) {
             $block = $("<div>", {
-                "class": "moe-card",
+                class: "moe-card",
                 id: "moe-custom-sidenav-block",
             });
             $block.append(
                 $("<div>", {
-                    "class": "mw-parser-output",
+                    class: "mw-parser-output",
                 }).append($("<h2>", { text: "自定义工具" }), $("<ul>", { id: "moe-custom-sidenav-block-list" })),
             );
             $("aside#moe-global-siderail .moe-siderail-sticky").before($block);
@@ -257,14 +252,15 @@
     };
     /* noteTAIcon */
     const noteTAIcon = () => {
-        const noteTAbutton = $('<button tabindex="0" type="button"/>')
-            .append('<span style="padding:1px 3px;">汉漢</span>');
-        const noteTAicon = $("<span/>").attr({
-            id: "p-noteTA-moeskin",
-            role: "navigation",
-            "class": "noteTA-button",
-            title: "本页使用了标题或全文手工转换",
-        }).append(noteTAbutton);
+        const noteTAbutton = $('<button tabindex="0" type="button"/>').append('<span style="padding:1px 3px;">汉漢</span>');
+        const noteTAicon = $("<span/>")
+            .attr({
+                id: "p-noteTA-moeskin",
+                role: "navigation",
+                class: "noteTA-button",
+                title: "本页使用了标题或全文手工转换",
+            })
+            .append(noteTAbutton);
         $("#p-languages-group").append(noteTAicon);
     };
 

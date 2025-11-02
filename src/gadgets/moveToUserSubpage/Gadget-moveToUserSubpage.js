@@ -17,11 +17,7 @@ $(() => {
             sysop: ["sysop"],
             techedit: ["techeditor", "sysop"],
         };
-        if (wgArticleId === 0
-            || $(".will2Be2Deleted")[0]
-            || !wgUserGroups.includes("patroller") && !wgUserGroups.includes("sysop")
-            || !wgIsProbablyEditable
-        ) {
+        if (wgArticleId === 0 || $(".will2Be2Deleted")[0] || (!wgUserGroups.includes("patroller") && !wgUserGroups.includes("sysop")) || !wgIsProbablyEditable) {
             return;
         }
         for (const restriction of wgRestrictionMove) {
@@ -138,11 +134,10 @@ $(() => {
                 return this.panelLayout.$element.outerHeight(true);
             }
             getReadyProcess(data) {
-                return super.getReadyProcess(data)
-                    .next(() => {
-                        this.reasonBox.focus();
-                        this.warnings = {};
-                    }, this);
+                return super.getReadyProcess(data).next(() => {
+                    this.reasonBox.focus();
+                    this.warnings = {};
+                }, this);
             }
             getActionProcess(action) {
                 if (action === "cancel") {
@@ -150,32 +145,37 @@ $(() => {
                         this.close({ action });
                     }, this);
                 } else if (action === "submit") {
-                    return new OO.ui.Process($.when((async () => {
-                        try {
-                            await this.reasonBox.getValidity();
-                        } catch {
-                            throw new OO.ui.Error(wgULS("请输入打回理由", "請輸入打回理由"));
-                        }
-                        try {
-                            await this.doMove();
-                            this.close({ action });
-                            mw.notify(wgULS("即将刷新……", "即將刷新……"), {
-                                title: "打回成功",
-                                type: "success",
-                                tag: "lr-mtus",
-                            });
-                            setTimeout(() => location.reload(), 730);
-                        } catch (e) {
-                            if (e.warning && !this.warnings[e.code]) {
-                                this.warnings[e.code] = true;
-                                console.warn(`[MoveToUserSubpage] Warning (${e.code}): ${e.msg}`);
-                                throw new OO.ui.Error(e.msg, { warning: true });
-                            } else {
-                                console.error("[MoveToUserSubpage] Error:", e);
-                                throw new OO.ui.Error(e);
-                            }
-                        }
-                    })()).promise(), this);
+                    return new OO.ui.Process(
+                        $.when(
+                            (async () => {
+                                try {
+                                    await this.reasonBox.getValidity();
+                                } catch {
+                                    throw new OO.ui.Error(wgULS("请输入打回理由", "請輸入打回理由"));
+                                }
+                                try {
+                                    await this.doMove();
+                                    this.close({ action });
+                                    mw.notify(wgULS("即将刷新……", "即將刷新……"), {
+                                        title: "打回成功",
+                                        type: "success",
+                                        tag: "lr-mtus",
+                                    });
+                                    setTimeout(() => location.reload(), 730);
+                                } catch (e) {
+                                    if (e.warning && !this.warnings[e.code]) {
+                                        this.warnings[e.code] = true;
+                                        console.warn(`[MoveToUserSubpage] Warning (${e.code}): ${e.msg}`);
+                                        throw new OO.ui.Error(e.msg, { warning: true });
+                                    } else {
+                                        console.error("[MoveToUserSubpage] Error:", e);
+                                        throw new OO.ui.Error(e);
+                                    }
+                                }
+                            })(),
+                        ).promise(),
+                        this,
+                    );
                 }
                 // Fallback to parent handler
                 return super.getActionProcess(action);
@@ -193,13 +193,15 @@ $(() => {
 
                 // 查询贡献者数量
                 if (!this.warnings.multipleContribs) {
-                    const contribs = (await api.get({
-                        action: "query",
-                        assertuser: wgUserName,
-                        prop: "contributors",
-                        pageids: wgArticleId,
-                        pclimit: 2,
-                    })).query.pages[wgArticleId].contributors;
+                    const contribs = (
+                        await api.get({
+                            action: "query",
+                            assertuser: wgUserName,
+                            prop: "contributors",
+                            pageids: wgArticleId,
+                            pclimit: 2,
+                        })
+                    ).query.pages[wgArticleId].contributors;
                     if (contribs.length > 1) {
                         throw {
                             warning: true,
@@ -210,7 +212,15 @@ $(() => {
                 }
 
                 // 查询创建者用户名
-                const { query: { pages: { [wgArticleId]: { revisions: [{ user }] } } } } = await api.get({
+                const {
+                    query: {
+                        pages: {
+                            [wgArticleId]: {
+                                revisions: [{ user }],
+                            },
+                        },
+                    },
+                } = await api.get({
                     action: "query",
                     assertuser: wgUserName,
                     prop: "revisions",
@@ -275,41 +285,69 @@ $(() => {
         });
         windowManager.addWindows([mtusDialog]);
 
-        $(mw.util.addPortletLink("p-cactions", "#", "打回", "ca-lr-mtus", isModule ? wgULS("移动至创建者模块沙盒", "移至創建者模組沙盒") : wgULS("移动至创建者用户页并挂删", "移至創建者用戶頁並掛删"), "m")).on("click", (e) => {
+        $(
+            mw.util.addPortletLink(
+                "p-cactions",
+                "#",
+                "打回",
+                "ca-lr-mtus",
+                isModule ? wgULS("移动至创建者模块沙盒", "移至創建者模組沙盒") : wgULS("移动至创建者用户页并挂删", "移至創建者用戶頁並掛删"),
+                "m",
+            ),
+        ).on("click", (e) => {
             e.preventDefault();
             windowManager.openWindow(mtusDialog);
             $body.css("overflow", "auto");
         });
     } catch (e) {
         /* eslint-disable no-var, prefer-arrow-functions/prefer-arrow-functions, prefer-arrow-callback, prefer-template */
-        var parseError = function (errLike, _space/* ? */) {
+        var parseError = function (errLike, _space /* ? */) {
             let space = _space;
             if (_space === void 0) {
                 space = 4;
             }
-            return JSON.stringify(errLike, function (_, v) {
-                if (v instanceof Error) {
-                    var stack = [];
-                    if (v.stack) {
-                        Reflect.apply(stack.push, stack, v.stack.split("\n").map(function (n) {
-                            return n.trim();
-                        }).filter(function (n) {
-                            var _a;
-                            return ((_a = n === null || n === void 0 ? void 0 : n.length) !== null && _a !== void 0 ? _a : -1) > 0;
-                        }));
+            return JSON.stringify(
+                errLike,
+                function (_, v) {
+                    if (v instanceof Error) {
+                        var stack = [];
+                        if (v.stack) {
+                            Reflect.apply(
+                                stack.push,
+                                stack,
+                                v.stack
+                                    .split("\n")
+                                    .map(function (n) {
+                                        return n.trim();
+                                    })
+                                    .filter(function (n) {
+                                        var _a;
+                                        return ((_a = n === null || n === void 0 ? void 0 : n.length) !== null && _a !== void 0 ? _a : -1) > 0;
+                                    }),
+                            );
+                        }
+                        var keys = Object.keys(v).filter(function (key) {
+                            return !Reflect.has(Error.prototype, key);
+                        });
+                        if (keys.length) {
+                            stack.push(
+                                JSON.stringify(
+                                    Object.fromEntries(
+                                        keys.map(function (key) {
+                                            return [key, v[key]];
+                                        }),
+                                    ),
+                                    null,
+                                    space,
+                                ),
+                            );
+                        }
+                        return stack.join("\n").trim() || "";
                     }
-                    var keys = Object.keys(v).filter(function (key) {
-                        return !Reflect.has(Error.prototype, key);
-                    });
-                    if (keys.length) {
-                        stack.push(JSON.stringify(Object.fromEntries(keys.map(function (key) {
-                            return [key, v[key]];
-                        })), null, space));
-                    }
-                    return stack.join("\n").trim() || "";
-                }
-                return v;
-            }, space).replace(/^"(.*)"$/, "$1");
+                    return v;
+                },
+                space,
+            ).replace(/^"(.*)"$/, "$1");
         };
         oouiDialog.alert("错误信息：<br>" + oouiDialog.sanitize(parseError(e)), {
             title: "打回工具发生错误",

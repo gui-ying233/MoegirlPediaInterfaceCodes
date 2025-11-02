@@ -6,14 +6,16 @@
     height: 32px;
     width: 100px;
     text-align: center;
-    text-shadow: 0 1px 0 #FFF;
+    text-shadow: 0 1px 0 #fff;
     color: #555;
     font-size: 14px;
     font-weight: bold;
-    border: 1px solid #CCC;
+    border: 1px solid #ccc;
     background-color: white;
     transition: all 0.3s ease-out;
-    box-shadow: 0 0 0 white inset, 0 0 0 white;
+    box-shadow:
+        0 0 0 white inset,
+        0 0 0 white;
     cursor: pointer;
     margin: 0;
     padding: 0;
@@ -21,7 +23,9 @@
 }
 
 .comment-check:hover {
-    box-shadow: 0 0 0 white inset, 0 5px 11px 0 rgb(0 0 0 / 18%);
+    box-shadow:
+        0 0 0 white inset,
+        0 5px 11px 0 rgb(0 0 0 / 18%);
 }
 
 .comment-toolbar > .comment-check:focus,
@@ -53,7 +57,7 @@
 }
 
 #flowthreadCheckBoxTitleContent {
-    border-bottom: 1px #6CF solid;
+    border-bottom: 1px #6cf solid;
 }
 
 #flowthreadCheckBoxCloseButton {

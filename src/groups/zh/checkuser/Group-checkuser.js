@@ -33,12 +33,14 @@
                     }
                 });
                 usernameNode.after(node);
-            } catch { }
+            } catch {}
         }
         setInterval(() => {
             const now = Date.now();
             for (const node of document.querySelectorAll(".copyUsername[data-timestamp]")) {
-                const { dataset: { timestamp } } = node;
+                const {
+                    dataset: { timestamp },
+                } = node;
                 if (now >= +timestamp + 3000) {
                     node.removeAttribute("data-timstamp");
                     node.innerText = "复制用户名";
@@ -81,10 +83,7 @@
         });
     };
 
-    await Promise.all([
-        $.ready,
-        mw.loader.using(["mediawiki.Uri"]),
-    ]);
+    await Promise.all([$.ready, mw.loader.using(["mediawiki.Uri"])]);
     const wgArticleId = mw.config.get("wgArticleId");
     const wgIsArticle = mw.config.get("wgIsArticle");
     // 一键复制用户名

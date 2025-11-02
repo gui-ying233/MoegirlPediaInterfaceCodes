@@ -10,27 +10,29 @@
     const $body = $(body);
     const $window = $(window);
     /* 浮动滚动条 */
-    $window.on("resize", () => {
-        const { innerWidth } = window;
-        let scrollbarWidth;
-        switch ("scroll") {
-            case getComputedStyle(body).overflowY: {
-                scrollbarWidth = innerWidth - body.clientWidth;
-                break;
+    $window
+        .on("resize", () => {
+            const { innerWidth } = window;
+            let scrollbarWidth;
+            switch ("scroll") {
+                case getComputedStyle(body).overflowY: {
+                    scrollbarWidth = innerWidth - body.clientWidth;
+                    break;
+                }
+                case getComputedStyle(html).overflowY: {
+                    scrollbarWidth = innerWidth - html.clientWidth;
+                    break;
+                }
+                default: {
+                    const backup = body.style.overflowY;
+                    body.style.overflowY = "scroll";
+                    scrollbarWidth = innerWidth - body.clientWidth;
+                    body.style.overflowY = backup;
+                }
             }
-            case getComputedStyle(html).overflowY: {
-                scrollbarWidth = innerWidth - html.clientWidth;
-                break;
-            }
-            default: {
-                const backup = body.style.overflowY;
-                body.style.overflowY = "scroll";
-                scrollbarWidth = innerWidth - body.clientWidth;
-                body.style.overflowY = backup;
-            }
-        }
-        $body[scrollbarWidth === 0 ? "addClass" : "removeClass"]("overlay-scrollbars");
-    }).trigger("resize");
+            $body[scrollbarWidth === 0 ? "addClass" : "removeClass"]("overlay-scrollbars");
+        })
+        .trigger("resize");
     // 修复代码编辑器$.ucFirst引用错误
     jQuery.extend({
         ucFirst: (s) => `${`${s}`.charAt(0).toUpperCase()}${`${s}`.substring(1)}`,
@@ -52,39 +54,51 @@
                 $window.off();
                 location.replace(`/${mw.config.get("wgPageName")}`);
             }
-            $('#wikiEditor-ui-toolbar, #wpSummaryLabel, #wpSummaryWidget, [name="wpSummary"], .editCheckboxes, #wpMinoreditWidget, [name="wpMinoredit"], #wpWatchthisWidget, [name="wpWatchthis"], #editpage-copywarn, #wpSaveWidget, [name="wpSave"], #wpPreviewWidget, [name="wpPreview"], #wpDiffWidget, [name="wpDiff"], [name="wpEditToken"]').remove();
-            $(".editOptions").prepend(`<p>本站仅供上传图片用，请勿在本站创建页面，如有需要请到<a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="${mw.config.get("wgServer").replace("commons.moegirl", "zh.moegirl")}${mw.config.get("wgScriptPath")}">主站</a>。</p>`);
+            $(
+                '#wikiEditor-ui-toolbar, #wpSummaryLabel, #wpSummaryWidget, [name="wpSummary"], .editCheckboxes, #wpMinoreditWidget, [name="wpMinoredit"], #wpWatchthisWidget, [name="wpWatchthis"], #editpage-copywarn, #wpSaveWidget, [name="wpSave"], #wpPreviewWidget, [name="wpPreview"], #wpDiffWidget, [name="wpDiff"], [name="wpEditToken"]',
+            ).remove();
+            $(".editOptions").prepend(
+                `<p>本站仅供上传图片用，请勿在本站创建页面，如有需要请到<a target="_blank" rel="nofollow noreferrer noopener" class="external text" href="${mw.config.get("wgServer").replace("commons.moegirl", "zh.moegirl")}${mw.config.get("wgScriptPath")}">主站</a>。</p>`,
+            );
             $('#editform, [name="editform"]').each((_, ele) => {
                 $(ele).removeAttr("action");
-                ele.addEventListener("submit", (e) => {
-                    e.preventDefault();
-                }, {
-                    capture: true,
-                });
+                ele.addEventListener(
+                    "submit",
+                    (e) => {
+                        e.preventDefault();
+                    },
+                    {
+                        capture: true,
+                    },
+                );
             });
         }
     };
     // 页顶返回主站
     const topGoback = () => {
         if (`${new mw.Uri(document.referrer)}`.startsWith(`${`${mw.config.get("wgServer").replace("commons.moegirl", "zh.moegirl")}${mw.config.get("wgScriptPath")}`}/`)) {
-            $("#back").removeAttr("style").on("click", () => {
-                if (history.length > 1) {
-                    history.go(-1);
-                } else {
-                    location.href = document.referrer;
-                }
-            });
+            $("#back")
+                .removeAttr("style")
+                .on("click", () => {
+                    if (history.length > 1) {
+                        history.go(-1);
+                    } else {
+                        location.href = document.referrer;
+                    }
+                });
         }
     };
     // 文件信息
     const fileInfo = () => {
         if ($(".fileInfo")[0]) {
-            $(".mw-ui-button-group.mw-mmv-filepage-buttons:first").prepend($("<a/>", {
-                "class": "mw-mmv-view-expanded mw-ui-button mw-ui-icon",
-                text: "在萌娘百科上查看文件说明页",
-            }).on("click", () => {
-                window.open(mw.config.get("wgServer").replace("commons.moegirl", "zh.moegirl") + mw.config.get("wgScriptPath") + location.pathname + location.search, "_blank");
-            }));
+            $(".mw-ui-button-group.mw-mmv-filepage-buttons:first").prepend(
+                $("<a/>", {
+                    class: "mw-mmv-view-expanded mw-ui-button mw-ui-icon",
+                    text: "在萌娘百科上查看文件说明页",
+                }).on("click", () => {
+                    window.open(mw.config.get("wgServer").replace("commons.moegirl", "zh.moegirl") + mw.config.get("wgScriptPath") + location.pathname + location.search, "_blank");
+                }),
+            );
         }
     };
     // 主站用户页链接
@@ -106,7 +120,9 @@
                 }
                 const href = ((link.query.title || decodeURI(link.path.substring(1))).match(/^user(?:[ _]talk)?:[^/]+/i) || [null])[0];
                 if (href) {
-                    $(this).after(`<sub>[<a target="_blank" title="主站上的用户 ${href.replace(/user(_talk)?:/i, "")}" href="${mw.config.get("wgServer").replace("commons.moegirl", "zh.moegirl")}${mw.config.get("wgScriptPath")}/${href}">主</a>]</sub>`);
+                    $(this).after(
+                        `<sub>[<a target="_blank" title="主站上的用户 ${href.replace(/user(_talk)?:/i, "")}" href="${mw.config.get("wgServer").replace("commons.moegirl", "zh.moegirl")}${mw.config.get("wgScriptPath")}/${href}">主</a>]</sub>`,
+                    );
                 }
             } catch (_e) {
                 return;
@@ -125,7 +141,14 @@
             });
         } else if (mw.config.get("wgAction") === "edit" && mw.util.getParamValue("authorized") === "1") {
             const wpTextbox1 = $("#wpTextbox1");
-            wpTextbox1.val(wpTextbox1.val().replace("{{Authorized}}", "{{Authorized\n|作者名=<!--适用于作者授权百科长期使用其作品的情形，此时直接填入作者名即可-->\n|授权证明=<!--适用于作者仅授权单张图片的情形，可以在此填写授权证明的文件链接、或是相关请求授权的讨论链接等-->\n}}"));
+            wpTextbox1.val(
+                wpTextbox1
+                    .val()
+                    .replace(
+                        "{{Authorized}}",
+                        "{{Authorized\n|作者名=<!--适用于作者授权百科长期使用其作品的情形，此时直接填入作者名即可-->\n|授权证明=<!--适用于作者仅授权单张图片的情形，可以在此填写授权证明的文件链接、或是相关请求授权的讨论链接等-->\n}}",
+                    ),
+            );
             setTimeout(() => {
                 alert("请在编辑框内填入相关授权信息！");
             }, 0);
@@ -139,7 +162,13 @@
     };
     // 文件页面
     const filePage = async () => {
-        if (mw.config.get("wgNamespaceNumber") === 6 && (mw.config.get("wgArticleId") || -1) > 0 && mw.config.get("wgAction") === "view" && (mw.config.get("wgRevisionId") || -1) === (mw.config.get("wgCurRevisionId") || -2) && !document.querySelector(".license-info")) {
+        if (
+            mw.config.get("wgNamespaceNumber") === 6 &&
+            (mw.config.get("wgArticleId") || -1) > 0 &&
+            mw.config.get("wgAction") === "view" &&
+            (mw.config.get("wgRevisionId") || -1) === (mw.config.get("wgCurRevisionId") || -2) &&
+            !document.querySelector(".license-info")
+        ) {
             if (document.querySelector(".common-box") && mw.config.get("wgUserId", -1) > 0) {
                 await mw.loader.using("mediawiki.api");
                 return new mw.Api().post({
@@ -149,7 +178,11 @@
             }
             const editbutton = document.querySelector("#ca-edit a");
             const loginbutton = document.querySelector("#pt-login a");
-            $("#mw-imagepage-content, #mw-imagepage-content .mw-parser-output").last().append(`<table class="common-box license-info" style="margin: 0.5em 10%; width:80%; background: #FBFBFB; border-left: 10px solid Salmon;"><tbody><tr><td style="padding: 2px 0 2px 0.5em"><img alt="Red copyright.svg" src="https://img.moegirl.org.cn/common/1/1d/Red_copyright.svg" width="50" height="50"></td><td style="padding: 0.25em 0.5em"><div><span style="font-weight: bold;">由于上传者未填写授权协议</span>，本作品默认仅以介绍为目的在此百科中以非盈利性方式合理使用。</div>${loginbutton || editbutton ? `<div>您知道该文件的作者是如何授权的吗？如果您知道的话欢迎<span style="font-weight: bold;">${editbutton ? `<a href="${editbutton.href}">编辑该页面</a>` : `<a href="${mw.config.get("wgServer")}${mw.config.get("wgScriptPath")}/index.php?title=Special:%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95&returntoquery=action%3Dedit&returnto=${encodeURIComponent(mw.config.get("wgPageName"))}">登录后编辑该页面</a>`}</span>填写授权协议~~</div>` : ""}</td></tr></tbody></table>`);
+            $("#mw-imagepage-content, #mw-imagepage-content .mw-parser-output")
+                .last()
+                .append(
+                    `<table class="common-box license-info" style="margin: 0.5em 10%; width:80%; background: #FBFBFB; border-left: 10px solid Salmon;"><tbody><tr><td style="padding: 2px 0 2px 0.5em"><img alt="Red copyright.svg" src="https://img.moegirl.org.cn/common/1/1d/Red_copyright.svg" width="50" height="50"></td><td style="padding: 0.25em 0.5em"><div><span style="font-weight: bold;">由于上传者未填写授权协议</span>，本作品默认仅以介绍为目的在此百科中以非盈利性方式合理使用。</div>${loginbutton || editbutton ? `<div>您知道该文件的作者是如何授权的吗？如果您知道的话欢迎<span style="font-weight: bold;">${editbutton ? `<a href="${editbutton.href}">编辑该页面</a>` : `<a href="${mw.config.get("wgServer")}${mw.config.get("wgScriptPath")}/index.php?title=Special:%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95&returntoquery=action%3Dedit&returnto=${encodeURIComponent(mw.config.get("wgPageName"))}">登录后编辑该页面</a>`}</span>填写授权协议~~</div>` : ""}</td></tr></tbody></table>`,
+                );
         }
     };
     // Summary预加载

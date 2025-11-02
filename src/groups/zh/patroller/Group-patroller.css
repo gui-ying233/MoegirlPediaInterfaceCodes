@@ -11,8 +11,8 @@ div.vectorMenu li.patroller-show {
     content: " ";
     display: block;
     height: 1px;
-    color: #A2A9B1;
-    background-color: #A2A9B1;
+    color: #a2a9b1;
+    background-color: #a2a9b1;
     border: 0;
     margin: 7px;
 }
@@ -34,7 +34,7 @@ div.vectorMenu li.patroller-show {
 body[class*="page-萌娘百科_talk_讨论版_"] .userlink .userlink-menu {
     column-count: 2;
     column-gap: 1px;
-    column-rule: 1px solid #A2A9B1;
+    column-rule: 1px solid #a2a9b1;
 }
 
 /* poll-id显示 */
