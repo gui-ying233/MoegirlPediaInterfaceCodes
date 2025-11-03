@@ -1,7 +1,8 @@
 version = 1
 
+test_patterns = ["scripts/test/**"]
+
 exclude_patterns = [
-  "scripts/**",
   "eslint.config.js",
   "src/gadgets/libBottomRightCorner/**",
   "src/gadgets/libCachedCode/**",
