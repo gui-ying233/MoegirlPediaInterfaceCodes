@@ -21,7 +21,7 @@
     "dependencies": {
         "@actions/artifact": "^4.0.0",
         "@actions/core": "^1.11.1",
-        "@annangela/eslint-config": "^8.0.1",
+        "@annangela/eslint-config": "^8.1.1",
         "@annangela/eslint-formatter-gha": "^4.0.0",
         "@annangela/eslint-plugin-prefer-reflect": "^4.0.0",
         "@csstools/postcss-is-pseudo-class": "^5.0.3",
@@ -62,7 +62,7 @@
         "stylelint": "^16.25.0",
         "stylelint-actions-formatters": "^16.3.1",
         "stylelint-config-standard": "^39.0.1",
-        "terser": "^5.44.0",
+        "terser": "^5.44.1",
         "types-mediawiki": "^2.0.0",
         "uglify-js": "^3.19.3",
         "unassertify": "^3.0.1",
