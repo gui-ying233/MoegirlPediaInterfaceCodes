@@ -35,7 +35,6 @@ exclude_patterns = [
   "src/gadgets/prism-language-regex/**",
   "src/gadgets/prism-language-ruby/**",
   "src/gadgets/prism-language-typescript/**",
-  "src/gadgets/prism-language-wiki/**",
   "src/gadgets/prism-language-yaml/**",
   "src/gadgets/prism-plugin-javadoclike/**",
   "src/gadgets/prism-plugin-jsdoc/**",
