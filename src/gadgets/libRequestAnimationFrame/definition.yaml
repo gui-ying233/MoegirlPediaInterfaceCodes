@@ -1,13 +1,12 @@
 ResourceLoader: true
 
-hidden: false
+hidden: true
 
 default: false
 
 supportsUrlLoad: false
 
-skins:
-  - vector-2022
+skins: []
 
 actions: []
 
@@ -21,18 +20,18 @@ type: general
 
 package: false
 
-rights: []
+rights:
+  - hidden
 
 peers: []
 
-dependencies:
-  - ext.gadget.site-lib
+dependencies: []
 
 _sites:
   - zh
+  - commons
 
-_section: skin
+_section: system
 
 _files:
-  - Gadget-mwPanel.js
-  - Gadget-mwPanel.css
+  - Gadget-libRequestAnimationFrame.js

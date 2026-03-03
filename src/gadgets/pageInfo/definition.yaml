@@ -2,12 +2,11 @@ ResourceLoader: true
 
 hidden: false
 
-default: false
+default: true
 
 supportsUrlLoad: false
 
-skins:
-  - vector-2022
+skins: []
 
 actions: []
 
@@ -26,13 +25,14 @@ rights: []
 peers: []
 
 dependencies:
+  - mediawiki.api
   - ext.gadget.site-lib
 
 _sites:
   - zh
 
-_section: skin
+_section: browsing
 
 _files:
-  - Gadget-mwPanel.js
-  - Gadget-mwPanel.css
+  - Gadget-pageInfo.js
+  - Gadget-pageInfo.css
