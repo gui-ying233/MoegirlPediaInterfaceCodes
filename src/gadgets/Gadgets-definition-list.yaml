@@ -23,6 +23,7 @@
     - noticeActivity
     - report
     - autocollapse
+    - mboxCollapse
     - SideBarPic
     - SpecialWikitext
     - hideAutopromoteLog
@@ -159,3 +160,4 @@
     - vector-2022-styles
     - libDiscussionUtil
     - libRequestAnimationFrame
+    - libLoadMessagesWithCache

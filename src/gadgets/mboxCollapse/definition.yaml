@@ -2,7 +2,7 @@ ResourceLoader: true
 
 hidden: false
 
-default: true
+default: false
 
 supportsUrlLoad: false
 
@@ -24,10 +24,7 @@ rights: []
 
 peers: []
 
-dependencies:
-  - mediawiki.api
-  - ext.gadget.site-lib
-  - ext.gadget.libLoadMessagesWithCache
+dependencies: []
 
 _sites:
   - zh
@@ -35,5 +32,4 @@ _sites:
 _section: browsing
 
 _files:
-  - Gadget-pageInfo.js
-  - Gadget-pageInfo.css
+  - Gadget-mboxCollapse.js

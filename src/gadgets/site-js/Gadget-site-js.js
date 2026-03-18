@@ -256,8 +256,12 @@
 
         // 如果还没有创建 popup，则创建
         if (!popup) {
+            const $content = $target.children(".annotation-content");
+            if ($content.length === 0) {
+                return;
+            }
             popup = new OO.ui.PopupWidget({
-                $content: $target.children(".annotation-content"),
+                $content: $content,
                 padded: true,
                 autoFlip: false,
             });
