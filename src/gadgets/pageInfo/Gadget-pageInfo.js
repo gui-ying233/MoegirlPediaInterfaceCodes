@@ -45,6 +45,10 @@
     const wgRestrictionCreate = mw.config.get("wgRestrictionCreate");
     const { wgRestrictionEdit, wgRestrictionMove, wgPageName, wgUserName, wgScriptPath, skin } = mw.config.get(["wgRestrictionEdit", "wgRestrictionMove", "wgPageName", "wgUserName", "wgScriptPath", "skin"]);
 
+    if (!wgRestrictionCreate && wgRestrictionEdit.length === 0 && wgRestrictionMove.length === 0) {
+        return;
+    }
+
     let $container;
     switch (skin) {
         case "moeskin": {
@@ -86,6 +90,7 @@
         protectLevels.add("create");
     }
     if (protectLevels.size > 0) {
+        const isDark = document.documentElement.classList.contains("skin-theme-clientpref-night") || document.documentElement.classList.contains("dark");
         const api = new mw.Api();
         await api.loadMessagesIfMissing(Array.from(protectLevels));
         const intestactionsPromise = api.post({
@@ -101,7 +106,7 @@
         });
         $protectionInfoContainer.appendTo($container);
         $("<img>", {
-            src: "/resources/lib/ooui/themes/wikimediaui/images/icons/lock.svg",
+            src: `/resources/lib/ooui/themes/wikimediaui/images/icons/${isDark ? "lock-invert.svg" : "lock.svg"}`,
             alt: "",
             "aria-hidden": "true",
         }).appendTo($protectionInfoContainer);

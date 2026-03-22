@@ -2,7 +2,7 @@ ResourceLoader: true
 
 hidden: false
 
-default: false
+default: true
 
 supportsUrlLoad: false
 
@@ -21,19 +21,18 @@ type: general
 package: false
 
 rights:
-  - edit
+  - patrol
 
 peers: []
 
 dependencies:
-  - mediawiki.base
-  - mediawiki.notification
+  - mediawiki.diff.styles
 
 _sites:
   - zh
+  - commons
 
-_section: editing
+_section: browsing
 
 _files:
-  - Gadget-inpageedit-next.js
-  - Gadget-inpageedit-next.css
+  - Gadget-wikidiff2.js
