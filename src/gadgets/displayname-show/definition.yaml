@@ -20,18 +20,20 @@ type: general
 
 package: false
 
-rights:
-  - edit
+rights: 
+  - viewmywatchlist
 
 peers: []
 
-dependencies:
-  - ext.gadget.site-lib
+dependencies: 
+  - mediawiki.notification
+  - user.options
 
 _sites:
   - zh
+  - commons
 
-_section: browsing
+_section: user
 
 _files:
-  - Gadget-SectionPermanentLink.js
+  - Gadget-displayname-show.js

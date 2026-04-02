@@ -1,6 +1,6 @@
 ResourceLoader: true
 
-hidden: true
+hidden: false
 
 default: false
 
@@ -20,19 +20,19 @@ type: general
 
 package: false
 
-rights:
-  - disabled
+rights: 
+  - viewmywatchlist
 
 peers: []
 
 dependencies:
-  - ext.gadget.libOOUIDialog
+  - ext.gadget.displayname-show
 
 _sites:
   - zh
+  - commons
 
-_section: browsing
+_section: user
 
 _files:
-  - Gadget-FlowThreadCheck.css
-  - Gadget-FlowThreadCheck.js
+  - Gadget-displayname-copy.js

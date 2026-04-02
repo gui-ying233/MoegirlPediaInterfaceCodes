@@ -20,19 +20,19 @@ type: general
 
 package: false
 
-rights:
-  - disabled
+rights: 
+  - viewmywatchlist
 
 peers: []
 
 dependencies:
-  - ext.gadget.site-lib
-  - ext.flowthread
+  - ext.gadget.displayname-default
 
 _sites:
   - zh
+  - commons
 
-_section: browsing
+_section: user
 
 _files:
-  - Gadget-hideFlowthreadDefaultly.js
+  - Gadget-displayname-both.js

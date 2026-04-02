@@ -570,7 +570,7 @@ body.page-Mainpage.rootpage-Mainpage #siteNotice {
 
 #mainpage.is-sp .mainpage-title::before,
 #mainpage.is-sp .mainpage-title::after {
-    background-image: url("https://img.moegirl.org.cn/common/f/f2/%E7%81%AF%E7%AC%BC1.png");
+    background-image: url("https://storage.moegirl.org.cn/moegirl/commons/f/f2/%E7%81%AF%E7%AC%BC1.png");
     background-size: contain;
     background-repeat: no-repeat;
     content: " ";
@@ -1474,4 +1474,28 @@ body.mw-special-Log .mw-htmlform-flatlist > .oo-ui-fieldLayout:nth-child(4) {
 /* T:注解 */
 .annotation > .annotation-content {
     display: none;
+}
+
+/* 临时：参数设置、贡献页面内容、changelist前缀和摘要不显示徽章 */
+.mw-special-Preference moe-badges,
+.mw-special-Preference moe-badge,
+.mw-body-content .mw-contributions-list moe-badges,
+.mw-body-content .mw-contributions-list moe-badge,
+.mw-changeslist-line-prefix moe-badges,
+.mw-changeslist-line-prefix moe-badge,
+.mw-changeslist-line-inner-comment moe-badges,
+.mw-changeslist-line-inner-comment moe-badge {
+    display: none;
+}
+
+/* 自定义不显示徽章 */
+.no-moe-badges moe-badges,
+.no-moe-badges moe-badge {
+    display: none;
+}
+
+/* 页面内自定义显示徽章 */
+.mw-parser-output .show-moe-badges moe-badges,
+.mw-parser-output .show-moe-badges moe-badge {
+    display: revert !important;
 }

@@ -2,7 +2,7 @@ ResourceLoader: true
 
 hidden: false
 
-default: false
+default: true
 
 supportsUrlLoad: false
 
@@ -21,18 +21,18 @@ type: general
 package: false
 
 rights:
-  - edit
-  - autoconfirmed
+  - viewmywatchlist
 
 peers: []
 
 dependencies:
-  - ext.gadget.Force_preview
+  - user.options
 
 _sites:
   - zh
+  - commons
 
-_section: editing
+_section: user
 
 _files:
-  - Gadget-Force_preview_upon_user_request.js
+  - Gadget-displayename-default.js

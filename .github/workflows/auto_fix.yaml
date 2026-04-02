@@ -8,6 +8,7 @@ env:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   auto_fix:
@@ -25,7 +26,7 @@ jobs:
           check-latest: true
           cache: npm
       - name: Installing the dependencies
-        uses: AnnAngela/cached_node-modules@v4
+        uses: AnnAngela/cached_node-modules@v5
         with:
           command: npm run ci
       - name: Git config

@@ -2,6 +2,7 @@ name: Detect hardcoded-outdated NPM packages
 permissions:
   contents: read
   issues: write
+  actions: write
 
 on:
   workflow_dispatch:
@@ -27,7 +28,7 @@ jobs:
           check-latest: true
           cache: npm
       - name: Installing the dependencies
-        uses: AnnAngela/cached_node-modules@v4
+        uses: AnnAngela/cached_node-modules@v5
         with:
           command: npm run ci
       - name: Detect hardcoded-outdated NPM packages
