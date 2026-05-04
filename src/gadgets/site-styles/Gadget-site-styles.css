@@ -502,11 +502,6 @@ body .ajaxpoll {
     min-width: 400px;
 }
 
-/* 侧边栏底图默认隐藏（通过小工具显示） */
-.sidebar-character {
-    display: none;
-}
-
 body,
 #firstHeading {
     font-family: sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -1513,4 +1508,9 @@ body.mw-special-Log .mw-htmlform-flatlist > .oo-ui-fieldLayout:nth-child(4) {
 .mw-parser-output .show-moe-badges moe-badges,
 .mw-parser-output .show-moe-badges moe-badge {
     display: revert !important;
+}
+
+/* 隐藏可视化编辑器一级标题 */
+.oo-ui-toolbar-popups .oo-ui-tool-name-heading1 {
+    display: none;
 }
