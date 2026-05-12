@@ -70,17 +70,22 @@ jobs:
   skipCI:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@a5ad31d6a139d249332a2605b85202e8c0b78450 # v2.19.1
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           show-progress: false
       - name: Use Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: lts/*
           check-latest: true
           cache: npm
       - name: Installing the dependencies
-        uses: AnnAngela/cached_node-modules@v5
+        uses: AnnAngela/cached_node-modules@f5225ef90d81f9dff57a66c7da631e718a540b9e # v5.0.1
         with:
           command: npm run ci
       - name: If needs to skip, skip now
@@ -94,25 +99,30 @@ jobs:
       - skipCI
     if: always() && needs.skipCI.result == 'success' && needs.skipCI.outputs.skip != 'true'
     steps:
-      - uses: actions/checkout@v6
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@a5ad31d6a139d249332a2605b85202e8c0b78450 # v2.19.1
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         name: Checkout main repo
         with:
           fetch-depth: 0
           show-progress: false
       - name: Use Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: lts/*
           check-latest: true
           cache: npm
       - name: Installing the dependencies
-        uses: AnnAngela/cached_node-modules@v5
+        uses: AnnAngela/cached_node-modules@f5225ef90d81f9dff57a66c7da631e718a540b9e # v5.0.1
         with:
           command: npm run ci
       - name: Git config
         run: node scripts/postCommit/prepareGit.js
       - name: Expose GitHub Runtime
-        uses: crazy-max/ghaction-github-runtime@v4
+        uses: step-security/ghaction-github-runtime@3ec2bea23280fd469bb5d759888e9701173b2b0f # v4.0.0
       - name: Auto browserify generator
         run: node scripts/browserify/index.js
       - name: Auto prefetch
@@ -142,21 +152,26 @@ jobs:
     env:
       commits: ${{ needs.postCommit.outputs.commits }}
     steps:
-      - uses: actions/checkout@v6
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@a5ad31d6a139d249332a2605b85202e8c0b78450 # v2.19.1
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           show-progress: false
       - name: Use Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: lts/*
           check-latest: true
           cache: npm
       - name: Installing the dependencies
-        uses: AnnAngela/cached_node-modules@v5
+        uses: AnnAngela/cached_node-modules@f5225ef90d81f9dff57a66c7da631e718a540b9e # v5.0.1
         with:
           command: npm run ci
       - name: Reload the linter cache
-        uses: actions/cache@v5
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: .cache
           key: cache@${{ github.ref }}
@@ -192,17 +207,22 @@ jobs:
       - linter_test
     if: always() && needs.skipCI.outputs.skip != 'true' && github.ref == 'refs/heads/master'
     steps:
-      - uses: actions/checkout@v6
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@a5ad31d6a139d249332a2605b85202e8c0b78450 # v2.19.1
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           show-progress: false
       - name: Use Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: lts/*
           check-latest: true
           cache: npm
       - name: Installing the dependencies
-        uses: AnnAngela/cached_node-modules@v5
+        uses: AnnAngela/cached_node-modules@f5225ef90d81f9dff57a66c7da631e718a540b9e # v5.0.1
         with:
           command: npm run ci
       - name: Fire the webhook of AnnAngela's server
