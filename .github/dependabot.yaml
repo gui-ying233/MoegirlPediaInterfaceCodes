@@ -31,3 +31,18 @@ updates:
       npm:
         patterns:
           - "*"
+
+  - package-ecosystem: npm
+    directory: /scripts/generatePolyfill/customPolyfill
+    schedule:
+      interval: daily
+
+  - package-ecosystem: npm
+    directory: /scripts
+    schedule:
+      interval: daily
+
+  - package-ecosystem: npm
+    directory: /src
+    schedule:
+      interval: daily
