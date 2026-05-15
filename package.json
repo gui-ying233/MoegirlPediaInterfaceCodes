@@ -33,7 +33,7 @@
         "@annangela/eslint-formatter-gha": "^6.0.0",
         "@annangela/eslint-plugin-prefer-reflect": "^6.0.0",
         "@csstools/postcss-is-pseudo-class": "^6.0.0",
-        "@csstools/postcss-media-minmax": "^3.0.2",
+        "@csstools/postcss-media-minmax": "^3.0.3",
         "@csstools/stylelint-formatter-github": "^2.0.0",
         "@octokit/auth-action": "^6.0.2",
         "@octokit/auth-app": "^8.2.0",
@@ -70,21 +70,21 @@
         "pretty-bytes": "^7.1.0",
         "semver": "^7.8.0",
         "simple-git": "^3.36.0",
-        "stylelint": "^17.11.0",
+        "stylelint": "^17.11.1",
         "stylelint-config-standard": "^40.0.0",
         "terser": "^5.47.1",
         "types-mediawiki": "^2.0.0",
         "uglify-js": "^3.19.3",
         "unassertify": "^3.0.1",
         "v8r": "^6.0.0",
-        "yaml": "^2.8.4"
+        "yaml": "^2.9.0"
     },
     "devDependencies": {
         "@inpageedit/core": "^0.17.4",
         "javascript-obfuscator": "^5.4.2",
         "moment": "^2.30.1",
         "npm-run-all2": "^8.0.4",
-        "stylelint-plugin-use-baseline": "^1.4.1",
+        "stylelint-plugin-use-baseline": "^1.4.2",
         "typescript": "^6.0.3"
     }
 }
