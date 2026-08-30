@@ -51,9 +51,26 @@ exclude_patterns = [
 
 [[analyzers]]
 name = "javascript"
+enabled = true
 
   [analyzers.meta]
   environment = [
     "browser",
     "jquery"
+  ]
+  globals = [
+    "mw",
+    "mediaWiki",
+    "OO",
+    "moment",
+    "LocalObjectStorage",
+    "insertToBottomRightCorner",
+    "wgULS",
+    "wgUVS",
+    "oouiDialog",
+    "MoeSkin",
+    "MOE_SKIN_GLOBAL_DATA",
+    "libCachedCode",
+    "hashwasm",
+    "CodeMirror",
   ]
