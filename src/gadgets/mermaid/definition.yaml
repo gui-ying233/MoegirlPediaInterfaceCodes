@@ -4,7 +4,7 @@ hidden: false
 
 default: false
 
-supportsUrlLoad: false
+supportsUrlLoad: true
 
 skins: []
 
@@ -20,24 +20,19 @@ type: general
 
 package: false
 
-rights:
-  - edit
-  - patrol
+rights: []
 
 peers: []
 
 dependencies:
-  - mediawiki.api
-  - ext.gadget.libPolyfill
-  - ext.gadget.libOOUIDialog
   - ext.gadget.site-lib
-  - ext.gadget.libDiscussionUtil
+  - ext.gadget.libCachedCode
 
 _sites:
   - zh
+  - commons
 
-_section: maintenance
+_section: browsing
 
 _files:
-  - Gadget-quickSave.css
-  - Gadget-quickSave.js
+  - Gadget-mermaid.js
