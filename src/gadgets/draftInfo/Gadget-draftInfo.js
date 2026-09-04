@@ -1,15 +1,16 @@
 "use strict";
 $(() => {
-    const { wgArticleId, wgUserName, wgPageName, wgTitle, wgUserGroups, wgScriptPath } = mw.config.get([
+    const { wgArticleId, wgUserName, wgPageName, wgTitle, wgUserGroups, wgScriptPath, wgIsRedirect } = mw.config.get([
         "wgArticleId",
         "wgUserName",
         "wgPageName",
         "wgTitle",
         "wgUserGroups",
         "wgScriptPath",
+        "wgIsRedirect",
     ]);
 
-    if (wgArticleId === 0 || wgPageName.startsWith("Draft:沙盒") || document.querySelector(".nsdd")) {
+    if (wgArticleId === 0 || wgPageName.startsWith("Draft:沙盒") || document.querySelector(".nsdd") || wgIsRedirect) {
         return;
     }
 
