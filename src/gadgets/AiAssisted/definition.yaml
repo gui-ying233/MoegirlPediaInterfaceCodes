@@ -20,17 +20,19 @@ type: general
 
 package: false
 
-rights: []
+rights:
+  - edit
 
 peers: []
 
-dependencies: []
+dependencies:
+  - ext.gadget.site-lib
+  - oojs-ui-core
 
 _sites:
   - zh
-  - commons
 
-_section: system
+_section: editing
 
 _files:
-  - Gadget-libPolyfill-placeholder.js
+  - Gadget-AiAssisted.js

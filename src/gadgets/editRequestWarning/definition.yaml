@@ -6,27 +6,31 @@ default: true
 
 supportsUrlLoad: false
 
-skins:
-  - vector-2022
+skins: []
 
-actions: []
+actions:
+  - edit
+  - view
 
 categories: []
 
-namespaces: []
+namespaces:
+  - 5
 
 contentModels: []
 
-type: styles
+type: general
 
 package: false
 
 rights:
-  - disabled
+  - edit
 
 peers: []
 
-dependencies: []
+dependencies:
+  - ext.gadget.libOOUIDialog
+  - ext.gadget.site-lib
 
 _sites:
   - zh
@@ -34,4 +38,4 @@ _sites:
 _section: system
 
 _files:
-  - Gadget-vector-styles.css
+  - Gadget-editRequestWarning.js

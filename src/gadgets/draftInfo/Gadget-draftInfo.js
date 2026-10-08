@@ -15,11 +15,11 @@ $(() => {
     }
 
     const isAutoConfirmed = wgUserGroups.includes("autoconfirmed");
-    const enableButton = +mw.user.options.get("gadget-publishDraft", 0) === 1;
     const api = new mw.Api();
     const getRequestTitleSuffix = (userName, now) => ` - ${userName} - ${now.getFullYear()}.${libPrefixNumber(now.getMonth() + 1)}.${libPrefixNumber(now.getDate())}`;
 
     const getTargetExists = async () => {
+        /** @type {ApiQueryResponse} */
         const res = await api.get({
             action: "query",
             titles: wgTitle,
@@ -29,7 +29,17 @@ $(() => {
         return !res.query.pages[0].missing;
     };
 
-    const targetExistsPromise = getTargetExists();
+    const updateTargetLink = (targetExists) => {
+        if (targetExists) {
+            return;
+        }
+        const $targetLink = $(".draft-notice-title > a").first();
+        const targetURL = new URL($targetLink.attr("href"), location.origin);
+        targetURL.searchParams.set("action", "edit");
+        targetURL.searchParams.set("redlink", "1");
+        $targetLink.attr("href", `${targetURL.pathname}${targetURL.search}${targetURL.hash}`).addClass("new");
+    };
+
     const buildDiscussionNotice = (targetExists) => {
         const buildLink = (title, label, edit = true) => {
             const url = new URL(`${wgScriptPath}/index.php`, location.origin);
@@ -44,22 +54,22 @@ $(() => {
         };
 
         const questionLink = buildLink(
-            "Project talk:讨论版/提问求助",
-            wgULS("提问求助区", "提問求助區"),
+            "萌娘百科讨论:讨论版/提问求助",
+            wgUVS("提问求助区", "提問求助區"),
         );
         const pageLink = buildLink(
-            "Project talk:讨论版/页面相关",
-            wgULS("页面相关区", "頁面相關區"),
+            "萌娘百科讨论:讨论版/页面相关",
+            wgUVS("页面相关区", "頁面相關區"),
         );
         const talkLink = targetExists
             ? `或${buildLink(
                 mw.Title.newFromText(wgTitle).getTalkPage().getPrefixedText(),
-                wgULS("对应页面的讨论页", "對應頁面的討論頁"),
+                wgUVS("对应页面的讨论页", "對應頁面的討論頁"),
                 false,
             )}`
             : "";
 
-        return `${wgULS("如有疑问，请到", "如有疑問，請到")}${questionLink}${targetExists ? "、" : "或"}${pageLink}${talkLink}${wgULS("进行讨论。", "進行討論。")}`;
+        return `${wgUVS("如有疑问，请到", "如有疑問，請到")}${questionLink}${targetExists ? "、" : "或"}${pageLink}${talkLink}${wgUVS("进行讨论。", "進行討論。")}`;
     };
 
     $("#mw-content-text").before(`
@@ -70,48 +80,24 @@ $(() => {
                         <img src="https://storage.moegirl.org.cn/moegirl/commons/a/a3/MoeDraft.png!/fw/50" srcset="https://storage.moegirl.org.cn/moegirl/commons/a/a3/MoeDraft.png!/fw/75 1.5x, https://storage.moegirl.org.cn/moegirl/commons/a/a3/MoeDraft.png!/fw/100 2x" alt="草稿" width="50" height="50" decoding="async">
                     </div>
                     <div class="draft-notice-text">
-                        <div class="draft-notice-title">${wgULS("提示：本页面是【", "提示：本頁面是【")}<a href="/${encodeURIComponent(wgTitle)}">${mw.html.escape(wgTitle)}</a>${wgULS("】的", "】的")}<a href="/%E8%90%8C%E5%A8%98%E7%99%BE%E7%A7%91:%E8%8D%89%E7%A8%BF%E6%96%B9%E9%92%88">${wgULS("草稿", "草稿")}</a></div>
+                        <div class="draft-notice-title">${wgUVS("提示：本页面是【", "提示：本頁面是【")}<a href="/${encodeURIComponent(wgTitle)}">${mw.html.escape(wgTitle)}</a>${wgUVS("】的", "】的")}<a href="/%E8%90%8C%E5%A8%98%E7%99%BE%E7%A7%91:%E8%8D%89%E7%A8%BF%E6%96%B9%E9%92%88">${wgUVS("草稿", "草稿")}</a></div>
                         <ul>
                             <li id="draft-discussion-notice">${buildDiscussionNotice(false)}</li>
-                            <li>${wgULS("如果草稿已经完善，您可以", "如果草稿已經完善，您可以")}${enableButton ? wgULS("点击右侧的按钮", "點擊右側的按鈕") : wgULS("自行", "自行")}${wgULS("发布草稿。", "發佈草稿。")}</li>
+                            <li>${wgUVS("如果草稿已经完善，您可以", "如果草稿已經完善，您可以")}${wgUVS("使用按钮", "使用按鈕")}${wgUVS("发布草稿。", "發佈草稿。")}</li>
                         </ul>
                     </div>
-                    ${enableButton
-                        ? `
                     <div class="draft-notice-action">
-                        <button id="draft-action-btn" class="cdx-button cdx-button--action-progressive" disabled>${wgULS("检查中…", "檢查中…")}</button>
+                        <button id="draft-action-btn" class="cdx-button cdx-button--action-progressive" disabled>${wgUVS("检查中…", "檢查中…")}</button>
                     </div>
-                    `
-                        : ""}
                 </div>
             </div>
         </div>
     `);
 
-    (async () => {
-        try {
-            const targetExists = await targetExistsPromise;
-            $("#draft-discussion-notice").html(buildDiscussionNotice(targetExists));
-            if (targetExists) {
-                return;
-            }
-            const $targetLink = $(".draft-notice-title > a").first();
-            const targetURL = new URL($targetLink.attr("href"), location.origin);
-            targetURL.searchParams.set("action", "edit");
-            targetURL.searchParams.set("redlink", "1");
-            $targetLink.attr("href", `${targetURL.pathname}${targetURL.search}${targetURL.hash}`).addClass("new");
-        } catch (e) {
-            console.error("[DraftInfo] Failed to resolve target link:", e);
-        }
-    })();
-
-    if (!enableButton) {
-        return;
-    }
-
     const $btn = $("#draft-action-btn");
 
     const getNonBotContributors = async () => {
+        /** @type {ApiQueryResponse} */
         const res = await api.get({
             action: "query",
             titles: wgPageName,
@@ -178,6 +164,7 @@ $(() => {
         if (!confirmed) {
             return;
         }
+        /** @type {ApiMoveResponse} */
         const moveRes = await api.postWithToken("csrf", {
             action: "move",
             from: wgPageName,
@@ -199,6 +186,7 @@ $(() => {
     };
 
     const getLatestRevision = async (title) => {
+        /** @type {ApiQueryResponse} */
         const res = await api.get({
             action: "query",
             titles: title,
@@ -259,6 +247,7 @@ $(() => {
         if (!overwriteConfirmed) {
             return;
         }
+        /** @type {ApiEditResponse} */
         const editRes = await api.postWithToken("csrf", {
             action: "edit",
             assertuser: wgUserName,
@@ -274,6 +263,7 @@ $(() => {
         if (Reflect.has(editRes, "error")) {
             throw editRes;
         }
+        /** @type {ApiEditResponse} */
         const flagRes = await api.postWithToken("csrf", {
             action: "edit",
             assertuser: wgUserName,
@@ -317,7 +307,7 @@ $(() => {
     };
 
     const setupSingleContributorPublish = () => {
-        $btn.text(wgULS("发布草稿", "發布草稿")).prop("disabled", false).off("click").on("click", async () => {
+        $btn.text(wgULS("发布草稿", "發布草稿")).prop("disabled", false).on("click", async () => {
             try {
                 await doSingleContributorPublish();
             } catch (e) {
@@ -352,13 +342,20 @@ $(() => {
         }
     };
 
-    (async () => {
+    const updateDiscussionNotice = (targetExists) => {
+        $("#draft-discussion-notice").html(buildDiscussionNotice(targetExists));
+        updateTargetLink(targetExists);
+    };
+
+    const checkPublishStrategy = async () => {
+        $btn.prop("disabled", true).text(wgUVS("检查中…", "檢查中…"));
         try {
-            const targetExists = await targetExistsPromise;
+            const targetExists = await getTargetExists();
+            updateDiscussionNotice(targetExists);
 
             if (!targetExists) {
                 if (isAutoConfirmed) {
-                    $btn.text(wgULS("发布草稿", "發佈草稿")).prop("disabled", false).on("click", async () => {
+                    $btn.text(wgUVS("发布草稿", "發佈草稿")).prop("disabled", false).on("click", async () => {
                         try {
                             await doMove();
                         } catch (e) {
@@ -366,7 +363,7 @@ $(() => {
                         }
                     });
                 } else {
-                    $btn.text(wgULS("请求发布", "請求發佈")).prop("disabled", false).on("click", () => openRequest("move"));
+                    $btn.text(wgUVS("请求发布", "請求發佈")).prop("disabled", false).on("click", () => openRequest("move"));
                 }
                 return;
             }
@@ -375,7 +372,7 @@ $(() => {
             try {
                 contributors = await getNonBotContributors();
             } catch {
-                $btn.text(wgULS("请求合并", "請求合併")).prop("disabled", false).on("click", async () => {
+                $btn.text(wgUVS("请求合并", "請求合併")).prop("disabled", false).on("click", async () => {
                     try {
                         await askMergeRequest(false, true);
                     } catch (error) {
@@ -389,7 +386,7 @@ $(() => {
                 setupSingleContributorPublish();
             } else {
                 const isAssistedPublish = contributors.length === 1;
-                $btn.text(wgULS("请求合并", "請求合併")).prop("disabled", false).on("click", async () => {
+                $btn.text(wgUVS("请求合并", "請求合併")).prop("disabled", false).on("click", async () => {
                     try {
                         await askMergeRequest(isAssistedPublish);
                     } catch (e) {
@@ -399,7 +396,9 @@ $(() => {
             }
         } catch (e) {
             console.error("[DraftInfo] Failed to resolve publish strategy:", e);
-            $btn.text(wgULS("请求发布", "請求發佈")).prop("disabled", false).on("click", () => openRequest("move"));
+            $btn.text(wgUVS("请求发布", "請求發佈")).prop("disabled", false).on("click", () => openRequest("move"));
         }
-    })();
+    };
+
+    $btn.text(wgUVS("检查并发布", "檢查並發布")).prop("disabled", false).on("click", checkPublishStrategy);
 });

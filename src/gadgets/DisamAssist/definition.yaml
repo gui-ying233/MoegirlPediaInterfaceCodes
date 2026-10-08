@@ -2,7 +2,7 @@ ResourceLoader: true
 
 hidden: false
 
-default: true
+default: false
 
 supportsUrlLoad: false
 
@@ -11,10 +11,11 @@ skins: []
 actions:
   - view
 
-categories: []
+categories:
+  - 消歧义页
 
 namespaces:
-  - 118
+  - 0
 
 contentModels: []
 
@@ -23,13 +24,15 @@ type: general
 package: false
 
 rights:
-  - edit
-  - move
+  - autopatrol
 
 peers: []
 
 dependencies:
-  - ext.gadget.draftInfo
+  - mediawiki.Title
+  - mediawiki.api
+  - mediawiki.user
+  - ext.gadget.site-lib
 
 _sites:
   - zh
@@ -37,4 +40,5 @@ _sites:
 _section: editing
 
 _files:
-  - Gadget-publishDraft.js
+  - Gadget-DisamAssist.js
+  - Gadget-DisamAssist.css
