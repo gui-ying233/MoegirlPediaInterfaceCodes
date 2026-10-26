@@ -8,6 +8,8 @@ reportNeedlessDisables: true
 
 ignoreFiles:
   - dist/**/*.css
+  - src/gadgets/JSONViewer/Gadget-JSONViewer.css
+  - src/gadgets/Navigation_popups/Gadget-popups.css
   - src/gadgets/prism-core/Gadget-prism-line-numbers.css
   - src/gadgets/prism-plugin-match-braces/Gadget-prism-plugin-match-braces.css
   - src/gadgets/prism-plugin-previewers/Gadget-prism-plugin-previewers.css
@@ -16,6 +18,10 @@ plugins:
   - stylelint-plugin-use-baseline
 
 rules:
+  custom-property-pattern:
+    - ^([a-z][a-z0-9]*)(-{1,2}[a-z0-9]+)*$
+    - message: Custom property name must be kebab-case, with single or double hyphens
+        allowed.
   selector-id-pattern: null
   selector-class-pattern: null
   no-descending-specificity: null
@@ -49,3 +55,17 @@ rules:
           - /^(?:auto|text|none|all)$/
         resize:
           - /^(?:none|both|horizontal|vertical|block|inline)$/
+
+overrides:
+  - files:
+      - packages/**/*.scss
+    customSyntax: postcss-scss
+    rules:
+      at-rule-no-unknown:
+        - true
+        - ignoreAtRules:
+            - use
+            - mixin
+            - include
+            - content
+      no-invalid-double-slash-comments: null

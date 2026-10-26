@@ -6,7 +6,6 @@ paths-ignore:
   - src/gadgets/libHashwasm
   - src/gadgets/libJSON5
   - src/gadgets/libUtil
-  - src/gadgets/libip
   - src/gadgets/localforage
   - src/gadgets/noteTA
   - src/gadgets/patrolCount
@@ -36,3 +35,4 @@ paths-ignore:
   - src/gadgets/prism-plugin-match-braces
   - src/gadgets/prism-plugin-phpdoc
   - src/gadgets/prism-plugin-previewers
+  - src/gadgets/JSONViewer

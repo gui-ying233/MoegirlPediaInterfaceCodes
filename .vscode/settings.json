@@ -33,7 +33,6 @@
         "@type/libCachedCode.d.ts",
         "@type/libOOUIDialog.d.ts",
         "@type/libRequestAnimationFrame.d.ts",
-        "@type/libip.d.ts",
         "@type/LocalObjectStorage.d.ts",
         "@type/mermaid.d.ts",
         "@type/site-lib.d.ts",
@@ -95,7 +94,6 @@
         "Gadget/libOOUIDialog",
         "Gadget/libRequestAnimationFrame",
         "Gadget/libStandardMessages",
-        "Gadget/libip",
         "Gadget/LocalObjectStorage",
         "Gadget/localforage",
         "Gadget/Logout-confirm",
@@ -196,7 +194,11 @@
         "Group/staff",
         "Group/suppress",
         "Group/sysop",
-        "Group/user"
+        "Group/user",
+        "Package/HotCat",
+        "Package/JSONViewer",
+        "Package/Navigation_popups",
+        "Package/UserMessages"
     ],
     "conventionalCommits.storeScopesGlobally": false,
     "github.copilot.chat.organizationInstructions.enabled": false,
