@@ -1,6 +1,9 @@
 version = 1
 
-test_patterns = ["scripts/test/**"]
+test_patterns = [
+  "scripts/test/**", 
+  "packages/*/tests/**"
+]
 
 exclude_patterns = [
   "eslint.config.js",
@@ -46,7 +49,7 @@ exclude_patterns = [
   "src/gadgets/localforage/**",
   "src/gadgets/code-prettify/**",
   "src/gadgets/SpecialWikitext/**",
-  "src/gadgets/FlowThreadCheck/**"
+  "src/gadgets/FlowThreadCheck/**",
 ]
 
 [[analyzers]]
