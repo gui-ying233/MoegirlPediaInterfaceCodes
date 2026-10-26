@@ -1,8 +1,8 @@
 version = 1
 
 test_patterns = [
-  "scripts/test/**", 
-  "packages/*/tests/**"
+  "**/test/**", 
+  "**/tests/**"
 ]
 
 exclude_patterns = [
