@@ -2,11 +2,10 @@
 
 [萌娘百科](https://zh.moegirl.org.cn/) 小工具 `Gadget-UserMessages`：在用户页、用户讨论页与指定特殊页挂「向用户发送提醒」入口，选模板、填参数、预览后把提醒发到对方讨论页。
 
-源码为 TypeScript（`src/`），经 **esbuild** 打包为单文件产物，直接写入 [`src/gadgets/UserMessages/`](../../src/gadgets/UserMessages/)（wiki 部署读取该位置），由 postCommit CI 自动重建并提交。
+源码为 TypeScript（`src/`），经 **esbuild** 打包为单文件产物。产物不进入仓库：部署机器人执行 `npm run build` 时构建到 `dist/`（构建流程见[仓库 README](../../README.md)）。
 
-> [!WARNING]
-> **产物是编译生成的，请勿手改。**
-> 改 `src/**/*.ts` → 根目录 `npm run package:build` → 重新生成产物。
+> [!NOTE]
+> **产物由源码编译生成。** 修改请在 `src/**/*.ts` 进行，本地在仓库根目录执行 `npm run package:build` 重新生成并验证。
 
 ## 功能
 
@@ -103,12 +102,12 @@ vitest.config.ts       # vitest 配置（node 环境，覆盖率只统计 wikite
 依赖统一由仓库根目录管理，本包不设独立 package.json：
 
 ```bash
-npm run package:build   # 构建产物 → src/gadgets/UserMessages/（postCommit CI 亦自动执行并提交）
+npm run package:build   # 构建产物 → dist/（不入库；部署链由部署机器人执行 npm run build 构建）
 npm run package:test    # 构建幂等检查 + 单元测试（vitest）
 npm test                # 全仓门禁（eslint / stylelint / tsc 覆盖本包源码与测试；产物不参与 lint）
 ```
 
 - 打包器与 [JSONViewer](../JSONViewer/scripts/build.js) 同款：esbuild `bundle` + `format: "esm"` + `target: "es2020"` + `minifySyntax`，产物不压缩（压缩交给界面库部署侧的 terser）；`charset: "utf8"` 保留中文字面量，`banner` 带 `"use strict"`。
 - 类型来自 `@types/oojs-ui`（列在 `packages/tsconfig.json` 的 `types` 里）、`types-mediawiki`，以及仓库共享的 [`src/@types/site-lib.d.ts`](../../src/@types/site-lib.d.ts)（`wgULS`）。包内 `oo.d.ts` 只声明这两个类型包没收录的 `mw.widgets.TitleInputWidget` / `UserInputWidget` 与 `OO.ui.ProcessDialog.$body`。
-- 产物由 `src/gadgets/UserMessages/.eslint-exemptions.yaml` 排除在 lint 之外。包内不写行内 `eslint-disable`：与 jQuery Promise / OOUI 打交道的三条规则（`promise/prefer-await-to-then`、`@typescript-eslint/use-unknown-in-catch-callback-variable`、`@typescript-eslint/no-unnecessary-type-parameters`）在 `eslint.config.js` 里对 `packages/UserMessages/src` 整目录关闭。
+- 包内不写行内 `eslint-disable`：与 jQuery Promise / OOUI 打交道的三条规则（`promise/prefer-await-to-then`、`@typescript-eslint/use-unknown-in-catch-callback-variable`、`@typescript-eslint/no-unnecessary-type-parameters`）在 `eslint.config.js` 里对 `packages/UserMessages/src` 整目录关闭。
 - 单元测试只覆盖 `src/wikitext.ts` 的纯字符串变换：模板调用拼装（空值省略）、`{{` → `{{subst:`、`<noinclude>` / `<includeonly>` 剥离、签名拼接。其余模块要完整的 OOUI / `mw.Api` 运行时，不在单测范围内；覆盖率报告写到 `.cache/coverage/UserMessages`（已 gitignore）。

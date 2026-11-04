@@ -73,9 +73,8 @@ const buildOptions = (dev = false) => ({
 
 /**
  * 去掉 esbuild 残留在产物正文里的整行 eslint 指令注释：它们来自依赖源码
- * （如 preact/compat/client.mjs 的裸 `// eslint-disable-next-line`）。产物被界面库的
- * src/gadgets/JSONViewer/.eslint-exemptions.yaml 排除在规则之外（该目录下实际无规则生效），
- * 此时任何残留指令都会被 eslint 报成 unused directive / 未知规则，故将指令行整体剔除。
+ * （如 preact/compat/client.mjs 的裸 `// eslint-disable-next-line`），指向的规则
+ * 只在依赖源码的 lint 配置里存在，对打包后的产物没有作用，故将指令行整体剔除。
  */
 const stripInlineDirectives = (text) =>
     text.split("\n").filter((line) => !/^\s*\/\/\s*eslint-(?:disable|enable)\b/.test(line)).join("\n");
@@ -119,7 +118,7 @@ const buildOnce = async () => {
     return { js: Buffer.from(jsText, "utf8"), css: Buffer.from(cssText, "utf8") };
 };
 
-/** 产物直接写入 src/gadgets/JSONViewer/（wiki 部署读取该位置），不经过包内 dist/ */
+/** 产物写入文件头部注释的构建链暂存区 dist/_generated/gadgets/JSONViewer，交给部署链继续处理 */
 const write = async () => {
     const first = await buildOnce();
     for (const [name, file] of artifacts) {
@@ -134,7 +133,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     try {
         if (process.argv.includes("--watch")) {
             // dev 产物：未压缩 + inline sourcemap，CSS 以 <style> 注入打包进单个 JS 文件，
-            // 写入包内 dist/dev/（已被 .gitignore 的 dist 覆盖），不触碰提交进仓库的 src/gadgets/ 产物。
+            // 写入包内 dist/dev/（已被 .gitignore 的 dist 覆盖），与写入仓库 dist/_generated 的正式构建互不影响。
             const ctx = await context(buildOptions(true));
             await ctx.watch();
             console.log(`${ENTRY} -> packages/JSONViewer/dist/dev/（未压缩 + inline sourcemap + CSS 内联），监听改动中，Ctrl+C 退出`);

@@ -38,12 +38,11 @@
   - [`.stylelintrc.yaml`](.stylelintrc.yaml) 配置 stylelint；
   - [`.postcssrc.yaml`](.postcssrc.yaml) 配置 postcss；
   - [`.browserslistrc`](.browserslistrc) 配置 [autoprefixer](https://github.com/postcss/autoprefixer) 和 [browserify](https://browserify.org/) 所使用的 [browserslist](https://github.com/browserslist/browserslist)，目前暂定锚定为 [`baseline newly available`](https://web.dev/series/baseline-newly-available?hl=zh-cn) 的基础上添加 `last 3 Firefox versions` 和 `Chrome 132`，并排除移动端以适应萌百编辑群体。
-- [`packages`](packages) 保存以 monorepo 形式管理的部分小工具源码（TypeScript），构建产物写入 [`src/gadgets`](src/gadgets)（请勿手改），相关约定见 [CONTRIBUTING.md](CONTRIBUTING.md#packages-目录下的本地构建小工具)；
+- [`packages`](packages) 保存以 monorepo 形式管理的部分小工具源码（TypeScript），构建产物不进入仓库：部署机器人执行 `npm run build` 时构建到 `dist/`，相关约定见 [CONTRIBUTING.md](CONTRIBUTING.md#packages-目录下的本地构建小工具)；
 - 代码部分：
   - [`src/gadgets`](src/gadgets) 以文件夹形式保存小工具，每一个文件夹都是一个小工具，里面包含以下内容：
     - `definition.yaml` 保存小工具配置，包括依赖项、所需权限等，以 `_` 开头的键值对是其他配置，如小工具所在的章节等；
     - `definition.{站点代号}.yaml` （可选）保存小工具的站点配置，包括依赖项、所需权限等，在处理对应站点的配置文件时，将会在以覆盖方式合并到上述配置后生成配置文件，如 [`src/gadgets/HotCat/definition.commons.yaml`](src/gadgets/HotCat/definition.commons.yaml)；
-    - `.eslint-exemptions.yaml` （可选）用以阻止 eslint 在某些文件上进行检查，常见于来自 npm 和指定页面的代码；
     - `*.js` 和 `*.css` 为小工具代码，文件名为萌娘百科上对应页面的页面名；
   - [`src/groups`](src/groups) 以文件夹形式保存用户组级别代码，每一个文件夹都对应一个子站点，每一个站点文件夹的子文件夹对应一个用户组，里面包含 `*.js` 和 `*.css` 等代码，文件名为萌娘百科上对应页面的页面名；
   - [`src/global`](src/global) 保存全站代码，每一个文件夹都对应一个站点，里面包含 `*.js` 和 `*.css` 等代码，文件名为萌娘百科上对应页面的页面名。
