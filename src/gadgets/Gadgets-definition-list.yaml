@@ -36,7 +36,6 @@
     - SectionPermanentLink
     - SideBarPic
     - draftInfo
-    - mermaid
 
 - name: skin
   gadgets:
@@ -56,6 +55,7 @@
     - displayname-both
     - displayname-show
     - displayname-copy
+    - displayname-search
     - CommentsinLocalTime
     - editCount
     - Logout-confirm
@@ -63,6 +63,7 @@
     - queryContributions
     - userpageDelete
     - requestDeletion
+    - BatchToolkit
 
 - name: editing
   gadgets:
@@ -71,15 +72,15 @@
     - DotsSyntaxHighlighter
     - HotCat
     - Wikiplus
+    - wikiplus-highlight
     - inpageedit-next
     - InPageEdit-v2
     - enable-nest-highlight
     - disable-nest-alert
-    - uploader
     - temp-editcheck
-    - wikiplus-highlight
     - DisamAssist
     - AiAssisted
+    - Cat-a-lot
 
 - name: maintenance
   gadgets:
@@ -104,7 +105,6 @@
   gadgets:
     - allmessageFilter
     - abusefilterResize
-    - abusefilterEdit
     - interfaceVariantConverter
 
 - name: administration
@@ -123,20 +123,20 @@
     - site-styles
     - vector-2022-styles
     - moeskin-styles
-    - edit
-    - editRequestWarning
     - site-lib
     - libBottomRightCorner
     - libOOUIDialog
-    - LocalObjectStorage
-    - localforage
-    - jQueryLazyload
     - libHashwasm
     - libJSON5
     - libCachedCode
     - libDiscussionUtil
     - libRequestAnimationFrame
     - libStandardMessages
+    - edit
+    - editRequestWarning
+    - LocalObjectStorage
+    - localforage
+    - jQueryLazyload
     - prism-core
     - prism-language-css
     - prism-language-javascript

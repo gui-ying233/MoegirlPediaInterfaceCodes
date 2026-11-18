@@ -1,10 +1,10 @@
 ResourceLoader: true
 
-hidden: true
+hidden: false
 
-default: true
+default: false
 
-supportsUrlLoad: false
+supportsUrlLoad: true
 
 skins: []
 
@@ -21,13 +21,19 @@ type: general
 package: false
 
 rights:
-  - upload
+  - autopatrol
 
 peers: []
 
 dependencies:
+  - jquery
+  - mediawiki.api
+  - mediawiki.storage
+  - mediawiki.Title
   - mediawiki.util
   - ext.gadget.site-lib
+  - vue
+  - '@wikimedia/codex'
 
 _sites:
   - zh
@@ -36,4 +42,5 @@ _sites:
 _section: editing
 
 _files:
-  - Gadget-uploader.js
+  - Gadget-Cat-a-lot.js
+  - Gadget-Cat-a-lot.css

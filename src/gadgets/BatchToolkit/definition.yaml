@@ -1,6 +1,6 @@
 ResourceLoader: true
 
-hidden: false
+hidden: true
 
 default: true
 
@@ -21,18 +21,19 @@ type: general
 package: false
 
 rights:
-  - abusefilter-modify
-  - editinterface
+  - edit
 
 peers: []
 
-dependencies: []
+dependencies:
+  - mediawiki.util
+  - ext.gadget.site-lib
 
 _sites:
   - zh
+  - commons
 
-_section: interface
+_section: user
 
 _files:
-  - Gadget-abusefilteredit.css
-  - Gadget-abusefilteredit.js
+  - Gadget-BatchToolkit.js
